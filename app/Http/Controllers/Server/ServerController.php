@@ -104,10 +104,10 @@ class ServerController extends Controller
 
             $requestedVersion = $request->version;
 
-            // Check if the user has insufficient credits and a credit reminder is present
-            if ($user->credits < 0 && $user->creditReminders()->exists()) {
+            // Check if the user has insufficient credits
+            if ($user->credits <= 0) {
                 return response()->json([
-                    'message' => 'You cannot create a server because your credits are insufficient and a credit reminder is present!'
+                    'message' => 'You cannot create a server due to insufficient credits.'
                 ], 500);
             }
 

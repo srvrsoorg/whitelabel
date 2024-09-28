@@ -410,7 +410,7 @@
             >
             <span
               v-tooltip="
-                `Select the billing mode between prepaid or postpaid. Prepaid requires payment before services are provided, whereas postpaid allows you to pay after the services have been used.`
+                `Select the billing mode between prepaid or postpaid. Prepaid requires >0 credits, either free sign up credits or paid credits. Postpaid allows users to pay on the monthly basis after the services have been used.`
               "
               :class="[
                 isLightColor ? 'text-custom-700' : 'text-custom-500',
