@@ -12,7 +12,7 @@
         "divineomega/php-ssh-connection": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^15.3",
-        "laravel/framework": "^10.10",
+        "laravel/framework": "^10.48.23",
         "laravel/horizon": "^5.23",
         "laravel/sanctum": "^3.3",
         "laravel/telescope": "^4.17",
