@@ -55,7 +55,7 @@ class ActivityController extends Controller
             $activities = $activities->paginate(request()->input('per_page'))->appends(request()->query());
 
             // Retrieve users associated with activities
-            $users = User::join('admin_activities', 'admin_activities.user_id', 'users.id')->select('users.id','users.name')->groupBy('user_id')->get();
+            $users = User::join('admin_activities', 'admin_activities.user_id', 'users.id')->select('users.id','users.name')->distinct('id')->get();
 
             // Success response with activities, types, actions, and users
             return [
