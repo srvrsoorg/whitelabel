@@ -93,7 +93,7 @@ class DeductHourlyCharges implements ShouldQueue
                 $totalDeduction = $hoursDiff * $hourlyRate;
                 $subscription->user->decrement('credits', $totalDeduction);
                 $activeCharges->increment('deduct_amount', $totalDeduction);
-                $activeCharges->update(['last_deduct_at' => Carbon::parse($activeCharges->last_deduct_at)->addHours($hoursDiff)]);
+                $activeCharges->update(['last_deduct_at' => now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString()]);
             }
 
         } catch (\Exception $e) {
