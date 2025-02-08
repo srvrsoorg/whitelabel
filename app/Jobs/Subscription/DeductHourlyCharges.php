@@ -87,6 +87,7 @@ class DeductHourlyCharges implements ShouldQueue
                 $activeCharges->created_at = $lastDeductAt;
                 $activeCharges->last_deduct_at = $lastDeductAt;
                 $activeCharges->save();
+                $activeCharges->update(['started_at' => $currentMonth]);
             }
 
             if ($hoursDiff > 0) {
