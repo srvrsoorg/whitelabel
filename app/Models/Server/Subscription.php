@@ -68,6 +68,14 @@ class Subscription extends Model
     }
 
     /**
+     * Get the latestUsageSummary associated with the subscription.
+     */
+    public function latestUsageSummary()
+    {
+        return $this->hasOne(UsageSummary::class)->latestOfMany();
+    }
+
+    /**
      * Get the credit reminder associated with the subscription.
      */
     public function creditReminder(){

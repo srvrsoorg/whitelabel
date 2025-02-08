@@ -38,7 +38,7 @@ class ExecuteHourlySubscriptions extends Command
                 ->whereHas('server')
                 ->where(function ($query) use ($oneHourAgo) {
                     $query->whereDoesntHave('usageSummaries')
-                          ->orWhereHas('usageSummaries', function ($query) use ($oneHourAgo) {
+                          ->orWhereHas('latestUsageSummary', function ($query) use ($oneHourAgo) {
                               $query->whereNull('last_deduct_at')
                                     ->orWhere('last_deduct_at', '<=', $oneHourAgo);
                           });
