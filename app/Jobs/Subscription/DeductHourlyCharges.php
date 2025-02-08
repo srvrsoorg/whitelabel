@@ -65,7 +65,7 @@ class DeductHourlyCharges implements ShouldQueue
             }
 
             // Check if there's already an entry for this month
-            $currentMonth = now()->startOfMonth()->format('Y-m-d'); // First day of the current month
+            $currentMonth = now()->startOfMonth()->toDateTimeString(); // First day of the current month
             $activeCharges = $subscription->usageSummaries()->firstOrCreate([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
@@ -80,14 +80,11 @@ class DeductHourlyCharges implements ShouldQueue
             $hourlyRate = $subscription->monthly_price / (now()->daysInMonth * 24);
 
             // Default to 1 hour ago if not set
-            $lastDeductAt = $activeCharges->last_deduct_at ? $activeCharges->last_deduct_at : now()->subHour();
+            $lastDeductAt = $activeCharges->last_deduct_at ? $activeCharges->last_deduct_at : now()->subHour()->toDateTimeString();
             $hoursDiff = now()->diffInHours($lastDeductAt);
 
             if(!$activeCharges->last_deduct_at) {
-                $activeCharges->created_at = $lastDeductAt;
-                $activeCharges->last_deduct_at = $lastDeductAt;
-                $activeCharges->save();
-                $activeCharges->update(['started_at' => $currentMonth]);
+                $activeCharges->update(['created_at' => $lastDeductAt, 'last_deduct_at' => $lastDeductAt]);
             }
 
             if ($hoursDiff > 0) {
@@ -95,8 +92,9 @@ class DeductHourlyCharges implements ShouldQueue
                 $subscription->user->decrement('credits', $totalDeduction);
                 $activeCharges->increment('deduct_amount', $totalDeduction);
                 $activeCharges->update(['last_deduct_at' => now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString()]);
-                $activeCharges->update(['started_at' => $currentMonth]);
             }
+
+            $activeCharges->update(['started_at' => $currentMonth]);
 
         } catch (\Exception $e) {
             report($e);
