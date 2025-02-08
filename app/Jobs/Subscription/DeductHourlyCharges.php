@@ -94,6 +94,7 @@ class DeductHourlyCharges implements ShouldQueue
                 $subscription->user->decrement('credits', $totalDeduction);
                 $activeCharges->increment('deduct_amount', $totalDeduction);
                 $activeCharges->update(['last_deduct_at' => now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString()]);
+                $activeCharges->update(['started_at' => $currentMonth]);
             }
 
         } catch (\Exception $e) {
