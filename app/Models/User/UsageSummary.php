@@ -25,10 +25,11 @@ class UsageSummary extends Model
         'server_ip',
         'server_name',
         'deduct_amount',
-        'started_at',
         'last_deduct_at'
     ];
 
+    protected $guarded = ['started_at'];
+    
     /**
      * Get the user that owns the usage summary.
      */

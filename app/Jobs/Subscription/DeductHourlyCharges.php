@@ -84,22 +84,31 @@ class DeductHourlyCharges implements ShouldQueue
             $hoursDiff = now()->diffInHours($lastDeductAt);
 
             if(!$activeCharges->last_deduct_at) {
-                $activeCharges->update(['created_at' => $lastDeductAt, 'last_deduct_at' => $lastDeductAt]);
+                $activeCharges->timestamps = false;
+                $activeCharges->created_at = $lastDeductAt;
+                $activeCharges->last_deduct_at = $lastDeductAt;
+                $activeCharges->save();
+                $activeCharges->timestamps = true;
             }
 
             if ($hoursDiff > 0) {
                 $totalDeduction = $hoursDiff * $hourlyRate;
                 $subscription->user->decrement('credits', $totalDeduction);
+                $activeCharges->timestamps = false;
                 $activeCharges->increment('deduct_amount', $totalDeduction);
-                $activeCharges->update(['last_deduct_at' => now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString()]);
+                $activeCharges->last_deduct_at = now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString();
+                $activeCharges->save();
+                $activeCharges->timestamps = true;
             }
-
-            $activeCharges->update(['started_at' => $currentMonth]);
+            
+            // Update started_at separately if needed
+            $activeCharges->timestamps = false;
+            $activeCharges->forceFill(['started_at' => $currentMonth])->save();
+            $activeCharges->timestamps = true;
 
         } catch (\Exception $e) {
             report($e);
             $this->fail("Something went wrong while deduct hourly charges of subscription : " . $subscription->id);
         }
-
     }
 }
