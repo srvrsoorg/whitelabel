@@ -88,7 +88,6 @@ class DeductHourlyCharges implements ShouldQueue
                 $activeCharges->created_at = $lastDeductAt;
                 $activeCharges->last_deduct_at = $lastDeductAt;
                 $activeCharges->save();
-                $activeCharges->timestamps = true;
             }
 
             if ($hoursDiff > 0) {
@@ -98,7 +97,6 @@ class DeductHourlyCharges implements ShouldQueue
                 $activeCharges->increment('deduct_amount', $totalDeduction);
                 $activeCharges->last_deduct_at = now()->parse($activeCharges->last_deduct_at)->addHours($hoursDiff)->toDateTimeString();
                 $activeCharges->save();
-                $activeCharges->timestamps = true;
             }
             
             // Update started_at separately if needed
