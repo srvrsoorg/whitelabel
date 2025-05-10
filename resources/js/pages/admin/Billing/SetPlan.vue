@@ -102,19 +102,19 @@
         v-for="(size, index) in sizeList"
         :key="size.slug"
       >
+        <td :class="['whitespace-nowrap py-5 px-4 truncate max-w-[300px] text-center']">
+          {{ size.cpu_core }}
+        </td>
         <td
-          class="whitespace-nowrap px-4 py-4 pl-10 truncate max-w-[300px]"
+          class="whitespace-nowrap px-4 py-5 truncate max-w-[300px]"
           v-if="
             cloudProvider.provider == 'hetzner' ||
             cloudProvider.provider == 'linode'
           "
         >
           {{ size.label ? size.label : "-" }}
-        </td>
-        <td :class="[cloudProvider.provider == 'hetzner' || cloudProvider.provider == 'linode' ? 'px-4 py-4' : 'py-5 px-4 pl-10' ,'whitespace-nowrap truncate max-w-[300px]']">
-          {{ size.cpu_core }}
-        </td>
-        <td class="whitespace-nowrap py-5 px-4">
+        </td>        
+        <td class="whitespace-nowrap py-5 px-4 truncate">
           {{ size.ram_size_in_mb }} MB
         </td>
         <td class="whitespace-nowrap py-5 px-4 truncate">
@@ -201,7 +201,7 @@ export default {
         ],
       },
       thead: [
-        { title: "Core(s)", classes: "whitespace-nowrap" },
+        { title: "Core(s)", classes: "whitespace-nowrap text-center" },
         { title: "Memory", classes: "" },
         { title: "Storage", classes: "" },
         { title: "Bandwidth", classes: "" },
