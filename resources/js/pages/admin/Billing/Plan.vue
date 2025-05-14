@@ -175,12 +175,20 @@
     @closeModal="closeModal"
   >
     <div v-if="modalType === 'update'">
-      <span class="my-5 text-tiny text-gray-600">
+      <span class="my-3 text-tiny text-gray-600">
         Are you sure you want to update the cloud platform integration?
       </span>
-      <p class="my-5 text-tiny font-medium">
+      <p class="my-3 text-tiny font-medium">
         Kindly verify that the provided key is for the same account. This update
         will affect all related services.
+      </p>
+    </div>
+    <div
+      class="text-tiny p-3 rounded-md mb-2 text-[#308DEA] bg-[#EFF6FF]"
+      v-if="createCloud.provider === 'digitalocean'"
+    >
+      <p>
+        <b class="font-medium">Note:</b> On fresh DigitalOcean accounts, API access is restricted until some activity occurs. Create a test server first — you can delete this server after the API has been added successfully.
       </p>
     </div>
     <div class="mb-4">
