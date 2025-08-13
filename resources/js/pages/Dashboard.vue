@@ -147,7 +147,7 @@
             >
               <div class="text-gray-500 py-0.5" v-if="server.plan">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[20px]">
+                  <span class="material-symbols-outlined text-[20px]" v-tooltip="'Ram'">
                     memory
                   </span>
                   <p class="">
@@ -155,16 +155,16 @@
                   </p>
                 </div>
                 <div class="flex items-center gap-2 my-1">
-                  <span class="material-symbols-outlined text-[18px]">
+                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Bandwidth'">
                     database
                   </span>
                   <p>
                     {{ server.plan.bandwidth ? server.plan.bandwidth : "-" }}
-                    MB
+                    {{server.provider_name == 'hetzner'?'TB':"GB"}}
                   </p>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[18px]">
+                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Disk'">
                     sd_card
                   </span>
                   <p>
