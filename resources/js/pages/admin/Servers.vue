@@ -139,7 +139,7 @@
         <td class="whitespace-nowrap py-2 px-4 truncate max-w-[100px]">
           <div class="text-gray-500" v-if="server.plan">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[20px]" v-tooltip="'Ram'">
+              <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
                 memory
               </span>
               <p class="">{{ server.plan.ram }} MB</p>

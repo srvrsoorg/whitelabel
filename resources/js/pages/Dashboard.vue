@@ -147,7 +147,7 @@
             >
               <div class="text-gray-500 py-0.5" v-if="server.plan">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[20px]" v-tooltip="'Ram'">
+                  <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
                     memory
                   </span>
                   <p class="">
