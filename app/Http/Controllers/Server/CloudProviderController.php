@@ -628,7 +628,7 @@ class CloudProviderController extends Controller
                     'cpu_core' => $row->cores,
                     'disk_size_in_gb' => $row->disk,
                     'price' => $serverPlan['price_per_month'],
-                    'bandwidth' => $serverPlan['bandwidth'],
+                    'bandwidth' => $serverPlan['bandwidth'] * 1000, // convert to gb
                     'visible' => $serverPlan['visible'],
                 ];
             }
