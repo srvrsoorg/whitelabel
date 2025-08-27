@@ -12,6 +12,9 @@
   <div class="my-5">
     <PaymentConf :provider="stripe" @updateValue="fetchData()"></PaymentConf>
   </div>
+  <div class="my-5">
+    <PaymentConf :provider="paytr" @updateValue="fetchData()"></PaymentConf>
+  </div>
 </template>
 
 <script>
@@ -54,6 +57,15 @@ export default {
         mode: "sandbox",
         processing: false,
       },
+      paytr: {
+        provider: "Paytr",
+        enabled: false,
+        client_id: "",
+        client_secret: "",
+        client_key: "",
+        mode: "sandbox",
+        processing: false,
+      },
     };
   },
   methods: {
@@ -74,6 +86,8 @@ export default {
                     data.mode == "sandbox" ? true : false;
                 } else if (data.provider == "Stripe") {
                   this.stripe = data;
+                } else if (data.provider == "Paytr") {
+                  this.paytr = data;
                 }
               }
             });

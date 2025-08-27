@@ -31,6 +31,10 @@ use PayPal\Api\ExecutePayment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\Transaction as PaypalTransaction;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+
+// Paytr Library Classes
+use Paytr;
+
 use App\Mail\Transaction\TransactionSuccessful;
 use App\Models\Admin\Tax;
 
@@ -488,6 +492,71 @@ class TransactionController extends Controller
                     "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong! Please try again after some times!",
                 ],500);
             }
+        } elseif($provider == PaymentGatewayEnum::PAYTR()){
+            try {
+
+                config()->set('paytr.credentials.merchant_id', $paymentConfig->client_id);
+                config()->set('paytr.credentials.merchant_key', $paymentConfig->client_key);
+                config()->set('paytr.credentials.merchant_salt', $paymentConfig->client_secret);
+                config()->set('paytr.options.success_url',config('app.url')."/verify-paytr-transaction");
+                config()->set('paytr.options.fail_url',config('app.url')."/verify-paytr-transaction");
+
+
+                // Retrieve user associated with the transaction
+                $user = $transaction->user;
+
+                // Define the product basket
+                $products = [
+                    [
+                        $transaction->service,          // Product name
+                        $finalAmount,    // Product price
+                        1                        // Quantity
+                    ],
+                ];
+
+                $user_address = $user->billingDetail ? $user->billingDetail->address : "N/A";
+                $user_phone = "0000000000";
+
+                $basket = Paytr::basket()->addProducts($products);
+
+                // Prepare payment details
+                $payment = Paytr::payment()
+                    ->setCurrency($currency)
+                    ->setUserPhone($user_phone)
+                    ->setUserAddress($user_address)
+                    ->setNoInstallment(1)
+                    ->setMaxInstallment(1)
+                    ->setEmail($user->email)
+                    ->setMerchantOid($transaction->key)
+                    ->setUserIp(request()->ip())
+                    ->setPaymentAmount($finalAmount * 100) // Amount in kuruş
+                    ->setUserName($user->name)
+                    ->setBasket($basket);
+
+                // Create the payment request
+                $paymentRequest = Paytr::createPayment($payment);
+
+                if ($paymentRequest->isSuccess()) {
+                    $token = $paymentRequest->getToken();
+                    $iframeUrl = 'https://www.paytr.com/odeme/guvenli/' . $token;
+
+                    // Update transaction with payment link
+                    $transaction->payment_link = $iframeUrl;
+                    $transaction->save();
+
+                } else {
+                    return response()->json([
+                        'message' => $paymentRequest->getMessage()//'Failed to create payment link.'
+                    ], 500);
+                }
+
+            } catch (\Exception $e) {
+                // ❌ Error response: Handle and respond to any exceptions
+                report($e);
+                return response()->json([
+                    "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong! Please try again after some times!",
+                ],500);
+            }
         } else {
             return response()->json([
                 "message" => "Payment gateway not found!"
@@ -641,6 +710,11 @@ class TransactionController extends Controller
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
                     ],500);
                 }
+            } else {
+                // ❌ Error response
+                return response()->json([
+                    "message" => "Invalid provider!",
+                ],500);
             }
 
             // Update promo code use in transaction
@@ -666,6 +740,85 @@ class TransactionController extends Controller
             return response()->json([
                 "message" => "The payment has been verified successfully.",
             ],200);
+        } catch (\Exception $e) {
+            // ❌ Error response
+            report($e);
+            return response()->json([
+                "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong!",
+            ],500);
+        }
+    }
+
+    public function verifyPaytrTransaction(Request $request) {
+        try {
+            
+            // Check if payment gateway configuration is enabled
+            if(!$paymentConfig = PaymentConfig::where('provider','Paytr')->where('enabled', true)->first()){
+                return response()->json([
+                    'message' => "$provider configuration is disabled!"
+                ],500);
+            }
+
+            // Set PayTR credentials
+            config()->set('paytr.credentials.merchant_id', $paymentConfig->client_id);
+            config()->set('paytr.credentials.merchant_key', $paymentConfig->client_key);
+            config()->set('paytr.credentials.merchant_salt', $paymentConfig->client_secret);  
+
+            // other method
+            $verification = Paytr::paymentVerification($request);  
+            if (!$verification->verifyRequest()) {  
+                return response()->json([
+                    'message' => "Payment failed or not confirmed by PayTR!",
+                ], 500);  
+            }
+            
+            $oid = $verification->getMerchantOid(); // Payment id generated by you 
+            
+            // Find transaction by key 
+            if(!$transaction = Transaction::where('key',$oid)->where('status','!=',true)->first()){
+                return response()->json([
+                    'message' => "No transaction found!"
+                ],404);
+            }
+
+            if($verification->isSuccess()){
+                $transaction->status = 1;
+                $transaction->payment_link = null;
+                $transaction->transaction_id = 'paytr_' . $oid;
+                $transaction->save();
+
+                $this->updateAccount($transaction);
+            } else {
+                 // ❌ Error response: Payment failed
+                return response()->json([
+                    'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
+                ],500);
+            }
+
+            // Update promo code use in transaction
+            if($promoCode = PromoCode::find($transaction->promo_code_id)) {
+                $promoCode->usage = $promoCode->usage + 1;
+                if($promoCode->usable){
+                    $promoCode->expires_at = $promoCode->usable <= $promoCode->usage?now():$promoCode->expires_at;
+                }
+                $promoCode->save();
+            }
+
+            // Send transaction successfull mail to user
+            \Mail::to($transaction->user)->queue((new TransactionSuccessful($transaction))->onQueue('default'));
+
+            $currency = Helper::currency();
+
+            // Store Activity
+            Helper::createActivity($transaction->user, 'Transaction', 'Create', 'Transaction of '. $currency['currency_symbol'] . $transaction->final_amount . ' has been created.');
+
+            $transaction = $transaction->refresh();
+
+             // ✅ Success response
+            return response()->json([
+                "message" => "The payment has been verified successfully.",
+            ],200);
+
         } catch (\Exception $e) {
             // ❌ Error response
             report($e);

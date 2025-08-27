@@ -20,6 +20,12 @@
           :alt="app_name"
           class="w-auto h-10"
         />
+        <img
+          v-if="payment.provider == 'Paytr'"
+          src="/logo/PayTR-Logo.png"
+          :alt="app_name"
+          class="w-auto h-5"
+        />
       </div>
     </div>
     <div class="xl:col-span-10">
@@ -69,7 +75,7 @@
             </p>
           </div>
           <div
-            class="grid sm:grid-cols-2 grid-cols-1 my-5 mb-5 xl:gap-40 sm:gap-14 gap-1 "
+            class="grid sm:grid-cols-2 grid-cols-1 sm:my-5  xl:gap-40 sm:gap-14 gap-1 "
           >
             <div>
               <div
@@ -150,6 +156,90 @@
                     class="text-red-500 error_message text-xs"
                     :id="`${payment.provider}_client_secret_message`"
                   ></small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="grid sm:grid-cols-2 grid-cols-1  xl:gap-40 sm:gap-14 gap-1 "
+          >
+            <div class="" v-if="payment.provider === 'Paytr'">
+              <div
+                class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center"
+              >
+                <div
+                  class="xl:col-span-3 2xl:grid-cols-4 md:pt-0 pt-2 sm:col-span-3 col-span-12"
+                >
+                  <label
+                    class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
+                    >Client Key</label
+                  >
+                </div>
+                <div
+                  class="xl:col-span-9 2xl:grid-cols-10 sm:col-span-8 col-span-12"
+                >
+                  <input
+                    v-model="payment.client_key"
+                    type="text"
+                    name="client_key"
+                    :id="`${payment.provider}_client_key`"
+                    class="block w-full rounded-md border border-primary focus:border-primary py-2 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
+                    placeholder="Enter Client Key"
+                  />
+                </div>
+              </div>
+              <div
+                class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center"
+              >
+                <div
+                  class="xl:col-span-3 2xl:grid-cols-4 sm:col-span-3 col-span-12 hidden xl:block"
+                ></div>
+                <div
+                  class="xl:col-span-9 2xl:grid-cols-10 sm:col-span-8 col-span-12"
+                >
+                  <small
+                    class="text-red-500 error_message text-xs"
+                    :id="`${payment.provider}_client_key_message`"
+                  ></small>
+                </div>
+              </div>
+            </div>
+            <div class="" v-if="payment.provider === 'Paytr'">
+              <div
+                class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center"
+              >
+                <div
+                  class="xl:col-span-4 2xl:col-span-3 flex items-center gap-x-1 md:pt-0 pt-2 sm:col-span-3 col-span-12"
+                >
+                  <label
+                    class="font-medium whitespace-nowrap text-tiny "
+                    >Callback URL</label
+                  >
+                  <span
+                    v-tooltip="
+                      `This is your Callback URL. You need to set this URL in your PayTR merchant panel. It allows PayTR to send payment status updates (like success or failure) back to your system after a transaction is completed.`
+                    "
+                    :class="[
+                      isLightColor ? 'text-custom-700' : 'text-custom-500',
+                      'material-symbols-outlined text-[16px]  cursor-pointer',
+                    ]"
+                  >
+                    info
+                  </span>
+                </div>
+                <div
+                  class="xl:col-span-8 2xl:col-span-9 md:grid-cols-4 sm:col-span-9 col-span-12"
+                >
+                  <div class="relative">
+                    <input disabled
+                    :value="`${domain}/verify-paytr-transaction`"
+                    type="text"
+                    name="callback_url"
+                    :id="`${payment.provider}_callback_url`"
+                    class="block w-full text-sm bg-[#F6F6F6] overflow-hidden pl-3 leading-6 rounded-md border border-neutral-300 py-2 text-gray-800"
+                  />
+                  <button @click="copyToClipboard(`${domain}/verify-paytr-transaction`)" class="absolute right-0 top-0 h-full border border-l-0 border-neutral-300 rounded-md rounded-l-none flex items-center bg-[#F6F6F6] font-medium rounded text-sm px-3  text-center"><span class="material-symbols-outlined text-[16px] text-blue-500 cursor-pointer"> content_copy </span></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -244,10 +334,12 @@ export default {
       payment: null,
       openConfirmation: false,
       showLoader: false,
+      domain: ''
     };
   },
   created() {
     this.payment = this.provider;
+    this.domain  = window.location.origin
   },
   watch: {
     "provider.isTestMode": {
@@ -330,3 +422,5 @@ export default {
   },
 };
 </script>
+
+

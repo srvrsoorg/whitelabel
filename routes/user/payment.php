@@ -14,3 +14,5 @@ Route::middleware(['auth:sanctum'])->controller(TransactionController::class)->p
 });
 
 Route::get('promo-codes/{promo_code}', [TransactionController::class, 'promocodeShow'])->middleware(['auth:sanctum']);
+
+Route::post('payment/paytr/verify', [TransactionController::class, 'verifyPaytrTransaction']);

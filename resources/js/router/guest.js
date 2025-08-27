@@ -120,6 +120,15 @@ export default [
         },
     },
     {
+        path: "/verify-paytr-transaction",
+        name: "verifyPaytrTransaction",
+        component: () => import("@/pages/guest/TransactionVerifyPaytr.vue"),
+        meta: {
+            title: `Verify Transaction`, // Title for the route
+            setupReqiures: true,
+        },
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "404",
         component: () => import("@/pages/PageNotFound.vue"),

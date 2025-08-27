@@ -19,12 +19,14 @@ class PaymentController extends Controller
         
         // Validate incoming request data
         $request->validate([
-            'provider' => 'required|in:Stripe,Paypal,Razorpay',
+            'provider' => 'required|in:Stripe,Paypal,Razorpay,Paytr',
             'client_id' => 'required|max:255',
             'client_secret' => 'required|max:255',
+            'client_key' => 'nullable|required_if:provider,Paytr',
             'mode' => 'nullable|required_if:provider,Paypal|in:sandbox,live'
         ],[
-            'mode.required_if' => "The mode field is required."
+            'mode.required_if' => "The mode field is required.",
+            'client_key.required_if' => "The client key field is required."
         ]);
 
         try {
@@ -33,6 +35,7 @@ class PaymentController extends Controller
                 'provider' => $request->provider],[
                 'client_id' => $request->client_id,
                 'client_secret' => $request->client_secret,
+                'client_key' => $request->client_key,
                 'mode' => $request->mode ?? "live",
                 'enabled' => true
             ]);

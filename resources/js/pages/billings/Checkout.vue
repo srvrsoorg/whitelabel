@@ -395,6 +395,12 @@ export default {
           width: "70px",
           height: "25px",
         },
+        Paytr: {
+          src: "/logo/PayTR-Logo.png",
+          width: "70px",
+          height: "25x",
+          padding: "8px",
+        }
       };
       return (
         logos[gateway] || {
