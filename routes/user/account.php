@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\{TwoFaController, ActivityController, LoginHistoryController, BillingDetailController, UsageSummaryController};
+use App\Http\Controllers\User\{TwoFaController, ActivityController, LoginHistoryController, BillingDetailController, UsageSummaryController, CreditReminderController};
 
 // Routes with 'auth:sanctum' middleware
 Route::middleware(['auth:sanctum'])->controller(TwoFaController::class)->group(function () {
@@ -37,4 +37,8 @@ Route::middleware(['auth:sanctum'])->controller(BillingDetailController::class)-
 // Define a route for the UsageSummaryController
 Route::middleware(['auth:sanctum'])->controller(UsageSummaryController::class)->group(function () {
     Route::get('/usage-summaries', 'index');
+});
+
+Route::middleware(['auth:sanctum'])->controller(CreditReminderController::class)->group(function () {
+    Route::patch('/reminder-minimum-credit', 'reminderCredit');
 });

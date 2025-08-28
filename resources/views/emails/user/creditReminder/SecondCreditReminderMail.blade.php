@@ -33,6 +33,6 @@ Add Credits
 
 If you have already made the payment, please disregard this message.
 
-If you have any questions or need additional assistance, please contact our support team.
+If you have any questions or need further assistance, please raise a [support ticket]({{ url('/tickets') }}) from your dashboard.
 
 @endcomponent

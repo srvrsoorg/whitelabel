@@ -22,7 +22,7 @@ To add credits and proceed with the payment, click the button below. You will be
 Add Credits
 @endcomponent
 
-If you have any questions or need additional assistance, please contact our support team.
+If you have any questions or need further assistance, please raise a [support ticket]({{ url('/tickets') }}) from your dashboard.
 
 Thank you for choosing {{ config('app.title') }}!
 @endcomponent

@@ -1316,6 +1316,19 @@ class CloudProviderController extends Controller
     protected function handleHetznerSizes(CloudProvider $cloudProvider, $region)
     {
         if ($region) {
+
+            $currency = "EUR";
+            $currencyData = Client::hetzner("pricing", "GET", $cloudProvider->access_key);
+            if(isset($currencyData['error'])) {
+                // ❌ Error response
+                $currency = "EUR";
+            }
+
+            $currencyData = json_decode($currencyData);
+            if(isset($currencyData->pricing->currency)) {
+                $currency = $currencyData->pricing->currency;
+            }
+
             // Fetch server types from Hetzner
             $data = Client::hetzner("server_types", "GET", $cloudProvider->access_key);
             if(isset($data['error'])) {
@@ -1368,7 +1381,8 @@ class CloudProviderController extends Controller
 
             // ✅ Success response
             return response()->json([
-                "sizes" => $sizes     
+                "currency" => $currency,
+                "sizes" => $sizes
             ]);
         }
 
