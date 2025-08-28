@@ -9,10 +9,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Http\Helper;
-use App\Mail\User\SendCreditReminder;
+use App\Mail\User\SendWalletReminder;
 use Mail;
 
-class CreditReminder implements ShouldQueue
+class WalletReminder implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $user;
@@ -31,9 +31,8 @@ class CreditReminder implements ShouldQueue
      */
     public function handle(): void
     {
-        $user = User::findOrFail($this->user->id);
-
         try {
+            $user = $this->user;
             $dayOfWeek = now()->dayOfWeek;
             $goodDayToMail = app()->isProduction() ? in_array($dayOfWeek, [1, 3, 5]) : true;
             
@@ -41,7 +40,7 @@ class CreditReminder implements ShouldQueue
 
             // Send reminder if credits are below threshold AND it's a good day to mail
             if($availableCredits < $user->reminder_minimum_credit && $goodDayToMail) {
-                \Mail::to($user)->queue((new SendCreditReminder($user, $availableCredits))->onQueue('default'));
+                \Mail::to($user)->queue((new SendWalletReminder($user, $availableCredits))->onQueue('default'));
             }
         } catch (\Exception $e) {
             report($e);

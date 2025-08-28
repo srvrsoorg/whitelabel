@@ -18,6 +18,9 @@ class Kernel extends ConsoleKernel
         // Subscription
         $schedule->command('billing:execute-hourly-subscriptions')->everyMinute();
         $schedule->command('execute-credit-reminder')->daily();
+
+        // User Wallet Reminder
+        $schedule->command('execute:wallet-reminder')->daily();
     }
 
     /**

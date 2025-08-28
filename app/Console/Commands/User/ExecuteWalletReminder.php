@@ -3,17 +3,18 @@
 namespace App\Console\Commands\User;
 
 use Illuminate\Console\Command;
-use App\Jobs\User\CreditReminder as DispatchCreditReminder;
+use App\Jobs\User\WalletReminder;
 use App\Models\User;
+use App\Enums\UserStatus as UserStatusEnum;
 
-class CreditReminder extends Command
+class ExecuteWalletReminder extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'execute:credit-reminder';
+    protected $signature = 'execute:wallet-reminder';
 
     /**
      * The console command description.
@@ -31,9 +32,10 @@ class CreditReminder extends Command
             // Fetch users who have set a minimum credit reminder and at least one server.
             User::whereNotNull('reminder_minimum_credit')
                 ->whereHas('servers')
+                ->where('status', UserStatusEnum::ACTIVE())
                 ->chunk(10, function($users) {
                     foreach ($users as $user) {
-                        DispatchCreditReminder::dispatch($user)->onQueue('default')->delay(5);
+                        WalletReminder::dispatch($user)->onQueue('default')->delay(5);
                     }
                 });
 

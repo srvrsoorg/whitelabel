@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Helper;
 
-class CreditReminderController extends Controller
+class WalletReminderController extends Controller
 {
     /**
      * Update the user's reminder minimum credit.

@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
-class SendCreditReminder extends Mailable
+class SendWalletReminder extends Mailable
 {
     use Queueable, SerializesModels;
     protected $user;
@@ -40,7 +40,7 @@ class SendCreditReminder extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.user.sendCreditReminder',
+            markdown: 'emails.user.sendWalletReminder',
             with: [
                 'user' => $this->user,
                 'availableCredits' => $this->availableCredits
