@@ -8,6 +8,8 @@ use App\Models\{User, Ticket};
 use Storage;
 use App\Interfaces\TicketRepositoryInterface;
 use App\Http\Helper;
+use App\Mail\Admin\Ticket\NotifyTicketCreated;
+use Mail;
 
 class TicketController extends Controller
 {
@@ -90,6 +92,10 @@ class TicketController extends Controller
                     'attachment' => $attachment,
                 ]);
             }
+
+            // notify to admin when user create new ticket
+            $adminUser = User::where('role', 'administrator')->first();
+            Mail::to($adminUser->email)->queue((new NotifyTicketCreated($adminUser, $ticket))->onQueue('default'));
 
             // Create activity
             Helper::createActivity($user, 'Ticket', 'Create', 'Ticket (#' . $ticket->id . ') has been created.');
