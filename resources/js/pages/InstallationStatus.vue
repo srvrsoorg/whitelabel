@@ -129,9 +129,13 @@ export default {
   data() {
     return {
       breadcrum: {
-        title: "Servers",
+        // title: "Servers",
         icon: "dns",
         pages: [
+          {
+            name: "Servers",
+            path:{name : 'dashboard'}
+          },
           {
             name: "Installation",
           },

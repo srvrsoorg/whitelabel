@@ -45,7 +45,7 @@
                     <i class="fa-solid fa-circle text-[8px]"></i>
                   </span>
                   <span class="text-sm text-gray-500"
-                    >Click on the Add-ons option.</span
+                    >Click on the Billing Dashboard section.</span
                   >
                 </div>
               </div>
@@ -66,7 +66,7 @@
                     <i class="fa-solid fa-circle text-[8px]"></i>
                   </span>
                   <span class="text-sm text-gray-500"
-                    >Navigate to the Self Hosted section.</span
+                    >Navigate to the Reseller panel under the Add-ons section.</span
                   >
                 </div>
               </div>
@@ -87,7 +87,7 @@
                     <i class="fa-solid fa-circle text-[8px]"></i>
                   </span>
                   <span class="text-sm text-gray-500"
-                    >Find your License Key listed in the Self Hosted tab.</span
+                    >Find your License Key listed in the Reseller panel tab.</span
                   >
                 </div>
               </div>

@@ -308,7 +308,7 @@
                           <i
                             class="fa-solid fa-circle text-[5px] 2xl:pt-0 pt-1.5"
                           ></i>
-                          <span>PHP (From 7.2 to 8.3)</span>
+                          <span>PHP (From 7.2 to 8.4)</span>
                         </div>
                         <div class="py-1 flex 2xl:items-center gap-2">
                           <i
@@ -372,7 +372,7 @@
                           <i
                             class="fa-solid fa-circle text-[5px] 2xl:pt-0 pt-1.5"
                           ></i>
-                          <span>LSPHP (From 7.2 to 8.1)</span>
+                          <span>LSPHP (From 8.1 to 8.3)</span>
                         </div>
                         <div class="py-1 flex 2xl:items-center gap-2">
                           <i
@@ -396,7 +396,7 @@
                         <i
                           class="fa-solid fa-circle text-[5px] 2xl:pt-0 pt-1.5"
                         ></i>
-                        <span>PHP (From 7.2 to 8.3)</span>
+                        <span>PHP (From 7.2 to 8.4)</span>
                       </div>
                       <div class="py-1 flex 2xl:items-center gap-2">
                         <i
@@ -724,7 +724,7 @@
               </h1>
               <perfectScrollbar
                 v-if="server.region !== null && selectPlan.length > 0"
-                class="max-h-[30rem]"
+                class="max-h-[27rem]"
               >
                 <RadioGroup v-model="server.plan">
                   <div class="xl:px-3 xl:py-1.5 p-1.5">
@@ -786,11 +786,14 @@
                 <tr
                   :class="[
                     'text-[#2c3138] text-sm',
-                    index !== 0 ? 'border-t border-primary' : '',
-                  ]"
-                  v-for="(list, index) in newPlanList[0].list"
-                  :key="list.slug"
-                >
+                    index !== 0 ? 'border-t' : '',
+                    list.price > credits ? 'opacity-60 cursor-not-allowed' : '',
+                    server.sizeSlug === list.slug ? 'bg-custom-50' : ''
+                    ]"
+                    v-for="(list, index) in newPlanList[0].list"
+                    :key="list.slug"
+                    v-tooltip="list.price > credits ? `You don't have enough credits for this plan.` : ''"
+                  >
                   <td
                     class="whitespace-nowrap py-5 px-4 pl-6 truncate"
                     v-if="
@@ -804,23 +807,24 @@
                     {{ list.cpu_core }}
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
-                    {{ list.ram_size_in_mb }} MB
+                    {{ (list.ram_size_in_mb / 1024).toFixed(1) }} GB
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
                     {{ list.disk_size_in_gb }} GB
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
-                    {{ list.bandwidth }} GB
+                    {{ (list.bandwidth * 0.001).toFixed(2) }} TB
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
-                    {{ formatCurrency(list.price) }}
-                  </td>
+                    {{ formatCurrency(list.price) }} / Month
+                  </td>               
                   <td class="text-center px-4 py-4">
                     <RadioGroup v-model="server.sizeSlug">
                       <RadioGroupOption
                         as="template"
                         :value="list.slug"
                         v-slot="{ checked }"
+                       :disabled="list.price > credits"
                       >
                         <div
                           :class="[
@@ -830,23 +834,33 @@
                                 : 'bg-custom-500 text-white'
                               : 'bg-gray-200 text-gray-900',
                             'rounded-md  mx-auto py-2 px-2 max-w-20 shadow-sm focus:outline-none cursor-pointer',
+                             list.price > credits ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                           ]"
                         >
-                          <RadioGroupLabel
-                            as="span"
-                            class="inline-block text-sm font-medium"
+                          <RadioGroupOption
+                            as="template"
+                            :value="list.slug"
+                            :disabled="list.price > credits"
+                            v-slot="{ checked, disabled }"
                           >
-                            <span>{{
-                              server.sizeSlug && checked ? "Selected" : "Select"
-                            }}</span>
-                          </RadioGroupLabel>
+                            <div
+                              :class="[
+                                disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                              ]"
+                            >
+                              <RadioGroupLabel
+                                as="span"
+                                class="inline-block text-sm font-medium"
+                                :class="disabled ? '' : ''"
+                              >
+                                <span>{{ server.sizeSlug && checked ? "Selected" : "Select" }}</span>
+                              </RadioGroupLabel>
+                            </div>
+                          </RadioGroupOption>
                           <span
                             :class="[
-                              'border',
                               checked
                                 ? isLightColor
-                                  ? 'border-custom-700'
-                                  : 'border-custom-500'
                                 : 'border-transparent',
                               'pointer-events-none absolute -inset-px rounded',
                             ]"
@@ -1031,6 +1045,11 @@ export default {
   },
   computed: {
     ...mapState(useAuthStore, ["user"]),
+    credits() {
+      if (this.user) {
+        return parseFloat(this.user.credits);
+      }
+    },
   },
   data() {
     return {
@@ -1040,7 +1059,7 @@ export default {
         pages: [{ name: "Create" }],
       },
       server: {
-        provider: "",
+        provider: '',
         region: null,
         plan: null,
         database_type: "mysql",
@@ -1087,7 +1106,7 @@ export default {
           classes: "",
         },
         {
-          title: "Price per Month",
+          title: "Price",
           classes: "",
         },
         {
@@ -1095,7 +1114,6 @@ export default {
         },
       ],
       selectVersion: [
-        { title: "Ubuntu 20.04", value: "20" },
         { title: "Ubuntu 22.04", value: "22" },
         { title: "Ubuntu 24.04", value: "24" },
       ],
@@ -1164,33 +1182,47 @@ export default {
     },
     "server.web_server": {
       handler(val) {
-        if (val == "mern") {
-          this.server.database_type = "mongodb";
-          this.server.nodejs = true;
-        } else if (val !== "mern") {
-          if(this.server.database_type == "mongodb"){
-            this.server.database_type = "mysql";
-          }
-          this.server.yarn = false;
+        if(val == 'mern'){
+            this.server.database_type = 'mongodb'
+            this.server.nodejs = true
+        }else {
+            this.server.database_type = 'mysql'
+            this.server.yarn = false
+            this.server.nodejs = false
         }
       },
     },
 
     "server.provider"(Val) {
-      if(Val == "lightsail" && this.server.version == "24"){
+        this.server.web_server = 'apache2';
+        this.server.database_type = 'mysql';
+        this.server.version = '22';
+        this.server.nodejs = false;
+        this.server.yarn = false;
+        this.server.region = null;
+        this.server.plan = null;
+        this.server.sizeSlug = '';
+        this.server.name = '';
+        this.server.availabilityZone = '';
+        this.server.linode_root_password = '';
+
+        if(Val == "lightsail" && this.server.version == "24") {
         this.server.version = "22";
-      }
-      this.server.region = null;
-      this.providerList.find((provider) => {
-        if (provider.provider === Val) {
-          this.selectPlan = [];
-          this.selectAvailability = [];
-          this.newPlanList = [];
-          this.providerId = provider.id;
         }
-      });
-      this.setTableHeader();
-    },
+        
+        this.selectRegion = [];
+        this.selectPlan = [];
+        this.newPlanList = [];
+        this.selectAvailability = [];
+        
+        this.providerList.find((provider) => {
+        if (provider.provider === Val) {
+            this.providerId = provider.id;
+        }
+        });
+        
+        this.setTableHeader();
+  },
 
     "server.region"(Val) {
       this.server.plan = null;
@@ -1260,6 +1292,11 @@ export default {
         .get("/cloud-providers")
         .then(({ data }) => {
           this.providerList = data.cloud_providers;
+          if(this.providerList.length === 1) {
+            this.server.provider = this.providerList[0].provider;
+            this.providerId = this.providerList[0].id;
+            this.fetchRegion();
+          }
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
@@ -1270,7 +1307,7 @@ export default {
     },
     async fetchRegion() {
       if (this.user.email_verified_at === null) {
-        return; // Do nothing if the user is not verified
+        return;
       }
       this.refreshing = true;
       const loader = this.$loading.show();
@@ -1327,22 +1364,19 @@ export default {
           this.$toast.error(response.data.message);
         });
     },
-    async createServer() {
+    async createServer() { 
       this.processing = true;
       this.hideError();
-      await this.$axios
-        .post("/servers", this.server)
+      await this.$axios.post("/servers", this.server)
         .then(({ data }) => {
           this.$toast.success(data.message);
           this.$router.push({
             name: "InstallationStatus",
-            params: {
-              server: data.server.id,
-            },
+            params: { server: data.server.id }
           });
         })
         .catch(({ response }) => {
-          if (response.status === 422) {
+          if(response.status === 422) {
             this.displayError(response.data);
           } else {
             this.$toast.error(response.data.message);
@@ -1351,7 +1385,7 @@ export default {
         .finally(() => {
           this.processing = false;
         });
-    },
+    }
   },
 };
 </script>

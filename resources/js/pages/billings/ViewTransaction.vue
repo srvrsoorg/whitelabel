@@ -265,7 +265,7 @@ export default {
       breadcrumb: {
         title: "Billing",
         icon: "lab_profile",
-        pages: [{ name: "Transactions" }, { name: "Invoice" }],
+        pages: [{ name: "Transactions",  path: { name: "transactions" } }, { name: "Invoice" }],
       },
       transaction: null,
       thead: [
@@ -327,7 +327,6 @@ export default {
               </style>
       `);
 
-      // Copy all stylesheets from the main document
       Array.from(document.styleSheets).forEach((styleSheet) => {
         if (styleSheet.href) {
           doc.write(
@@ -352,7 +351,6 @@ export default {
       `);
       doc.close();
 
-      // Ensuring the print operation completes before removing the iframe
       iframe.onload = function () {
         iframe.contentWindow.focus();
         iframe.contentWindow.print();

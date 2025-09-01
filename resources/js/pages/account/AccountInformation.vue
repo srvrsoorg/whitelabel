@@ -355,9 +355,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Account",
+        // title: "Account",
         icon: "account_box",
-        pages: [{ name: "Profile" }],
+        pages: [{ name: "Account" },{ name: "Profile" }],
       },
       processing: false,
       id: "",

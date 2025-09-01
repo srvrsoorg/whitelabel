@@ -71,11 +71,6 @@ export default [
         url: "/admin/billing/plan",
         children: [
             {
-                id: 1,
-                name: "Plan",
-                url: "/admin/billing/plan",
-            },
-            {
                 id: 2,
                 name: "Promo codes",
                 url: "/admin/billing/promoCode",

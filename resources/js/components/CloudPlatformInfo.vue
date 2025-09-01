@@ -84,7 +84,7 @@
       </div>
       <div class="mt-2 sm:mt-0" v-if="!isSetProviders">
         <router-link
-          :to="{ name: 'Plan' }"
+          :to="{ name: 'integrateCloudPlatForms' }"
           :class="[
             'font-medium text-tiny xs:flex items-center gap-1',
             isLightColor ? 'text-custom-700' : 'text-custom-500',
@@ -132,9 +132,11 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Integrations Required",
+        // title: "Integrations Required",
         icon: "integration_instructions",
-        pages: [],
+        pages: [
+        { name: "Integrations Required" }
+        ],
       },
     };
   },

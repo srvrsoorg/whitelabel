@@ -80,8 +80,9 @@
                 >
                   <label
                     class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
-                    >Client ID</label
                   >
+                    {{ payment.provider === 'Stripe' ? 'Publishable Key' : 'Client ID' }}
+                  </label>
                 </div>
                 <div
                   class="xl:col-span-9 2xl:grid-cols-10 sm:col-span-8 col-span-12"
@@ -121,8 +122,9 @@
                 >
                   <label
                     class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
-                    >Client Secret</label
                   >
+                    {{ payment.provider === 'Stripe' ? 'Secret Key' : 'Client Secret' }}
+                  </label>
                 </div>
                 <div
                   class="xl:col-span-8 2xl:col-span-9 md:grid-cols-4 sm:col-span-9 col-span-12"

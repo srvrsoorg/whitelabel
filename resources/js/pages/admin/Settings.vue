@@ -371,7 +371,7 @@
       <p class="font-medium">Advance Settings</p>
     </div>
     <div class="mt-8 px-7">
-      <div class="mt-5 text-red-500 text-tiny">
+      <div class="mt-5 bg-red-50 text-red-500 text-tiny px-4 py-2 rounded-md">
         <b class="font-medium"> Note:</b> Ensure the Redis password is correct,
         as an incorrect one may cause site errors.
       </div>
@@ -536,8 +536,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Site Settings",
         icon: "settings_applications",
+        pages: [
+          {
+            name: "Site Settings",
+          },
+        ],
       },
       payload: {
         app_name: "",

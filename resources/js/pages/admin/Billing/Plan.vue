@@ -1,7 +1,7 @@
 <template>
   <Breadcrumb :breadcrumb="breadcrumb" />
   <template
-    v-if="!cloudPlatForms.data.length && !refreshing && $route.name === 'Plan'"
+    v-if="!cloudPlatForms.data.length && !refreshing"
   >
     <div class="text-tiny p-3 rounded-md mb-5 bg-[#EFF6FF] text-[#308DEA]">
       <p>
@@ -23,14 +23,14 @@
     <div
       class="text-xl flex items-center whitespace-nowrap text-[#31363f] font-medium"
     >
-      {{ title }}
+      Cloud Platforms
     </div>
 
     <div class="flex gap-5 justify-end mt-2 xs:mt-0">
       <Button
         class="flex items-center"
         @click="openModal('create')"
-        v-if="$route.name !== 'Plan' && !isAllProviderSet"
+        v-if="!isAllProviderSet"
       >
         <span class="material-symbols-outlined text-[20px]"> add </span>
         <span>Add</span>
@@ -71,15 +71,15 @@
             class="w-7 h-auto"
           />
         </td>
-        <td class="whitespace-nowrap py-5 px-4" v-if="$route.name === 'Plan'">
+        <td class="whitespace-nowrap py-5 px-4 text-center" v-if="$route.name === 'integrateCloudPlatForms'">
           {{ providerData.active_plans }}
         </td>
-        <td class="whitespace-nowrap py-5 px-4" v-if="$route.name === 'Plan'">
+        <td class="whitespace-nowrap py-5 px-4 text-center" v-if="$route.name === 'integrateCloudPlatForms'">
           {{ providerData.plans_count }}
         </td>
         <td
           class="whitespace-nowrap text-center py-5 px-4"
-          v-if="$route.name === 'Plan'"
+          v-if="$route.name === 'integrateCloudPlatForms'"
         >
           <router-link
             :to="{
@@ -101,7 +101,6 @@
           </router-link>
         </td>
         <td
-          :class="$route.name !== 'plan' ? '' : 'text-center'"
           class="whitespace-nowrap py-5 px-4"
         >
           <Switch
@@ -126,10 +125,10 @@
             />
           </Switch>
         </td>
-        <td class="whitespace-nowrap py-5 px-4" v-if="$route.name !== 'Plan'">
+        <td class="whitespace-nowrap py-5 px-4">
           <div class="flex items-center justify-center gap-3">
             <button
-              v-tooltip="'Edit'"
+              v-tooltip="'Update'"
               :class="[
                 'text-green-600 bg-green-100 rounded-md p-1.5 items-center flex',
               ]"
@@ -153,11 +152,11 @@
       </tr>
     </Table>
     <template v-else>
-      <TableSkeleton :heads="$route.name == 'Plan' ? 6 : 3" v-if="refreshing" />
+      <TableSkeleton :heads="3" v-if="refreshing" />
       <Table :head="cloudPlatForms.thead" v-else>
         <tr>
           <td
-            :colspan="$route.name == 'Plan' ? 6 : 3"
+            :colspan="3"
             class="text-center whitespace-nowrap py-4 px-4"
           >
             {{ refreshing ? "Please Wait" : "No Data Found" }}
@@ -184,14 +183,14 @@
       </p>
     </div>
     <div
-      class="text-tiny p-3 rounded-md mb-2 text-[#308DEA] bg-[#EFF6FF]"
+      class="bg-blue-50 mt-5 text-blue-500 text-tiny px-4 py-2 rounded-md"
       v-if="createCloud.provider === 'digitalocean'"
     >
       <p>
         <b class="font-medium">Note:</b> On fresh DigitalOcean accounts, API access is restricted until some activity occurs. Create a test server first — you can delete this server after the API has been added successfully.
       </p>
     </div>
-    <div class="mb-4">
+    <div class="my-4">
       <label
         for="provider"
         class="block text-tiny text-neutral-800 font-medium"
@@ -290,7 +289,10 @@
         class="error_message text-red-500 text-xs"
       ></small>
     </div>
-    <div class="flex justify-end items-center">
+    <div class="flex justify-end items-center gap-4">
+      <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
       <Button
         :disabled="processing || createCloud.provider===''"
         @click="cloudPlateForm"
@@ -299,7 +301,7 @@
           v-if="processing"
           class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
         ></i>
-        {{ processing ? "Please wait" : "Save" }}
+        {{ processing ? "Please wait" : modalType === 'update' ? "Update" : "Add"  }}
       </Button>
     </div>
   </Modal>
@@ -334,7 +336,18 @@ export default {
   components: { Switch },
   data() {
     return {
-      breadcrumb: this.setBreadcrumb(),
+      breadcrumb: {
+        icon: "rule_settings",
+        pages: [
+          {
+            name: "Integrations",
+          },
+          {
+            name: "Cloud Platforms",
+            path: { name: "integrateCloudPlatForms" }
+          },
+        ],
+      },
       CloudLogos: CloudLogos,
       pagination: null,
       pagination: {
@@ -355,6 +368,35 @@ export default {
         provider: "",
         access_key: "",
         access_secret: "",
+      },
+      cloudPlatForms: {
+        thead: [
+          {
+            title: "Provider",
+            classes: "pl-10 items-center font-medium",
+          },
+          {
+            title: "Active Plans",
+            classes: "text-center font-medium",
+          },
+          {
+            title: "Total Plans",
+            classes: "text-center font-medium",
+          },
+          {
+            title: "Plans",
+            classes: "text-center font-medium",
+          },
+          {
+            title: "Active",
+            classes: "items-center font-medium",
+          },
+          {
+            title: "Actions",
+            classes: "text-center font-medium",
+          },
+        ],
+        data: [],
       },
       filterProvider: [
         {
@@ -378,10 +420,6 @@ export default {
           value: "hetzner",
         },
       ],
-      cloudPlatForms: {
-        thead: [],
-        data: [],
-      },
       pagination: null,
       refreshing: false,
       providerId: null,
@@ -391,13 +429,6 @@ export default {
     };
   },
   computed: {
-    title() {
-      if (this.$route.name === "Plan") {
-        return "Plan";
-      } else {
-        return "Cloud Platform";
-      }
-    },
     providers() {
       return this.cloudPlatForms.data.map((provider) => provider.provider);
     },
@@ -417,88 +448,10 @@ export default {
       );
     },
   },
-  watch: {
-    $route: {
-      handler(val) {
-        this.setTableHead();
-      },
-      handler() {
-        this.breadcrumb = this.setBreadcrumb();
-        this.setTableHead();
-      },
-      immediate: true,
-    },
-  },
   methods: {
-    setBreadcrumb() {
-      let breadcrumb = {};
-      if (this.$route.name === "Plan") {
-        breadcrumb = {
-          title: "Billing",
-          icon: "lab_profile",
-          pages: [
-            {
-              name: "Plan",
-            },
-          ],
-        };
-      } else {
-        breadcrumb = {
-          title: "Integrations",
-          icon: "rule_settings",
-          pages: [
-            {
-              name: "Cloud Platforms",
-            },
-          ],
-        };
-      }
-      return breadcrumb;
-    },
-    setTableHead() {
-      if (this.$route.name === "Plan") {
-        this.cloudPlatForms.thead = [
-          {
-            title: "Provider",
-            classes: " pl-10 items-center font-medium",
-          },
-          {
-            title: "Active Plans",
-            classes: "font-medium",
-          },
-          {
-            title: "Total Plans",
-            classes: "text-left font-medium",
-          },
-          {
-            title: "Plans",
-            classes: "text-center  font-medium",
-          },
-          {
-            title: "Active",
-            classes: "font-medium",
-          },
-        ];
-      } else {
-        this.cloudPlatForms.thead = [
-          {
-            title: "Provider",
-            classes: " pl-10 items-center font-medium",
-          },
-          {
-            title: "Active",
-            classes: "items-center font-medium",
-          },
-          {
-            title: "Actions",
-            classes: "text-center font-medium",
-          },
-        ];
-      }
-    },
     openModal(type, idData) {
       if (type === "create") {
-        this.modelTitle = "Create Cloud Platform";
+        this.modelTitle = "Add Cloud Platform";
         this.createCloud.provider = "";
       } else if (type === "update") {
         this.modelTitle = "Update Cloud Platform";
@@ -607,7 +560,6 @@ export default {
 
   mounted() {
     this.fetchCloudPlatforms();
-    this.setTableHead();
   },
 };
 </script>

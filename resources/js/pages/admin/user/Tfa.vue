@@ -167,7 +167,7 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User",
+        // title: "User",
         icon: "groups",
         pages: [{ name: "Security" }],
       },

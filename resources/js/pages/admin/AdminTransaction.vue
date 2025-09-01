@@ -173,7 +173,7 @@
         <td class="whitespace-nowrap cursor-pointer py-4 px-4 text-center">
           <button
             v-if="admin_transaction.user"
-            v-tooltip="'Edit'"
+            v-tooltip="'Update'"
             @click="openModalWithTransactionData(admin_transaction)"
             class="material-symbols-outlined text-[20px] p-1.5 rounded-md bg-green-100 text-green-600"
           >
@@ -499,14 +499,17 @@
         </div>
       </template>
 
-      <div class="flex flex-row-reverse mt-5">
+      <div class="flex flex-row-reverse gap-4 mt-5">
         <Button type="submit" :disabled="processing || !showCostOverview" @click="updateTransaction">
           <i
             v-if="processing"
             class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
           ></i>
-          {{ processing ? "Please wait" : "Save" }}
+          {{ processing ? "Please wait" : "Update" }}
         </Button>
+        <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+          Cancel
+        </button>
       </div>
     </form>
   </Modal>
@@ -625,9 +628,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User Management",
+        // title: "User Management",
         icon: "groups",
         pages: [
+          {
+            name: "User Management",
+          },
           {
             name: "Transactions",
           },

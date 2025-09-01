@@ -275,8 +275,9 @@
       <div class="my-5 xl:my-7 px-7 xs:flex justify-between items-center gap-5">
         <button
           @click="removeCountry(country_index)"
-          class="bg-white w-full xs:w-fit text-red-600 border font-medium text-sm border-red-500 px-3 py-1.5 rounded-md"
+          class="bg-red-600 flex items-center gap-0.5 text-white w-full xs:w-fit border font-medium text-sm border-red-500 px-3 justify-center py-1.5 rounded-md"
         >
+        <span class="material-symbols-outlined text-[22px]"> delete </span>
           Delete Country
         </button>
         <Button
@@ -380,16 +381,19 @@
         id="label_message"
       ></small>
     </div>
-    <div class="flex flex-row-reverse bg-white rounded-md mt-3">
+    <div class="flex flex-row-reverse bg-white rounded-md mt-3 gap-4">
       <div class="text-end rounded-md">
         <Button :disabled="processing" @click="saveCountry">
           <i
             v-if="processing"
             class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
           ></i>
-          {{ processing ? "Please wait" : "Save" }}
+          {{ processing ? "Please wait" : "Add" }}
         </Button>
       </div>
+      <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
     </div>
   </Modal>
 </template>
@@ -404,6 +408,9 @@ export default {
         title: "Billing",
         icon: "lab_profile",
         pages: [
+          {
+            name: "Billing",
+          },
           {
             name: "Taxes",
           },
@@ -444,6 +451,9 @@ export default {
     },
     closeModal() {
       this.open = false;
+      this.payload.label = "";
+      this.payload.tax = "";
+      this.payload.country_code = "";
     },
     updateCountryName() {
       this.payload.country = "";

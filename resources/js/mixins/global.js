@@ -30,9 +30,11 @@ export default{
         },
         formatCurrency(amount) {
             const customCurrencySymbol = window.siteSettings?.currency_symbol || '$';
-            const formattedAmount = this.$n(parseFloat(amount), 'currency');
-            const result = formattedAmount.replace(window.siteSettings?.currency, customCurrencySymbol);
+            const num = Number(amount);
+            if (isNaN(num)) return '-';
+            const formattedAmount = this.$n(num, 'currency');
+            const result = formattedAmount.replace(window.siteSettings?.currency, customCurrencySymbol).replace(/\s+/g, '');
             return result;
-        }
+          }
     }
 }

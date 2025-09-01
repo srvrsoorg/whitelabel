@@ -27,6 +27,14 @@
               class="block w-full sm:min-w-80 bg-[#FDFDFD] rounded-md text-sm border-0 py-2 text-gray-800 ring-1 ring-gray-300 placeholder:text-[#818995] sm:leading-5 focus:outline-none focus:ring-gray-300"
               placeholder="Search Server"
             />
+            <button
+              v-if="search"
+              type="button"
+              @click="clearSearch"
+              class="absolute inset-y-0 rounded-r-md bg-[#F8F9FA] right-9 border-l flex justify-center items-center px-2"
+            >
+              <span v-tooltip="'Clear'" class="material-symbols-outlined text-[22px]">close</span>
+            </button>
             <div
               class="pointer-events-none absolute inset-y-0 rounded-r-md bg-[#F8F9FA] right-0 border-l flex justify-center items-center px-2"
             >
@@ -38,6 +46,19 @@
             class="flex justify-end items-center gap-5 xs:mt-0 mt-4"
             v-if="user"
           >
+          
+            <button
+              @click="getServers(pagination.current_page, true)"
+              type="button"
+              :class="[
+                'rounded-md px-2.5 py-1.5 bg-[#F8F9FA] border border-[#CBD5E0] text-[#818995] text-[15px]',
+              ]"
+            >
+              <i
+                class="fa-solid fa-rotate-right"
+                :class="{ 'fa-spin': refreshing }"
+              ></i>
+            </button>
             <div
               v-if="user.email_verified_at === null"
               v-tooltip="
@@ -65,18 +86,6 @@
             >
               Create
             </router-link>
-            <button
-              @click="getServers(pagination.current_page, true)"
-              type="button"
-              :class="[
-                'rounded-md  px-2.5 py-1.5 bg-[#F8F9FA] border border-[#CBD5E0] text-[#818995]  text-[15px]',
-              ]"
-            >
-              <i
-                class="fa-solid fa-rotate-right"
-                :class="{ 'fa-spin': refreshing }"
-              ></i>
-            </button>
           </div>
         </div>
       </div>
@@ -124,18 +133,25 @@
                     >{{ server.provider_name }}</span
                   >
                 </div>
-
-                <div class="max-w-[250px]">
-                  <span
+                <div class="max-w-[200px]">
+                  <router-link 
+                    :to="{ name: 'InstallationStatus', params: { server: server.id } }"
                     class="-pl-[1px] truncate block text-[14px] font-medium"
+                    role="link"
+                    tabindex="0"
                     v-tooltip="server.name"
                   >
-                    {{ server.name }}</span
-                  >
-                  <span class="flex text-gray-500 py-0.5">
+                    {{ server.name }}
+                  </router-link>
+                  <span class="flex text-gray-500 py-0.5 items-center">
                     {{ server.ip ? server.ip : "-" }}
+                    <span
+                      @click="copyToClipboard(server.ip)"
+                      class="material-symbols-outlined cursor-pointer text-blue-500 text-sm pl-1 "
+                    >
+                      content_copy
+                    </span>
                   </span>
-
                   <p class="text-[#777A7E]">
                     {{ server.created_at ? server.created_at : "-" }}
                   </p>
@@ -143,10 +159,10 @@
               </div>
             </td>
             <td
-              class="whitespace-nowrap py-1 px-4 text-sm truncate max-w-[100px]"
+              class="whitespace-nowrap py-1 px-4 text-sm truncate max-w-[150px]"
             >
-              <div class="text-gray-500 py-0.5" v-if="server.plan">
-                <div class="flex items-center gap-2">
+              <div class="text-gray-500 py-0.5 flex items-center gap-2.5" v-if="server.plan">
+                <div class="flex items-center gap-0.5">
                   <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
                     memory
                   </span>
@@ -154,7 +170,7 @@
                     {{ server.plan.ram ? server.plan.ram : "-" }} MB
                   </p>
                 </div>
-                <div class="flex items-center gap-2 my-1">
+                <div class="flex items-center gap-0.5">
                   <span class="material-symbols-outlined text-[18px]" v-tooltip="'Bandwidth'">
                     database
                   </span>
@@ -163,7 +179,7 @@
                     {{server.provider_name == 'hetzner'?'TB':"GB"}}
                   </p>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-0.5">
                   <span class="material-symbols-outlined text-[18px]" v-tooltip="'Disk'">
                     sd_card
                   </span>
@@ -422,9 +438,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Servers",
+        // title: "Servers",
         icon: "dns",
-        pages: [],
+        pages: [{ name: "Servers" }],
       },
       refreshing: false,
       openConfirmation: false,
@@ -440,8 +456,8 @@ export default {
           classes: ["max-w-[10rem] w-10 pl-10"],
         },
         {
-          title: "Plan",
-          classes: ["xl:max-w-[5rem] xl:w-5 max-w-[8rem] "],
+          title: "Resources (CPU/RAM/Disk)",
+          classes: ["w-10 whitespace-nowrap"],
         },
         {
           title: "Web Server",
@@ -609,6 +625,10 @@ export default {
       } else {
         this.debouncedGetServers();
       }
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
   async mounted() {

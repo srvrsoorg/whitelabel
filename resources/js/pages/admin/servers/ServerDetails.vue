@@ -205,8 +205,8 @@
         <div class="justify-between xs:flex mt-2">
           <p class="text-lg font-medium">General Purpose</p>
           <div>
-            <span class="text-lg font-medium" v-if="serverDetails.subscription">
-              {{ formatCurrency(serverDetails.subscription.monthly_price) }}
+            <span class="text-lg font-medium" v-if="serverDetails">
+              {{ formatCurrency(serverDetails?.subscription?.monthly_price) }}
             </span>
             <span class="text-lg font-medium" v-else>-</span>
             <span
@@ -243,10 +243,10 @@
           </div>
           <div class="flex justify-between">
             <p class="">Total Charges</p>
-            <p>
+            <p v-if="serverDetails">
               {{
-                serverDetails.subscription
-                  ? formatCurrency(serverDetails.subscription.total_charges)
+                serverDetails?.subscription
+                  ? formatCurrency(serverDetails?.subscription?.total_charges)
                   : "-"
               }}
             </p>
@@ -317,7 +317,7 @@
           </button>
         </div>
 
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center mb-4">
           <p>Redis Password</p>
           <button
             @click="copyToClipboard(serverDetails.redis_password)"
@@ -329,6 +329,17 @@
                 'material-symbols-outlined text-blue-500 text-[18px]',
               ]"
               >content_copy
+            </span>
+          </button>
+        </div>
+        <div class="flex justify-between items-center">
+          <p>SSH Login</p>
+          <button
+            @click="copyToClipboard(sshLoginCommand)"
+            class="border border-primary rounded px-1 flex justify-center items-center p-1"
+          >
+            <span class="material-symbols-outlined text-blue-500 text-[18px]">
+              content_copy
             </span>
           </button>
         </div>
@@ -345,8 +356,8 @@
       <span class="font-semibold">Current Price</span>
       <span
         >{{
-          serverDetails && serverDetails.subscription
-            ? formatCurrency(serverDetails.subscription.monthly_price)
+          serverDetails && serverDetails?.subscription
+            ? formatCurrency(serverDetails?.subscription?.monthly_price)
             : 0
         }}/Monthly</span
       >
@@ -372,7 +383,10 @@
         id="amount_message"
       ></small>
     </div>
-    <div class="mt-4 flex justify-end">
+    <div class="mt-4 flex justify-end gap-4">
+      <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
       <Button @click="updateServerPlan" :disabled="processing">
         <i
           v-if="processing"
@@ -392,15 +406,18 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Servers",
         icon: "dns",
         pages: [
+          {
+            name: "Servers",
+            path:{name : 'servers'}
+          },
           {
             name: "Server Details",
           },
         ],
       },
-      serverDetails: null,
+      serverDetails: {},
       cloudProviders: CloudProviders,
       services: CloudServices,
       openModal: false,
@@ -412,6 +429,11 @@ export default {
   },
   mounted() {
     this.fetchServerDetails();
+  },
+  computed:{
+    sshLoginCommand(){
+      return `ssh ${this.serverDetails.username}@${this.serverDetails.ip} -p ${this.serverDetails.ssh_port}`
+    }
   },
   methods: {
     openUpdatePlanModal() {

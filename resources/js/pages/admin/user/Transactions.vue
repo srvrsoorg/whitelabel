@@ -121,7 +121,7 @@
         <td class="whitespace-nowrap cursor-pointer py-4 px-4">
           <div class="flex gap-3 justify-center items-center">
             <span
-              v-tooltip="'Edit'"
+              v-tooltip="'Update'"
               @click="openModal('edit', user_transaction)"
               :class="[
                 'material-symbols-outlined p-1.5 rounded-md text-[20px] text-green-600 bg-green-100',
@@ -228,9 +228,9 @@
           ></small>
         </div>
       </div>
-      <div class="flex gap-x-4 mt-3">
-        <div class="flex gap-x-4">
-          <div class="w-1/2">
+      <div class="sm:flex grid grid-cols-1 gap-4 mt-3">
+        <div class="sm:flex gap-4">
+          <div class="sm:w-1/2">
             <label
               for="amount"
               v-if="!isEditing"
@@ -261,7 +261,7 @@
               class="error_message text-red-500 text-xs"
             ></small>
           </div>
-          <div class="w-1/2">
+          <div class="sm:w-1/2 sm:mt-0 mt-3">
             <label for="coupon_code" class="text-tiny font-medium"
               >Coupon Code</label
             >
@@ -283,7 +283,7 @@
           </div>
         </div>
         <Button
-          class="max-w-fit min-w-fit mt-8"
+          class="sm:max-w-fit sm:min-w-fit sm:mt-8"
           @click="getTotal"
           :disabled="gettingTotal"
           >{{ gettingTotal ? "Please wait" : "Get a Total" }}</Button
@@ -486,7 +486,7 @@
           </div>
         </div>
       </template>
-      <div class="flex flex-row-reverse mt-5">
+      <div class="flex flex-row-reverse mt-4 gap-4">
         <Button
           type="submit"
           :disabled="processing || !showCostOverview"
@@ -496,8 +496,11 @@
             v-if="processing"
             class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
           ></i>
-          {{ processing ? "Please wait" : "Save" }}
+          {{ processing ? "Please wait" : "Create" }}
         </Button>
+        <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
       </div>
     </form>
   </Modal>
@@ -529,7 +532,6 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User",
         icon: "groups",
         pages: [{ name: "Transactions" }],
       },
@@ -631,7 +633,7 @@ export default {
           tax_details: [],
         };
       } else if (action === "edit") {
-        this.modalTitle = "Update Transaction History";
+        this.modalTitle = " History";
         this.isEditing = true;
         this.transaction_id = transaction.id;
         this.payload = {

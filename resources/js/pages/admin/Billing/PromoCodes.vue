@@ -15,6 +15,14 @@
           class="w-full block rounded-md border border-primary focus:border-primary py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
           placeholder="Search"
         />
+        <button
+          v-if="search"
+          type="button"
+          @click="clearSearch"
+          class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-10 flex items-center px-2.5"
+        >
+          <span v-tooltip="'Clear'" class="material-symbols-outlined text-[20px]">close</span>
+        </button>
         <div
           class="text-white pointer-events-none absolute rounded-r-md inset-y-0 bg-[#F6F6F6] border border-primary right-0 items-center justify-center flex px-2"
         >
@@ -78,7 +86,7 @@
         <td class="whitespace-nowrap justify-center flex py-4 px-4">
           <div class="flex items-center gap-3">
             <button
-              v-tooltip="'Edit'"
+              v-tooltip="'Update'"
               class="p-1.5 bg-green-100 text-green-600 rounded-md flex items-center justify-center rounded-md,"
               @click="openModal('update', promoCode)"
             >
@@ -263,8 +271,7 @@
       ></small>
     </div>
 
-    <div class="flex flex-row-reverse bg-white rounded-md mt-3">
-      <div class="text-end rounded-md">
+    <div class="flex flex-row-reverse bg-white rounded-md mt-3 gap-4">
         <Button :disabled="processing" @click="SaveData">
           <i
             v-if="processing"
@@ -274,11 +281,13 @@
             processing
               ? "Please wait"
               : modalType === "create"
-              ? "Save"
+              ? "Create"
               : "Update"
           }}
         </Button>
-      </div>
+        <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+          Cancel
+        </button>
     </div>
   </Modal>
 
@@ -308,9 +317,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
+        // title: "Billing",
         icon: "lab_profile",
         pages: [
+          {
+            name: "Billing",
+          },
           {
             name: "Promo codes",
           },
@@ -534,6 +546,10 @@ export default {
         .finally(() => {
           this.showLoader = false;
         });
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
 };

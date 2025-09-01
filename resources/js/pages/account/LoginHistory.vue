@@ -79,9 +79,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Account",
+        // title: "Account",
         icon: "account_box",
-        pages: [{ name: "Login History" }],
+        pages: [{ name: "Account" },{ name: "Login History" }],
       },
       login: [],
       pagination: {

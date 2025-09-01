@@ -175,7 +175,7 @@
                         type="radio"
                         v-model="payload.gateway"
                         :value="gateway"
-                        class="form-radio rounded-full hover:text-sa-600 focus:ring-0 focus:outline-none"
+                        class="form-radio rounded-full focus:ring-0 focus:outline-none"
                       />
                       <label
                         :for="gateway"
@@ -234,10 +234,17 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
-        icon: "lab_profile",
-        pages: [{ name: "Checkout" }],
-      },
+        pages: [
+          {
+            name: "Billing",
+            path: { name: "wallet" }
+          },
+          {
+            name: "Checkout"
+          }
+        ],
+          icon: "lab_profile",
+        },
       payment: true,
       payload: {
         type: "discount",

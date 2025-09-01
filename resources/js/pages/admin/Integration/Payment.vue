@@ -24,9 +24,13 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Integrations",
+        // title: "Integrations",
         icon: "rule_settings",
-        pages: [{ name: "Payment" }],
+        pages: [
+          {
+            name: "Integrations",
+          },
+          { name: "Payment" }],
       },
       razorpay: {
         provider: "Razorpay",

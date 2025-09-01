@@ -2,8 +2,9 @@
   <Breadcrumb :breadcrumb="breadcrumb" />
   <div class="container-fluid mx-auto">
     <div class="text-[#2c3138] font-medium text-xl mb-5">Wallet</div>
+    <div class="grid xl:grid-cols-3 grid-cols-1 xl:gap-5 gap-y-5">
     <div
-      class="p-7 bg-cover rounded-b-2xl"
+      class="p-7 bg-cover rounded-xl col-span-2"
       :style="{ backgroundImage: 'url(/images/backgrnd.png)' }"
     >
       <div class="grid sm:grid-cols-4 grid-cols-1 mb-5">
@@ -77,31 +78,75 @@
         </div>
       </template>
     </div>
-
+      <div class="flex flex-col h-full">
+        <div class="bg-gray-50 border-b-0 border rounded-t-xl p-3 sm:p-4 lg:px-5">
+          <div class="flex items-center gap-4">
+            <div class="min-w-[40px] w-10 h-10 flex justify-center items-center text-custom-500">
+              <span class="material-symbols-outlined text-3xl sm:text-4xl">credit_card_clock</span>
+            </div>
+            <div class="flex flex-col gap-1 flex-1">
+              <p class="text- font-medium leading-tight">Minimum Credit Reminder</p>
+              <p class="text-xs text-gray-500 leading-tight">
+                Set a management credit limit for low balance alerts.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white border-t-0 border rounded-b-xl p-4 flex-grow flex flex-col">
+          <div class="mb-4">
+            <h3 class="text-tiny font-medium">Minimum Threshold</h3>
+            <p class="text-gray-500 text-xs leading-relaxed">
+              Get an email alert when credits drop below a set amount.
+            </p>
+          </div>
+        
+          <div class="mt-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div class="flex-1">
+              <input 
+                type="number" 
+                v-model="reminder_minimum_credit"
+                class="w-full text-sm p-2 sm:p-2.5 rounded-lg border border-slate-300 focus:border-sa-500 focus:ring-0"
+                placeholder="Enter Minimum Credit"
+              >
+              <div class="flex items-center">
+                <small
+                  id="reminder_minimum_credit_message"
+                  class="text-red-500 error_message text-xs block mt-1.5"
+                ></small>
+              </div>
+            </div>
+            <Button
+              class="w-full sm:w-auto px-4 py-2.5 text-sm"
+              :disabled="reminder_minimum_credit === 'null' || !isValidMinimumCredit || processing"
+              @click="updateReminderMinCredit()"
+            >
+              {{ processing ? 'processing...' : 'Save' }}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="my-5">
       <h1 class="text-xl font-medium">Real Time Usage</h1>
     </div>
-    <div class="rounded-md p-6 px-7 border border-gray-200">
-      <div class="xs:flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-gray-400 text-3xl">
+    <div class="sm:flex justify-between items-center gap-2 sm:gap-x-10 rounded-md border border-gray-200 p-4">
+      <div class="flex gap-4 items-center">
+        <span class="material-symbols-outlined text-custom-500 text-3xl">
             event_upcoming
-          </span>
-          <span class="text-[18px] font-medium">Current Month Usage</span>
-        </div>
-        <p class="text-[18px] font-medium xs:mt-0 mt-3">
-          {{ formatCurrency(monthlyAmount) }}
-        </p>
-      </div>
-      <div class="sm:pl-10 sm:mt-0 mt-3 sm:w-[85%]">
-        <span class="text-gray-500 py-0.5 text-[14px]">
-          View your total credit usage for this month in this section. It
-          provides a clear overview of how much credit you’ve spent, making it
-          easier to manage your monthly budget.
         </span>
+          <div class="flex flex-col">
+            <span class="text-[18px] font-medium">Current Month Usage</span>
+            <span class="text-gray-500 py-0.5 text-[14px]">
+              View your total credit usage for this month in this section. It
+              provides a clear overview of how much credit you’ve spent, making it
+              easier to manage your monthly budget.
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col text-end items-end mt-3 sm:mt-0 pr-2">
+        <span class="text-xl text-custom-500 font-medium">{{ formatCurrency(monthlyAmount) }}</span>
       </div>
     </div>
-
     <div class="sm:flex gap-5 mt-5 items-center">
       <h1 class="text-xl font-medium xl:w-1/2 sm:w-2/5">Usage Summary</h1>
       <div class="flex-1">
@@ -239,9 +284,11 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
+        // title: "Billing",
         icon: "lab_profile",
-        pages: [{ name: "Wallet" }],
+        pages: [
+        { name: "Billing" },
+        { name: "Wallet" }],
       },
       amount: "",
       errorMessage: "",
@@ -331,8 +378,10 @@ export default {
           name: "December",
         },
       ],
+      reminder_minimum_credit: this.user?.reminder_minimum_credit || 0,
       selectedMonth: new Date().getMonth() + 1,
       year: [],
+      processing: false,
       selectedYear: new Date().getFullYear(),
       minimumAmount: 0,
       paymentGateways: [],
@@ -347,7 +396,19 @@ export default {
         return parseFloat(this.user.credits);
       }
     },
+    isValidMinimumCredit() {
+    const value = parseFloat(this.reminder_minimum_credit);
+    return !isNaN(value) && value >= 0;
+  }
   },
+  watch: {
+  'user.reminder_minimum_credit': {
+    immediate: true,
+    handler(newVal) {
+      this.reminder_minimum_credit = newVal;
+    }
+  }
+},
   created() {
     this.getUser();
     this.fetchUsageSummary();
@@ -424,6 +485,25 @@ export default {
         })
         .finally(() => {
           this.fetchingProviders = false;
+        });
+    },
+    async updateReminderMinCredit() {
+      this.processing = true; 
+      this.$axios
+        .patch("/reminder-minimum-credit",{
+          reminder_minimum_credit : this.reminder_minimum_credit
+        })
+        .then(({ data }) => {
+          this.$toast.success(data.message);
+        })
+        .catch(({ response }) => {
+          if (response.status !== 422) {
+            this.$toast.error(response.data.message);
+          }
+          this.displayError(response.data);
+        })
+        .finally(() => {
+          this.processing = false; 
         });
     },
     getYear() {

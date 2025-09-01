@@ -438,9 +438,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Account",
+        // title: "Account",
         icon: "account_box",
-        pages: [{ name: "Security" }],
+        pages: [{ name: "Account" },{ name: "Security" }],
       },
       tabs: [
         { name: "Recovery Codes", value: "recovery_code" },

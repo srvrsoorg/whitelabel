@@ -13,6 +13,14 @@
           class="block w-full sm:min-w-[350px] rounded-md border border-primary focus:border-neutral-300 py-2 text-gray-800 leading-6 ring-gray-300 placeholder:text-gray-400 text-sm focus:ring-0"
           placeholder="Search"
         />
+        <button
+          v-if="search"
+          type="button"
+          @click="clearSearch"
+          class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-8 flex items-center px-2.5"
+        >
+          <span v-tooltip="'Clear'" class="material-symbols-outlined text-[20px]">close</span>
+        </button>
         <div
           :class="[
             textColorClass,
@@ -68,6 +76,8 @@
               <div :class="'w-7 min-w-7 max-w-7'"></div>
             </template>
             <div class="">
+              <div class="flex items-center gap-1">
+               
               <router-link
                 :to="{
                   name: 'serverDetails',
@@ -84,6 +94,21 @@
                   {{ server.name }}
                 </p>
               </router-link>
+              <span
+                class="relative flex items-center justify-center"
+                v-tooltip.top="`${server.agent_status == '1' ? 'Connected' : server.agent_status == '0' ? 'Not Connected' : server.agent_status}`"
+                >                                                   
+                <span
+                  v-if="server.agent_status == '1' || server.agent_status == '0'"
+                  class="absolute inline-flex h-[9px] w-[9px] animate-ping rounded-full"
+                  :class="server.agent_status == '1' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
+                ></span>                                         
+                <span
+                  class="relative inline-flex h-[9px] w-[9px] rounded-full"
+                  :class="server.agent_status == '1' ? 'bg-green-600' : server.agent_status == '0' ? 'bg-red-500' : 'bg-gray-500'"
+                ></span>
+            </span>
+            </div>
               <div class="flex">
                 <span class="text-gray-500 py-0.5 truncate">
                   {{ server.ip }}
@@ -138,23 +163,26 @@
         </td>
         <td class="whitespace-nowrap py-2 px-4 truncate max-w-[100px]">
           <div class="text-gray-500" v-if="server.plan">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2.5">
+              <div class="flex items-center gap-0.5">
+              <span class="material-symbols-outlined text-[18px]" v-tooltip="'CPU'">
+                database
+              </span>
+              <p>{{ server.plan.bandwidth }} {{ server.cloud_provider.provider == 'hetzner'?'TB':'GB' }}</p>
+              </div>
+            <div class="flex items-center gap-0.5">
               <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
                 memory
               </span>
               <p class="">{{ server.plan.ram }} MB</p>
             </div>
-            <div class="flex items-center gap-2 my-1">
-              <span class="material-symbols-outlined text-[18px]" v-tooltip="'Bandwidth'">
-                database
-              </span>
-              <p>{{ server.plan.bandwidth }} {{ server.cloud_provider.provider == 'hetzner'?'TB':'GB' }}</p>
-            </div>
-            <div class="flex items-center gap-2">
+
+              <div class="flex items-center gap-0.5">
               <span class="material-symbols-outlined text-[18px]" v-tooltip="'Disk'">
                 sd_card
               </span>
               <p>{{ server.plan.disk }} GB</p>
+            </div>
             </div>
           </div>
           <div v-else>-</div>
@@ -194,28 +222,6 @@
               >{{ server.database_type ? server.database_type : "-" }}</span
             >
           </div>
-        </td>
-        <td class="whitespace-nowrap text-center py-2 px-4">
-          <p
-            v-if="server.agent_status == '1' || server.agent_status == '0'"
-            :class="[
-              server.agent_status == '1' ? 'text-green-600' : 'text-red-500',
-              'text-xs gap-1 flex items-center ',
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]">
-              {{ server.agent_status == "1" ? " task_alt" : "cancel" }}</span
-            >
-            {{ server.agent_status == "1" ? "Connected" : "Disconnect" }}
-          </p>
-          <p v-else class="flex items-center gap-1 text-sm text-gray-600">
-            <span class="material-symbols-outlined text-[20px]"> cached </span>
-            <span
-              class="max-w-24 truncate capitalize"
-              v-tooltip="server.agent_status"
-              >{{ server.agent_status }}</span
-            >
-          </p>
         </td>
         <td class="whitespace-nowrap py-2 px-4 text-center cursor-pointer">
           <div class="flex items-center justify-center gap-3">
@@ -332,9 +338,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Servers",
         icon: "dns",
-        pages: [],
+        pages: [
+          {
+            name: "Servers",
+          },
+        ],
       },
       refreshing: false,
       openConfirmation: false,
@@ -364,8 +373,8 @@ export default {
         "Server",
         "User",
         {
-          title: "Plan",
-          classes: "",
+          title: "Resources (CPU/RAM/Disk)",
+          classes: "whitespace-nowrap",
         },
         {
           title: "Web Server",
@@ -374,10 +383,6 @@ export default {
         {
           title: "Database",
           classes: "text-center",
-        },
-        {
-          title: "Status",
-          classes: "",
         },
         {
           title: "Actions",
@@ -441,7 +446,10 @@ export default {
           this.refreshing = false;
         });
     },
-
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
+    },
     handlePageChange(newPage) {
       this.fetchServers(newPage);
     },

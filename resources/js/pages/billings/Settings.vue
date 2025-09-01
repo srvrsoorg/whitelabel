@@ -403,9 +403,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
+        // title: "Billing",
         icon: "lab_profile",
-        pages: [{ name: "Settings" }],
+        pages: [{ name: "Billing" },{ name: "Settings" }],
       },
       countries: [],
       processing: false,

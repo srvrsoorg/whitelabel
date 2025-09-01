@@ -1,5 +1,5 @@
 <template>
-  <div class="flow-root h-full rounded-md shadow">
+  <div class="flow-root h-full rounded-md shadow relative">
     <div class="overflow-x-auto rounded-md w-full">
       <div class="inline-block min-w-full align-middle">
         <div class="min-w-full">
@@ -11,7 +11,7 @@
               <table class="min-w-full">
                 <thead
                   :class="bgHead"
-                  class="bg-[#F6F6F6] sticky top-0 min-w-full whitespace-nowrap"
+                  class="bg-[#F6F6F6] sticky z-10 top-0 min-w-full whitespace-nowrap"
                   v-if="head.length"
                 >
                   <tr>

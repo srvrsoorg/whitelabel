@@ -13,7 +13,7 @@
                 class="w-full text-sm border-gray-200 bg-white text-gray-700 rounded-md focus:outline-none"
                 v-model="current.user"
               >
-                <option value="">Select User</option>
+                <option value="">All Users</option>
                 <option :value="user.id" v-for="user in users" :key="user.id">
                   {{ truncate(user.name, 26) }}
                 </option>
@@ -182,9 +182,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User Management",
+        // title: "User Management",
         icon: "groups",
         pages: [
+          {
+            name: "User Management",
+          },
           {
             name: "Activities",
           },

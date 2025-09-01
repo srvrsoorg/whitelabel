@@ -66,21 +66,24 @@
                 <button
                   :disabled="isDisabled"
                   :class="[
-                    isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
+                    'rounded-md border border-transparent px-4 py-1.5 text-white shadow-sm focus:outline-none focus:ring-0 sm:text-sm',
                     btnBgColor ? btnBgColor : 'bg-red-600 hover:bg-red-700',
+                    isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
                   ]"
                   @click="submit"
                   type="button"
-                  class="rounded-md border border-transparent px-4 py-1.5 text-white shadow-sm focus:outline-none focus:ring-0 sm:text-sm"
                 >
                   <i
                     v-if="showBtnLoader"
                     class="fa-solid fa-circle-notch fa-spin mr-1 self-center"
                   ></i>
-                  {{ showBtnLoader ? "Processing" : submitBtnTitle
-                  }}<span class="ml-1" v-if="timer > 0 && !disableButton"
-                    >({{ timer }})
+                  {{ showBtnLoader ? "Processing" : submitBtnTitle }}
+                  <span class="ml-1" v-if="timer > 0 && !disableButton">
+                    ({{ timer }})
                   </span>
+                </button>
+                <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-0 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="closeModal" ref="cancelButtonRef">
+                  {{ cancelBtnTitle }}
                 </button>
               </div>
             </DialogPanel>
@@ -120,6 +123,11 @@ export default {
       type: String,
       required: true,
     },
+    cancelBtnTitle: {
+        type: String,
+        required: false,
+        default: 'Cancel'
+      },
     confirmationTitle: {
       type: String,
       required: true,

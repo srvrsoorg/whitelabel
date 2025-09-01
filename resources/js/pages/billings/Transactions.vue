@@ -180,9 +180,8 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
         icon: "lab_profile",
-        pages: [{ name: "Transactions" }],
+        pages: [{ name: "Billing"},{ name: "Transactions"}],
       },
       transactions: [],
       pagination: null,

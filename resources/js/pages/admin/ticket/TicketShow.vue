@@ -127,7 +127,7 @@
                       <span class="text-sm text-gray-500">{{
                         reply.created_at_human
                       }}</span>
-                      <h1 class="font-medium text-end">You</h1>
+                      <h1 class="font-medium text-end max-w-[60px] truncate">{{ reply.support_agent.name }}</h1>
                     </div>
                     <div
                       class="bg-[#E8F6F4] text-sm text-wrap break-all rounded-lg p-3 px-4"
@@ -338,6 +338,10 @@ export default {
         title: "Tickets",
         icon: "confirmation_number",
         pages: [
+          {
+            name: "Ticket",
+            path:{name : 'admintickets'}
+          },
           {
             name: "View",
           },

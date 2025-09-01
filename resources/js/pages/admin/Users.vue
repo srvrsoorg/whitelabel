@@ -13,6 +13,14 @@
           class="w-full block rounded-md border border-primary focus:border-primary py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
           placeholder="Search User"
         />
+        <button
+          v-if="search"
+          type="button"
+          @click="clearSearch"
+          class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-10 flex items-center px-2.5"
+        >
+          <span v-tooltip="'Clear'" class="material-symbols-outlined text-[22px]">close</span>
+        </button>
         <div
           :class="[
             textColorClass,
@@ -156,30 +164,36 @@
               </span>
             </router-link>
             <button
-              @click="openUserStatus(user)"
-              :disabled="user.status === 'pending'"
-            >
-              <span
-                class="material-symbols-outlined text-red-500 bg-red-50 p-1.5 text-[20px] rounded-md"
-                v-if="user.status === 'active'"
-                v-tooltip="'Ban'"
+                @click="openUserStatus(user)"
+                :disabled="user.status === 'pending' || user.id === this.user.id"
+                :class="[
+                  (user.status === 'pending' || user.id === this.user.id)
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:opacity-80'
+                ]"
               >
-                person_off
-              </span>
-              <span
-                class="material-symbols-outlined text-[20px] text-green-600 bg-green-400 bg-opacity-10 px-1.5 py-1.5 rounded-md"
-                v-else-if="user.status === 'banned'"
-                v-tooltip="'Active'"
-              >
-                how_to_reg
-              </span>
-              <span
-                class="material-symbols-outlined text-gray-500 bg-gray-100 p-1.5 text-[20px] rounded-md"
-                v-else
-              >
-                person_off
-              </span>
-            </button>
+                <span
+                  class="material-symbols-outlined text-red-500 bg-red-50 p-1.5 text-[20px] rounded-md"
+                  v-if="user.status === 'active'"
+                  v-tooltip="user.id === this.user.id ? 'You cannot ban your own account.' : 'Ban'"
+                >
+                  person_off
+                </span>
+                <span
+                  class="material-symbols-outlined text-[20px] text-green-600 bg-green-400 bg-opacity-10 px-1.5 py-1.5 rounded-md"
+                  v-else-if="user.status === 'banned'"
+                  v-tooltip="user.id === this.user.id ? 'You cannot ban your own account.' : 'Active'"
+                >
+                  how_to_reg
+                </span>
+                <span
+                  class="material-symbols-outlined text-gray-500 bg-gray-100 p-1.5 text-[20px] rounded-md"
+                  v-else
+                  v-tooltip="user.id === this.user.id ? 'You cannot ban your own account.' : ''"
+                >
+                  person_off
+                </span>
+              </button>
           </div>
         </td>
       </tr>
@@ -188,7 +202,7 @@
           v-if="pagination.total > 10"
           :class="[
             pagination.total > 10 ? 'justify-between' : 'justify-end',
-            'sm:flex gap-3  py-5 px-4',
+            'sm:flex gap-3 py-5 px-4',
           ]"
         >
           <div v-if="pagination.total > 10">
@@ -374,7 +388,7 @@
         <label
           for="region_name"
           class="text-tiny font-medium after:content-['*'] after:ml-0.5 after:text-red-500"
-          >State</label
+          >Region</label
         >
         <select
           id="region_code"
@@ -429,13 +443,16 @@
         ></small>
       </div>
     </div>
-    <div class="flex justify-end items-center pt-5">
+    <div class="flex justify-end items-center pt-5 gap-4">
+      <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
       <Button :disabled="processing" @click="createUser">
         <i
           v-if="processing"
           class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
         ></i>
-        {{ processing ? "Please wait" : "Save" }}
+        {{ processing ? "Please wait" : "Create" }}
       </Button>
     </div>
   </Modal>
@@ -445,9 +462,10 @@
     :confirmationTitle="title"
     :btnBgColor="action == 'active' ? 'bg-green-500' : 'bg-red-500'"
     :submitBtnTitle="`Yes, I'm Sure`"
+    :disableButton="action !== 'active' && reason.length === 0"
     @confirm="submit"
     @closeModal="closeModal"
-  >
+    >
     <template #icon>
       <span
         v-if="action === 'banned'"
@@ -487,13 +505,18 @@
 
 <script>
 import Multiselect from "vue-multiselect";
+import { useAuthStore } from "@/store/auth";
+import { mapState } from "pinia";
+
 export default {
   data() {
     return {
       breadcrumb: {
-        title: "User Management",
         icon: "groups",
         pages: [
+          {
+            name: "User Management",
+          },
           {
             name: "Users",
           },
@@ -577,6 +600,7 @@ export default {
     Multiselect,
   },
   computed: {
+    ...mapState(useAuthStore, ["user"]),
     getRegions() {
       let country = this.countries.find(
         (country) => country.country_name === this.userInfo.country_name
@@ -764,6 +788,10 @@ export default {
         .finally(() => {
           this.processing = false;
         });
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
 };

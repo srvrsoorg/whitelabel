@@ -20,7 +20,19 @@
       />
     </div>
   </div>
-
+  <div class="flex justify-end" v-if="plans.region">
+    <label for="toggleAllSizes" class="flex items-center w-fit cursor-pointer bg-sa-50 px-4 py-2 rounded-lg border border-sa-200 hover:bg-sa-100 transition-colors duration-200">
+      <input
+          type="checkbox"
+          id="toggleAllSizes"
+          class="h-4 w-4 cursor-pointer rounded border-gray-300 focus:ring-0"
+          v-model="isAllSizesVisibleChecked"
+        />
+        <span class="ml-2 text-sm font-medium text-gray-900">
+            Activate all sizes for {{ regions.find(r => r.value === plans.region)?.name }}
+        </span>
+    </label>
+  </div>
   <div
     class="grid md:grid-cols-2 grid-cols-1 my-5 mb-2 xl:gap-x-32 md:gap-x-20 gap-4"
     v-if="regions.length > 0"
@@ -52,7 +64,7 @@
             v-for="region in regions"
             :key="region"
             :disabled="!region.available"
-          >
+          > 
             {{ region.name }}
             <span v-if="isInPlan(region.value)" class="text-blue-500"
               >(in Plan)</span
@@ -95,48 +107,70 @@
       </div>
     </div>
   </div>
-  <div class="h-full mt-5">
-    <Table :head="thead" :bodyPadding="'px-5'" v-if="sizes.length > 0">
+  <div class="h-full mt-5" v-if="sizes.length > 0">
+  <table class="min-w-full shadow-md rounded-lg">
+    <thead class="bg-[#F6F6F6] sticky top-0 min-w-full whitespace-nowrap">
+      <tr>
+        <th v-if="this.cloudProvider.provider === 'hetzner' || cloudProvider.provider === 'linode'" class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Name</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Core(s)</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Memory</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Storage</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Bandwidth</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Price</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Amount ($)</th>
+        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f] tracking-wider">
+            <label for="toggleAllPlan" class="cursor-pointer">Active</label>
+            <input
+                type="checkbox"
+                id="toggleAllPlan"
+                class="h-4 w-4 ml-2 cursor-pointer rounded border-slate-300 focus:ring-0"
+                v-model="isAllVisibleChecked"
+            />
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="bg-white divide-y divide-gray-200">
       <tr
         class="border-b border-gray-200 text-[#2c3138] text-[14px]"
         v-for="(size, index) in sizeList"
         :key="size.slug"
       >
-        <td :class="['whitespace-nowrap py-5 px-4 truncate max-w-[300px] text-center']">
-          {{ size.cpu_core }}
-        </td>
-        <td
-          class="whitespace-nowrap px-4 py-5 truncate max-w-[300px]"
-          v-if="
-            cloudProvider.provider == 'hetzner' ||
-            cloudProvider.provider == 'linode'
-          "
+      <td
+          class="whitespace-nowrap px-4 py-5"
+          v-if="cloudProvider.provider == 'hetzner' || cloudProvider.provider == 'linode'"
         >
           {{ size.label ? size.label : "-" }}
-        </td>        
-        <td class="whitespace-nowrap py-5 px-4 truncate">
-          {{ size.ram_size_in_mb }} MB
         </td>
-        <td class="whitespace-nowrap py-5 px-4 truncate">
+
+        <td class="whitespace-nowrap py-5 px-4">
+          {{ size.cpu_core }}
+        </td>
+
+        <td class="whitespace-nowrap py-5 px-4">
+          {{ (size.ram_size_in_mb / 1024).toFixed(1) }} GB
+        </td>
+
+        <td class="whitespace-nowrap py-5 px-4">
           {{ size.disk_size_in_gb }} GB
         </td>
-        <td class="whitespace-nowrap py-5 px-4 truncate">
-          {{ size.bandwidth }}
-          {{ cloudProvider.provider === "hetzner" ? "TB" : "GB" }}
+
+        <td class="whitespace-nowrap py-5 px-4">
+          {{ (size.bandwidth) }} {{ cloudProvider.provider === "hetzner" ? "TB" : "GB" }} 
         </td>
         <td class="whitespace-nowrap px-4 py-4">
-          {{ cloudProvider.provider === "hetzner" ? "€" : "$"
-          }}{{ size.price }} / Monthly
+            {{ currency === 'EUR' ? "€" : "$" }}{{ size.price }} / Month
         </td>
+
         <td class="whitespace-nowrap px-4 py-4">
           <input
             type="text"
-            name="amount"
             :id="`amount_${index}`"
             v-model="size.amount"
             class="border text-sm rounded-lg border-primary focus:border-primary-500 focus:ring-0 block p-2.5"
           />
         </td>
+
         <td class="px-4 py-4">
           <Switch
             v-model="size.is_visible"
@@ -160,18 +194,20 @@
           </Switch>
         </td>
       </tr>
-    </Table>
+    </tbody>
+  </table>
 
-    <div class="mt-5 text-end" v-if="plans.region">
-      <Button @click="save" :disabled="processing">
-        <i
-          v-if="processing"
-          class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
-        ></i>
-        {{ processing ? "Please wait" : "Save" }}
-      </Button>
-    </div>
+  <div class="mt-5 text-end" v-if="plans.region">
+    <Button @click="save" :disabled="processing">
+      <i
+        v-if="processing"
+        class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
+      ></i>
+      {{ processing ? "Please wait" : "Save" }}
+    </Button>
   </div>
+</div>
+
 </template>
 
 <script>
@@ -189,31 +225,21 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Billing",
-        icon: "lab_profile",
+        // title: "Integrations",
+        icon: "rule_settings",
         pages: [
           {
-            name: "Plan",
+            name: "Integrations",
+          },
+          {
+            name: "Cloud Platforms",
+            path: { name: "integrateCloudPlatForms" }
           },
           {
             name: "Set Plans",
           },
         ],
       },
-      thead: [
-        { title: "Core(s)", classes: "whitespace-nowrap text-center" },
-        { title: "Memory", classes: "" },
-        { title: "Storage", classes: "" },
-        { title: "Bandwidth", classes: "" },
-        { title: "$/Monthly", classes: "whitespace-nowrap" },
-        {
-          title: `${window.siteSettings.currency_symbol}/Monthly`,
-          classes: "whitespace-nowrap",
-          tooltip:
-            "This input field allows setting a custom price that users will be charged when they create a server. The value entered here will be shown to users instead of the actual provider price and will be used for billing purposes.",
-        },
-        { title: "Active", classes: "" },
-      ],
       CloudLogos: CloudLogos,
       cloudProvider: null,
       regions: [],
@@ -222,6 +248,7 @@ export default {
       serverPlans: [],
       currentTab: "",
       processing: false,
+      currency: 'USD',
     };
   },
   components: {
@@ -242,6 +269,35 @@ export default {
       );
       return selectedSize ? selectedSize.list : [];
     },
+    isAllSizesVisibleChecked: {
+      get() {
+        return this.sizes.length > 0 && 
+          this.sizes.every(size => 
+            size.list.every(row => row.is_visible)
+          );
+      },
+      set(value) {
+        this.sizes.forEach(size => {
+          size.list.forEach(row => {
+            row.is_visible = value;
+          });
+        });
+      }
+    },
+    isAllVisibleChecked: {
+    get() {
+      const current = this.sizes.find(s => s.name === this.currentTab);
+      return current?.list?.length > 0 && current.list.every(row => row.is_visible);
+    },
+    set(value) {
+      const current = this.sizes.find(s => s.name === this.currentTab);
+      if (current?.list) {
+        current.list.forEach(row => {
+          row.is_visible = value;
+        });
+      }
+    }
+  }
   },
   created() {
     this.fetchCloudProvider();
@@ -262,16 +318,10 @@ export default {
         .get(`/admin/cloud-providers/${this.cloudProviderId}`)
         .then(({ data }) => {
           this.cloudProvider = { id: this.cloudProviderId, ...data };
-          if (
-            this.cloudProvider.provider == "hetzner" ||
-            this.cloudProvider.provider == "linode"
-          ) {
-            this.thead.splice(1, 0, { title: "Name", classes: "" });
-          }
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
-        });
+        })
     },
     fetchPlans() {
       this.$axios
@@ -281,7 +331,7 @@ export default {
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
-        });
+        })
     },
     fetchRegions() {
       this.$axios
@@ -303,6 +353,7 @@ export default {
           `/admin/cloud-providers/${this.cloudProviderId}/sizes?region=${this.plans.region}`
         )
         .then(({ data }) => {
+          this.currency = data.currency ?? 'USD'
           var region = this.serverPlans.find((row) => {
             return row.region == this.plans.region;
           });

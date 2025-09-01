@@ -15,6 +15,14 @@
           class="w-full sm:min-w-96 block rounded-md border border-primary focus:border-primary py-1.5 ring-gray-300 placeholder:text-gray-500 text-sm leading-6 focus:ring-0"
           placeholder="Search"
         />
+        <button
+              v-if="search"
+              type="button"
+              @click="clearSearch"
+              class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-11 flex items-center px-2.5"
+            >
+              <span v-tooltip="'Clear'" class="material-symbols-outlined text-[20px]">close</span>
+            </button>
         <div
           class="pointer-events-none border rounded-r-md border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-0 flex items-center px-2.5"
         >
@@ -195,7 +203,7 @@
   <Modal
     :customClass="['md:max-w-3xl']"
     :modelIcon="'confirmation_number'"
-    :modalTitle="'Create Tickets'"
+    :modalTitle="'Create Ticket'"
     :openModal="open"
     @closeModal="closeModal"
   >
@@ -293,6 +301,7 @@
             @change="handleFileUpload"
             type="file"
             id="attachment"
+            accept=".jpeg,.jpg,.png,.webp"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
           <button
@@ -322,14 +331,18 @@
           class="text-red-500 error_message text-xs block"
         ></small>
       </div>
-
+      <div class="flex items-center gap-4">
+      <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
+        Cancel
+      </button>
       <Button :disabled="processing" @click="createTicket">
         <i
           v-if="processing"
           class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
         ></i>
-        {{ processing ? "Please wait" : "Save" }}
+        {{ processing ? "Please wait" : "Create" }}
       </Button>
+      </div>
     </div>
   </Modal>
   <Confirmation
@@ -366,9 +379,8 @@ export default {
   name: "Ticket",
   data: {
     breadcrumb: {
-      title: "Tickets",
       icon: "confirmation_number",
-      pages: [],
+      pages: [{ name: "Tickets" }],
     },
     status: "open",
     search: "",
@@ -577,6 +589,10 @@ export default {
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
         });
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
   mounted() {

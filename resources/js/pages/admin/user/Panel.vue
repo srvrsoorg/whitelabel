@@ -139,7 +139,7 @@ export default {
   watch: {
     user(newUser) {
       if (newUser && this.breadcrumb && !this.breadcrumbUpdated) {
-        this.breadcrumb.pages.unshift({ name: newUser.name });
+        this.breadcrumb.pages.unshift({ name: "User", path: { name: "adminUsers" } }, { name: newUser.name });
         this.breadcrumbUpdated = true; // Set flag to true after updating breadcrumb
       }
     },
@@ -148,7 +148,7 @@ export default {
     handleObj(data) {
       this.breadcrumb = data;
       if (this.user) {
-        this.breadcrumb.pages.unshift({ name: this.user.name });
+        this.breadcrumb.pages.unshift({ name: "User", path: { name: "adminUsers" } }, { name: this.user.name });
         this.breadcrumbUpdated = true; // Set flag to true
       }
     },

@@ -215,13 +215,6 @@
     </div>
   </PerfectScrollbar>
 </template>
-
-
-
-
-
-
-
 <script>
 import { useAuthStore } from "@/store/auth";
 import { mapState, mapActions } from "pinia";

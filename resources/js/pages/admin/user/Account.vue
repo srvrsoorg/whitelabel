@@ -154,15 +154,27 @@
             </label>
           </div>
           <div class="xl:col-span-9 2xl:col-span-7 col-span-12">
-            <input
-              v-model="userInfo.password"
-              type="password"
-              id="password"
-              placeholder="Enter Password"
-              class="w-full block rounded-md border border-neutral-300 focus:border-neutral-300 py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
-            />
+              <div class="relative">
+                <input
+                  id="password"
+                  name="password"
+                  :type="ConfirmPassword ? 'text' : 'password'"
+                  placeholder="Enter Password"
+                  v-model="userInfo.password"
+                  :class="{ 'tracking-widest': !ConfirmPassword }"
+                  class="block w-full rounded-md border border-primary focus:border-primary py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 placeholder:tracking-normal text-sm leading-6 focus:ring-0"
+                />
+                <PasswordVisibility
+                  :showPassword="ConfirmPassword"
+                  @toggle="ConfirmPassword = !ConfirmPassword"
+                />
+              </div>
+              <small
+                id="password_message"
+                class="error_message text-red-600 text-xs"
+              ></small>
+            </div>
           </div>
-        </div>
         <div
           class="grid xl:grid-cols-12 2xl:grid-cols-9 md:grid-cols-4 grid-cols-12 sm:gap-x-3 gap-1 items-center"
         >
@@ -450,7 +462,7 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User",
+        // title: "User",
         icon: "groups",
         pages: [{ name: "Profile" }],
       },
@@ -481,6 +493,7 @@ export default {
           name: "pending",
         },
       ],
+      ConfirmPassword: false,
       countries: [],
       timezones: [],
       timezone: null,

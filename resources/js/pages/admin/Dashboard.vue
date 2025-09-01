@@ -684,7 +684,6 @@
         <div
           class="xl:col-span-2 md:col-span-3 sm:col-span-2 col-span-1 bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3 h-full"
         >
-          <!-- <div class="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3"> -->
           <span class="font-medium">Users from Country</span>
           <hr class="mt-3" />
           <template
@@ -1680,9 +1679,8 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Dashboard",
         icon: "grid_view",
-        pages: [],
+        pages: [{ name: "Dashboard" }],
       },
       processing: false,
       setup: null,

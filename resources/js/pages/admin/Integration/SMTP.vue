@@ -377,9 +377,13 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Integrations",
+        // title: "Integrations",
         icon: "rule_settings",
-        pages: [{ name: "SMTP" }],
+        pages: [
+          {
+            name: "Integrations",
+          },
+          { name: "SMTP" }],
       },
       processing: false,
       openConfirmation: false,

@@ -21,11 +21,11 @@
   <div class="h-full mt-5">
     <Table :head="thead" v-if="login.length > 0">
       <tr
-        class="border-b border-primary text-[#2c3138] text-sm"
+        class="border-b border-gray-200 text-[#2c3138] text-sm"
         v-for="item in login"
         :key="item"
       >
-        <td class="whitespace-nowrap pl-10 text-left py-4 px-4">
+        <td class="whitespace-nowrap text-left py-4 px-4 pl-10">
           {{ item.ip }}
         </td>
         <td class="whitespace-nowrap py-4 px-4 truncate max-w-[300px]">
@@ -33,8 +33,10 @@
             {{ item.browser_agent ? item.browser_agent : "-" }}
           </span>
         </td>
-        <td class="whitespace-nowrap py-4 px-4 text-left">
-          {{ item.created_at }}
+        <td
+          class="whitespace-nowrap py-4 px-4 truncate sm:max-w-40 sm:min-w-20 sm:pl-14 sm:text-center text-nowrap"
+        >
+          {{ item.created_at ? item.created_at : "-" }}
         </td>
       </tr>
       <template #pagination>
@@ -42,7 +44,7 @@
           v-if="pagination.total > 10"
           :class="[
             pagination.total > 10 ? 'justify-between' : 'justify-end',
-            'sm:flex gap-3  py-5 px-4',
+            'sm:flex gap-3 py-4 px-4',
           ]"
         >
           <div v-if="pagination.total > 10">
@@ -77,7 +79,7 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User",
+        // title: "User",
         icon: "groups",
         pages: [{ name: "Login History" }],
       },
@@ -95,7 +97,10 @@ export default {
       thead: [
         { title: "IP Address", classes: "text-nowrap pl-10" },
         { title: "Browser Agent", classes: "text-nowrap " },
-        { title: "Date & Time", classes: "text-nowrap " },
+        {
+          title: "Date & Time ",
+          classes: "text-nowrap  sm:text-center",
+        },
       ],
       login: [],
     };

@@ -327,9 +327,12 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Tickets",
+        // title: "Tickets",
         icon: "confirmation_number",
-        pages: [{ name: "View" }],
+        // path: { name: "ticketshow" },
+        pages: [
+        { name: "ticket", path: { name: "tickets" }},  
+        { name: "View"}],
       },
       openModal: false,
       imageUrl: null,

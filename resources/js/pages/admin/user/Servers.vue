@@ -21,6 +21,14 @@
           class="block w-full sm:min-w-[350px] rounded-md border border-primary focus:border-neutral-300 py-2 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
           placeholder="Search"
         />
+        <button
+          v-if="search"
+          type="button"
+          @click="clearSearch"
+          class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-10 flex items-center px-2.5"
+        >
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
       </div>
 
       <button
@@ -272,7 +280,7 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "User",
+        // title: "User",
         icon: "groups",
         pages: [{ name: "Servers" }],
       },
@@ -390,6 +398,10 @@ export default {
         .finally(() => {
           this.showLoader = false;
         });
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
   mounted() {

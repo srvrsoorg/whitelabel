@@ -330,7 +330,7 @@
     </div>
     <div class="xl:px-10 px-5">
       <div
-        class="bg-[#FFFAE5] mt-5 text-[#EB9A49] text-tiny px-4 py-2 rounded-md"
+        class="bg-orange-50 mt-5 text-orange-500 text-tiny px-4 py-2 rounded-md"
       >
         <b class="font-medium"> Note:</b> Once you set the currency, you can't
         update it.
@@ -428,7 +428,7 @@
                   id="postpaid"
                   name="billing_mode"
                   type="radio"
-                  class="inline-flex h-4 w-4 border-gray-300 bg-white text-sa-500 focus:ring-0"
+                  class="inline-flex h-4 w-4 border-gray-300 bg-white focus:ring-0"
                   value="postpaid"
                 />
                 <label
@@ -444,7 +444,7 @@
                   id="prepaid"
                   name="billing_mode"
                   type="radio"
-                  class="inline-flex h-4 w-4 border-gray-300 bg-white text-sa-500 focus:ring-0"
+                  class="inline-flex h-4 w-4 border-gray-300 bg-white focus:ring-0"
                   value="prepaid"
                 />
                 <label
@@ -823,7 +823,11 @@ export default {
       breadcrumb: {
         title: "Billing",
         icon: "lab_profile",
-        pages: [{ name: "Settings" }],
+        pages: [
+          {
+            name: "Billing",
+          },
+          { name: "Settings" }],
       },
       currencies: [],
       countries: [],

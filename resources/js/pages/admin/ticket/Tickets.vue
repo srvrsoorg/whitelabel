@@ -15,6 +15,14 @@
           class="w-full sm:min-w-96 block rounded-md border border-primary focus:border-primary py-1.5 ring-gray-300 placeholder:text-gray-500 text-sm leading-6 focus:ring-0"
           placeholder="Search"
         />
+        <button
+          v-if="search"
+          type="button"
+          @click="clearSearch"
+          class="border border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-11 flex items-center px-2.5"
+        >
+          <span v-tooltip="'Clear'" class="material-symbols-outlined text-[22px]">close</span>
+        </button>
         <div
           class="pointer-events-none border rounded-r-md border-primary bg-[#F6F6F6] absolute inset-y-0 text-gray-500 right-0 flex items-center px-2.5"
         >
@@ -127,7 +135,6 @@
             >
               <span
                 class="material-symbols-outlined text-[20px]"
-                v-tooltip="'View'"
               >
                 visibility
               </span>
@@ -225,7 +232,11 @@ export default {
     breadcrumb: {
       title: "Tickets",
       icon: "confirmation_number",
-      pages: [],
+      pages: [
+        {
+            name: "Tickets"
+        }
+        ],
     },
     status: "open",
     search: "",
@@ -336,15 +347,6 @@ export default {
       this.fileName = "";
       this.ticket.attachment = null;
     },
-    handleFileUpload(event) {
-      const selectedFile = event.target.files[0];
-      if (selectedFile) {
-        this.ticket.attachment = selectedFile;
-        this.fileName = selectedFile.name;
-        this.fileURL = URL.createObjectURL(selectedFile);
-      }
-    },
-
     async updateTicketStatus() {
       this.showLoader = true;
       await this.$axios
@@ -361,6 +363,10 @@ export default {
         .finally(() => {
           this.showLoader = false;
         });
+    },
+    clearSearch() {
+      this.search = "";
+      this.handleSearch();
     },
   },
   mounted() {

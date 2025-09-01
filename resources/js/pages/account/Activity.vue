@@ -154,9 +154,9 @@ export default {
   data() {
     return {
       breadcrumb: {
-        title: "Account",
+        // title: "Account",
         icon: "account_box",
-        pages: [{ name: "Activities" }],
+        pages: [{ name: "Account" },{ name: "Activities" }],
       },
       thead: [
         { title: "IP Address", classes: "text-nowrap pl-10" },
