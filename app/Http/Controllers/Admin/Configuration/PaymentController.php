@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Configuration\Payment;
 use App\Http\Helper;
+use App\Enums\PaymentGateway as PaymentGatewayEnum;
 
 class PaymentController extends Controller
 {
@@ -19,15 +20,19 @@ class PaymentController extends Controller
         
         // Validate incoming request data
         $request->validate([
-            'provider' => 'required|in:Stripe,Paypal,Razorpay',
+            'provider' => 'required|in:Stripe,Paypal,Razorpay,Cashfree',
             'client_id' => 'required|max:255',
             'client_secret' => 'required|max:255',
-            'mode' => 'nullable|required_if:provider,Paypal|in:sandbox,live'
+            'mode' => 'nullable|required_if:provider,Paypal|required_if:provider,Cashfree|in:sandbox,live'
         ],[
             'mode.required_if' => "The mode field is required."
         ]);
 
         try {
+            if ($request->provider == PaymentGatewayEnum::CASHFREE()) {
+                $request->mode = $request->mode == 'live' ? 'production' : $request->mode;
+            }
+            
             // Store or update payment configuration
             Payment::updateOrCreate([
                 'provider' => $request->provider],[
