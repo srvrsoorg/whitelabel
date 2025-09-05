@@ -33,7 +33,6 @@
         </div>
       </div>
       <div class="flex justify-end gap-5 items-center mt-5 xs:mt-0">
-        <Button @click="openModal"> Create </Button>
         <button
           @click="getUsers(pagination.current_page)"
           :class="[
@@ -50,6 +49,7 @@
             refresh
           </span>
         </button>
+        <Button @click="openModal"> Create </Button>
       </div>
     </div>
   </div>
@@ -462,7 +462,7 @@
     :confirmationTitle="title"
     :btnBgColor="action == 'active' ? 'bg-green-500' : 'bg-red-500'"
     :submitBtnTitle="`Yes, I'm Sure`"
-    :disableButton="action !== 'active' && reason.length === 0"
+    :disableButton="action !== 'active' && !reason" 
     @confirm="submit"
     @closeModal="closeModal"
     >

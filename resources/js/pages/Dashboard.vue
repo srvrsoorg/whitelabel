@@ -9,10 +9,10 @@
         :isSetBilling="isSetBilling"
       />
     </template>
-    <template v-else-if="!servers.length && search == ''">
+    <template v-else-if="!servers.length && search == '' && !isSearching">
       <ConnectServer />
     </template>
-    <template v-else-if="search !== '' || servers.length">
+    <template v-else>
       <Breadcrumb :breadcrumb="breadcrumb" />
       <div class="sm:flex justify-between items-center mb-3">
         <p class="text-xl text-[#31363f] font-medium">Servers</p>
@@ -134,7 +134,25 @@
                   >
                 </div>
                 <div class="max-w-[200px]">
-                  <router-link 
+                  <button
+                    v-if="server.agent_status == '1'"
+                    @click="redirectToHostingPanel(server.id)"
+                    class="-pl-[1px] truncate block text-[14px] font-medium"
+                    role="link"
+                    tabindex="0"
+                    v-tooltip="server.name"
+                  >
+                    {{ server.name }}
+                  </button>
+                  <p
+                    v-else-if="server.agent_status == 0 || server.agent_status === 'failed'"
+                    class="-pl-[1px] truncate block text-[14px] font-medium"
+                    v-tooltip="server.name"
+                  >
+                    {{ server.name }}
+                  </p>
+                  <router-link
+                    v-else
                     :to="{ name: 'InstallationStatus', params: { server: server.id } }"
                     class="-pl-[1px] truncate block text-[14px] font-medium"
                     role="link"
@@ -163,20 +181,19 @@
             >
               <div class="text-gray-500 py-0.5 flex items-center gap-2.5" v-if="server.plan">
                 <div class="flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Cores'">
+                    database
+                  </span>
+                  <p>
+                    {{ server.plan.cores}}
+                  </p>
+                </div>
+                <div class="flex items-center gap-0.5">
                   <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
                     memory
                   </span>
                   <p class="">
-                    {{ server.plan.ram ? server.plan.ram : "-" }} MB
-                  </p>
-                </div>
-                <div class="flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Bandwidth'">
-                    database
-                  </span>
-                  <p>
-                    {{ server.plan.bandwidth ? server.plan.bandwidth : "-" }}
-                    {{server.provider_name == 'hetzner'?'TB':"GB"}}
+                    {{ (server.plan.ram /1024).toFixed(1) }} GB
                   </p>
                 </div>
                 <div class="flex items-center gap-0.5">
@@ -435,6 +452,13 @@ export default {
   computed: {
     ...mapState(useAuthStore, ["user"]),
   },
+  watch:{
+    search(newVal,preValue){
+        if (preValue) {
+            this.isSearching = true
+        }
+    }
+  },
   data() {
     return {
       breadcrumb: {
@@ -447,6 +471,7 @@ export default {
       serverData: null,
       showLoader: false,
       processing: false,
+      isSearching:false,
       servers: [],
       CloudLogos: CloudLogo,
       search: "",
@@ -456,7 +481,7 @@ export default {
           classes: ["max-w-[10rem] w-10 pl-10"],
         },
         {
-          title: "Resources (CPU/RAM/Disk)",
+          title: "Resources (Cores/RAM/Disk)",
           classes: ["w-10 whitespace-nowrap"],
         },
         {
@@ -633,9 +658,9 @@ export default {
   },
   async mounted() {
     this.debouncedGetServers = this.$debounce(this.getServers, 500);
+    await this.getServers();
     await this.getProviders();
     await this.getEnabledProviders();
-    await this.getServers();
   },
 };
 </script>

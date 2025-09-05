@@ -7,10 +7,6 @@
     </h1>
 
     <div class="flex gap-5">
-      <Button @click="openModal('create')">
-        <p>Create</p>
-      </Button>
-
       <button
         @click="fetchTransaction(pagination.current_page)"
         type="button"
@@ -25,6 +21,9 @@
           refresh
         </span>
       </button>
+      <Button @click="openModal('create')">
+        Create
+      </Button>
     </div>
   </div>
 
@@ -178,7 +177,7 @@
     :modelIcon="'universal_currency'"
     :modalTitle="modalTitle"
     :titleClass="'text-lg font-font-semibold border-b'"
-    :customClass="['md:max-w-xl']"
+    :customClass="['md:max-w-2xl']"
     @closeModal="closeModal"
   >
     <form>
@@ -401,23 +400,23 @@
           ></small>
         </div>
 
-        <div class="">
-          <label for="payment_link" class="text-tiny font-medium"
-            >Payment Link</label
-          >
-          <input
-            v-model="payload.payment_link"
-            type="text"
-            name="payment_link"
-            id="payment_link"
-            class="border text-gray-900 text-sm mt-2 rounded-lg border-gray-300 focus:border-sa-500 focus:ring-0 block w-full p-2"
-            placeholder="Enter Payment Link..."
-          />
-          <small
-            class="text-red-500 error_message text-xs"
-            id="payment_link_message"
-          ></small>
-        </div>
+      </div>
+      <div class="md:mt-4 mt-2">
+        <label for="payment_link" class="text-tiny font-medium"
+          >Payment Link</label
+        >
+        <input
+          v-model="payload.payment_link"
+          type="text"
+          name="payment_link"
+          id="payment_link"
+          class="border text-gray-900 text-sm mt-2 rounded-lg border-gray-300 focus:border-sa-500 focus:ring-0 block w-full p-2"
+          placeholder="Enter Payment Link..."
+        />
+        <small
+          class="text-red-500 error_message text-xs"
+          id="payment_link_message"
+        ></small>
       </div>
       <template v-if="payload.status == 3">
         <hr class="my-3" />
