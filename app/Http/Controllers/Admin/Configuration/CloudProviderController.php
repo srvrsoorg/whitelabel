@@ -1193,13 +1193,7 @@ class CloudProviderController extends Controller
 
             // Map plans to desired format
             $sizes = collect($regionPlans)->map(function($row){
-                if($row->type == "vhf") {
-                    $name = "High Frequency";
-                } else if($row->type == "vdc") {
-                    $name = "Dedicated Cloud";
-                } else {
-                    $name = "Cloud Compute";
-                }
+                $name = Helper::getVultrInstanceTypeName($row->id);
 
                 return [
                     'name'=>$name,
@@ -1353,7 +1347,7 @@ class CloudProviderController extends Controller
                 if(sizeof($price) > 0 && $row->architecture!='arm') {
                     $basePrice = $price[0]->price_monthly->net;
                     $priceWithSurcharge = $basePrice + 0.50; // Add 0.50 euros surcharge
-                    $bandwidth = $price[0]->included_traffic / 1099511627776; // Convert included_traffic to TB
+                    $bandwidth = $price[0]->included_traffic / 1073741824; // Convert included_traffic to GB
 
                     return [
                         'name'=>$name,
