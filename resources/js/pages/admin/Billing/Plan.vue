@@ -8,14 +8,6 @@
         <b class="font-medium">Note:</b> You don’t have any cloud providers
         integrated yet. Please add one first, then you’ll be able to set up
         plans.
-        <router-link
-          class="underline"
-          :to="{
-            name: 'integrateCloudPlatForms',
-          }"
-        >
-          Integrate Now
-        </router-link>
       </p>
     </div>
   </template>
@@ -156,7 +148,7 @@
       <Table :head="cloudPlatForms.thead" v-else>
         <tr>
           <td
-            :colspan="3"
+            :colspan="6"
             class="text-center whitespace-nowrap py-4 px-4"
           >
             {{ refreshing ? "Please Wait" : "No Data Found" }}

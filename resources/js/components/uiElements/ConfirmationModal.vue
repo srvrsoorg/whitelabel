@@ -78,7 +78,7 @@
                     class="fa-solid fa-circle-notch fa-spin mr-1 self-center"
                   ></i>
                   {{ showBtnLoader ? "Processing" : submitBtnTitle }}
-                  <span class="ml-1" v-if="timer > 0 && !disableButton">
+                  <span class="ml-1" v-if="timer > 0">
                     ({{ timer }})
                   </span>
                 </button>
@@ -147,7 +147,10 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.timer > 0 || this.showBtnLoader || this.disableButton;
+        if (this.timer > 0) {
+            return true; // ⏳ 5 second wait
+        }
+        return this.timer > 0 || this.showBtnLoader || this.disableButton;
     },
   },
   watch: {

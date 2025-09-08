@@ -51,16 +51,11 @@
           />
         </div>
         <Button
-          :class="['rounded-l-none whitespace-nowrap ']"
+          :class="['rounded-l-none whitespace-nowrap py-2.5 disabled:opacity-75']"
           @click="addCredit"
-          :disabled="processing || amount === ''"
-        >
-          <template v-if="processing">
-            <span>Please Wait</span>
-          </template>
-          <template v-else>
-            <p class="py-0.5">Add Credits</p>
-          </template>
+          :disabled="amount == ''"
+        > 
+          Add Credits
         </Button>
       </div>
 
@@ -104,7 +99,7 @@
             <div class="flex-1">
               <input 
                 type="number" 
-                v-model="reminder_minimum_credit"
+                v-model="user.reminder_minimum_credit"
                 class="w-full text-sm p-2 sm:p-2.5 rounded-lg border border-slate-300 focus:border-sa-500 focus:ring-0"
                 placeholder="Enter Minimum Credit"
               >
@@ -117,10 +112,10 @@
             </div>
             <Button
               class="w-full sm:w-auto px-4 py-2.5 text-sm"
-              :disabled="reminder_minimum_credit === 'null' || !isValidMinimumCredit || processing"
+              :disabled="saveDisabled"
               @click="updateReminderMinCredit()"
             >
-              {{ processing ? 'processing...' : 'Save' }}
+                {{ minimumCreditReminder.processing ? 'Please Wait' : 'Save' }}
             </Button>
           </div>
         </div>
@@ -378,7 +373,10 @@ export default {
           name: "December",
         },
       ],
-      reminder_minimum_credit: this.user?.reminder_minimum_credit || 0,
+      minimumCreditReminder: {
+        processing: false,
+        hasSavedValue: false,
+      },
       selectedMonth: new Date().getMonth() + 1,
       year: [],
       processing: false,
@@ -396,27 +394,34 @@ export default {
         return parseFloat(this.user.credits);
       }
     },
-    isValidMinimumCredit() {
-    const value = parseFloat(this.reminder_minimum_credit);
-    return !isNaN(value) && value >= 0;
-  }
+    saveDisabled() {
+      return (
+        this.minimumCreditReminder.processing ||
+        (this.isEmpty(this.user?.reminder_minimum_credit) && !this.minimumCreditReminder.hasSavedValue)
+      )
+    }
   },
   watch: {
-  'user.reminder_minimum_credit': {
-    immediate: true,
-    handler(newVal) {
-      this.reminder_minimum_credit = newVal;
-    }
-  }
+  user: {
+	  immediate: true,
+      handler(u) {
+		  if (u) this.minimumCreditReminder.hasSavedValue = !this.isEmpty(u.reminder_minimum_credit)
+		}
+	}
 },
   created() {
     this.getUser();
     this.fetchUsageSummary();
     this.fetchMinAmount();
+    if (this.user) {
+        this.minimumCreditReminder.hasSavedValue = !this.isEmpty(this.user.reminder_minimum_credit)
+    }
   },
   methods: {
     ...mapActions(useAuthStore, ["getUser"]),
-
+	isEmpty(v) {
+		return v === null || v === undefined || v === ''
+	},
     addCredit() {
       const amount = parseFloat(this.amount);
       if (!this.paymentGateways.length) {
@@ -488,13 +493,17 @@ export default {
         });
     },
     async updateReminderMinCredit() {
-      this.processing = true; 
+      this.minimumCreditReminder.processing = true;
+	  this.hideError()
       this.$axios
         .patch("/reminder-minimum-credit",{
-          reminder_minimum_credit : this.reminder_minimum_credit
+          reminder_minimum_credit : this.user.reminder_minimum_credit
         })
         .then(({ data }) => {
-          this.$toast.success(data.message);
+			this.getUser()
+          	this.$toast.success(data.message);
+        	this.minimumCreditReminder.hasSavedValue = !this.isEmpty(this.user.reminder_minimum_credit)
+
         })
         .catch(({ response }) => {
           if (response.status !== 422) {
@@ -503,7 +512,7 @@ export default {
           this.displayError(response.data);
         })
         .finally(() => {
-          this.processing = false; 
+			this.minimumCreditReminder.processing = false; 
         });
     },
     getYear() {

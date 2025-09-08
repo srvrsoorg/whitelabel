@@ -215,7 +215,7 @@
                 serverDetails.subscription &&
                 serverDetails.subscription.monthly_price
               "
-              >/Monthly</span
+              >/Month</span
             >
           </div>
         </div>
@@ -336,7 +336,8 @@
           <p>SSH Login</p>
           <button
             @click="copyToClipboard(sshLoginCommand)"
-            class="border border-primary rounded px-1 flex justify-center items-center p-1"
+            :disabled="serverDetails.agent_status!=='1'"
+            class="border border-primary rounded px-1 flex justify-center items-center p-1 disabled:opacity-50"
           >
             <span class="material-symbols-outlined text-blue-500 text-[18px]">
               content_copy
@@ -359,7 +360,7 @@
           serverDetails && serverDetails?.subscription
             ? formatCurrency(serverDetails?.subscription?.monthly_price)
             : 0
-        }}/Monthly</span
+        }}/Month</span
       >
     </div>
     <div class="flex justify-between gap-5 flex-wrap text-tiny mt-2">

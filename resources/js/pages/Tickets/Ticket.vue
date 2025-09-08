@@ -30,7 +30,6 @@
         </div>
       </div>
       <div class="flex items-center justify-end gap-5 mt-5 sm:mt-0">
-        <Button @click="openModal"> Create </Button>
         <button
           @click="fetchTicket(pagination.current_page)"
           :class="[
@@ -46,6 +45,7 @@
             refresh
           </span>
         </button>
+        <Button @click="openModal"> Create </Button>
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@
                   ? 'bg-custom-700 text-black'
                   : 'bg-custom-500 text-white'
                 : 'bg-[#CBD5E0] text-white',
-              'rounded-full px-2  text-[12px] flex justify-center items-center',
+              'rounded-full  px-2.5 py-[1px]  text-[12px] flex items-center',
             ]"
             >{{ tab.count }}</span
           >

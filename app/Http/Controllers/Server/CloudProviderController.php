@@ -327,7 +327,7 @@ class CloudProviderController extends Controller
                         'cpu_core' => "{$row['cpuCount']}",
                         'disk_size_in_gb' => "{$row['diskSizeInGb']}",
                         'price' => $serverPlan['price_per_month'],
-                        'bandwidth' => $serverPlan['bandwidth'],
+                        'bandwidth' => $row['transferPerMonthInGb'],
                         'visible' => $serverPlan['visible'],
                     ];
                 }
@@ -411,7 +411,7 @@ class CloudProviderController extends Controller
                     'cpu_core' => "{$row->vcpus}",
                     'disk_size_in_gb' => "{$row->disk}",
                     'price' => $serverPlan['price_per_month'],
-                    'bandwidth' => $serverPlan['bandwidth'],
+                    'bandwidth' => $row->transfer * 1000,
                     'visible' => $serverPlan['visible'],
                 ];
             }
@@ -470,13 +470,7 @@ class CloudProviderController extends Controller
             })->first();
 
             if ($serverPlan) {
-                if ($row->type == "vhf") {
-                    $name = "High Frequency";
-                } else if ($row->type == "vdc") {
-                    $name = "Dedicated Cloud";
-                } else {
-                    $name = "Cloud Compute";
-                }
+                $name = Helper::getVultrInstanceTypeName($row->id);
 
                 return [
                     'name' => $name,
@@ -485,7 +479,7 @@ class CloudProviderController extends Controller
                     'cpu_core' => "{$row->vcpu_count}",
                     'disk_size_in_gb' => "{$row->disk}",
                     'price' => $serverPlan['price_per_month'],
-                    'bandwidth' => $serverPlan['bandwidth'],
+                    'bandwidth' => $row->bandwidth,
                     'visible' => $serverPlan['visible'],
                 ];
             }
@@ -558,7 +552,7 @@ class CloudProviderController extends Controller
                     'cpu_core' => $row->vcpus,
                     'disk_size_in_gb' => $row->disk / 1024,
                     'price' => $serverPlan['price_per_month'],
-                    'bandwidth' => $serverPlan['bandwidth'],
+                    'bandwidth' => $row->transfer,
                     'visible' => $serverPlan['visible'],
                 ];
             }
@@ -628,7 +622,7 @@ class CloudProviderController extends Controller
                     'cpu_core' => $row->cores,
                     'disk_size_in_gb' => $row->disk,
                     'price' => $serverPlan['price_per_month'],
-                    'bandwidth' => $serverPlan['bandwidth'] * 1000, // convert to gb
+                    'bandwidth' => $price[0]->included_traffic / 1073741824,  // Convert Bytes to GB
                     'visible' => $serverPlan['visible'],
                 ];
             }

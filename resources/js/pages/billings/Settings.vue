@@ -275,9 +275,9 @@
         </div>
       </div>
     </div>
-    <hr class="mx-5 xl:mx-14 my-5 xl:mt-10 text-[#CBD5E0]" />
+    <hr class="mx-5 xl:mx-14 my-6 xl:mt-10 text-[#CBD5E0]" />
     <div class="px-5 xl:px-14 xl:my-4">
-      <div class="flex justify-between items-center gap-3">
+      <div class="xs:flex justify-between items-center gap-3">
         <div class="">
           <label for="other" class="block font-medium leading-6"
             >Tax Identification Numbers</label
@@ -300,7 +300,7 @@
               isLightColor
                 ? 'bg-custom-200 text-custom-700'
                 : 'bg-custom-50 text-custom-500',
-              'mt-2 sm:mt-0 flex justify-end items-center gap-1',
+              'mt-3 sm:mt-0 flex justify-end items-center gap-1',
             ]"
             type="button"
             @click="addTax()"
@@ -314,13 +314,13 @@
     <div
       v-for="(items, index) in billingDetails.tax_numbers"
       :key="index"
-      class="grid sm:grid-cols-2 grid-cols-1 mt-5 sm:my-7 my-3 xl:px-14 px-5 xl:gap-x-30 2xl:gap-x-40 sm:gap-x-20 gap-4 items-center"
+      class="grid sm:grid-cols-2 grid-cols-1 mt-4 xl:my-5 xl:px-14 px-5 xl:gap-x-30 2xl:gap-x-40 sm:gap-x-20 gap-4 items-center"
     >
       <div
         class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
       >
         <div
-          class="xl:col-span-4 2xl:col-span-3 md:pt-0 pt-2 sm:col-span-3 col-span-12"
+          class="xl:col-span-4 2xl:col-span-3 sm:col-span-3 col-span-12"
         >
           <label class="font-medium text-nowrap text-tiny">Label</label>
         </div>
@@ -341,7 +341,7 @@
       <div
         class="grid 2xl:grid-cols-12 xl:grid-cols-10 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
       >
-        <div class="md:pt-0 pt-2 sm:col-span-3 col-span-12">
+        <div class="sm:col-span-3 col-span-12">
           <label class="font-medium text-tiny">Number</label>
         </div>
         <div class="2xl:col-span-9 xl:col-span-7 col-span-12 flex gap-5">
