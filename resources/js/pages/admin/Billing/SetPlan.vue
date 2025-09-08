@@ -156,7 +156,7 @@
         </td>
 
         <td class="whitespace-nowrap py-5 px-4">
-          {{ (size.bandwidth) }} {{ cloudProvider.provider === "hetzner" ? "TB" : "GB" }} 
+          {{(size.bandwidth*0.001).toFixed(1) }} TB 
         </td>
         <td class="whitespace-nowrap px-4 py-4">
             {{ currency === 'EUR' ? "€" : "$" }}{{ size.price }} / Month

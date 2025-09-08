@@ -54,7 +54,7 @@ class ServerController extends Controller
 
             // Execute the query and paginate results
             $servers = $query->select('id', 'name', 'cloud_provider_id', 'ip', 'user_id', 'plan_id', 'web_server', 'database_type', 'agent_status', 'country_code', 'ssh_port', 'created_at')
-                ->with(['plan:id,ram,bandwidth,disk', 'user:id,email,name,status', 'cloudProvider:id,provider'])
+                ->with(['plan:id,ram,bandwidth,disk,cores', 'user:id,email,name,status', 'cloudProvider:id,provider'])
                 ->orderByDesc('created_at')
                 ->paginate(request()->input('per_page'));
 

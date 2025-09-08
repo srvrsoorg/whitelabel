@@ -1,7 +1,7 @@
 <template>
   <Breadcrumb :breadcrumb="breadcrumb" />
   <div v-if="providerList.length > 0">
-    <h1 class="text-xl text-[#31363f] mb-3 font-medium">Create a Server</h1>
+    <h1 class="text-xl text-[#31363f] mb-5 font-medium">Create a Server</h1>
     <div
       v-if="user"
       :class="[user.email_verified_at === null ? 'mb-8 ' : 'mb-0']"
@@ -33,6 +33,7 @@
         <RadioGroup
           v-model="server.provider"
           :disabled="user.email_verified_at === null"
+           @update:modelValue="onProviderChange"
         >
           <div
             class="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-1 gap-5"
@@ -43,7 +44,6 @@
               :key="provider.id"
               :value="provider.provider"
               v-slot="{ active, checked }"
-              @click="fetchRegion"
               :disabled="user.email_verified_at === null"
             >
               <div
@@ -73,7 +73,7 @@
                       alt=""
                     />
                     <span
-                      class="capitalize justify-center font-medium text-[16px] items-center flex py-3 pb-6"
+                      class="capitalize justify-center font-medium text-[15px] items-center flex py-3 pb-6"
                       >{{ cloudLogos[provider.provider].title }}</span
                     >
                   </div>
@@ -133,9 +133,6 @@
               :key="version.id"
               :value="version.value"
               v-slot="{ active, checked }"
-              :disabled="
-                version.value == '24' && server.provider == 'lightsail'
-              "
             >
               <div
                 :class="[
@@ -144,10 +141,7 @@
                       ? 'border-custom-700'
                       : 'border-custom-500'
                     : '',
-                  'relative flex gap-2  overflow-hidden rounded-lg border ',
-                  version.value == '24' && server.provider == 'lightsail'
-                    ? 'cursor-not-allowed opacity-50'
-                    : 'cursor-pointer',
+                  'relative flex gap-2  overflow-hidden rounded-lg border '
                 ]"
               >
                 <div
@@ -600,7 +594,7 @@
       v-if="server.provider && providerList.length > 0"
     >
       <div
-        v-if="server.region"
+        v-if="server.region !== null && selectPlan.length > 0"
         class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
         aria-hidden="true"
       ></div>
@@ -787,13 +781,15 @@
                   :class="[
                     'text-[#2c3138] text-sm',
                     index !== 0 ? 'border-t' : '',
-                    list.price > credits ? 'opacity-60 cursor-not-allowed' : '',
+                    list.price > credits ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
                     server.sizeSlug === list.slug ? 'bg-custom-50' : ''
                     ]"
                     v-for="(list, index) in newPlanList[0].list"
                     :key="list.slug"
                     v-tooltip="list.price > credits ? `You don't have enough credits for this plan.` : ''"
-                  >
+                    @click="SelectPalnRow(list)"
+                    :disabled="list.price > credits"
+                    >
                   <td
                     class="whitespace-nowrap py-5 px-4 pl-6 truncate"
                     v-if="
@@ -813,61 +809,45 @@
                     {{ list.disk_size_in_gb }} GB
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
-                    {{ (list.bandwidth * 0.001).toFixed(2) }} TB
+                    {{ (list.bandwidth * 0.001).toFixed(1) }} TB
                   </td>
                   <td class="whitespace-nowrap px-4 py-4">
                     {{ formatCurrency(list.price) }} / Month
                   </td>               
                   <td class="text-center px-4 py-4">
                     <RadioGroup v-model="server.sizeSlug">
-                      <RadioGroupOption
-                        as="template"
-                        :value="list.slug"
-                        v-slot="{ checked }"
-                       :disabled="list.price > credits"
-                      >
-                        <div
-                          :class="[
-                            server.sizeSlug && checked
-                              ? isLightColor
-                                ? 'bg-custom-700 text-white'
-                                : 'bg-custom-500 text-white'
-                              : 'bg-gray-200 text-gray-900',
-                            'rounded-md  mx-auto py-2 px-2 max-w-20 shadow-sm focus:outline-none cursor-pointer',
-                             list.price > credits ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                          ]"
-                        >
-                          <RadioGroupOption
+                        <RadioGroupOption
                             as="template"
                             :value="list.slug"
                             :disabled="list.price > credits"
                             v-slot="{ checked, disabled }"
-                          >
+                        >
                             <div
-                              :class="[
-                                disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                              ]"
+                                :class="[
+                                    checked
+                                    ? isLightColor
+                                        ? 'bg-custom-700 text-white'
+                                        : 'bg-custom-500 text-white'
+                                    : 'bg-gray-200 text-gray-900',
+                                    'rounded-md mx-auto py-2 px-2 max-w-20 shadow-sm focus:outline-none',
+                                    disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                ]"
                             >
-                              <RadioGroupLabel
-                                as="span"
-                                class="inline-block text-sm font-medium"
-                                :class="disabled ? '' : ''"
-                              >
-                                <span>{{ server.sizeSlug && checked ? "Selected" : "Select" }}</span>
-                              </RadioGroupLabel>
+                                <RadioGroupLabel
+                                    as="span"
+                                    class="inline-block text-sm font-medium"
+                                >
+                                    {{ checked ? "Selected" : "Select" }}
+                                </RadioGroupLabel>
+                            <span
+                                :class="[
+                                checked ? isLightColor : 'border-transparent',
+                                'pointer-events-none absolute -inset-px rounded'
+                                ]"
+                                aria-hidden="true"
+                            />
                             </div>
-                          </RadioGroupOption>
-                          <span
-                            :class="[
-                              checked
-                                ? isLightColor
-                                : 'border-transparent',
-                              'pointer-events-none absolute -inset-px rounded',
-                            ]"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </RadioGroupOption>
+                        </RadioGroupOption>
                     </RadioGroup>
                   </td>
                 </tr>
@@ -1070,7 +1050,7 @@ export default {
         name: "",
         availabilityZone: "",
         linode_root_password: "",
-        version: "22",
+        version: "24",
         ssh_key: 0,
         add_public_key: "",
       },
@@ -1102,7 +1082,7 @@ export default {
           classes: "",
         },
         {
-          title: "Bandwith",
+          title: "Bandwidth",
           classes: "",
         },
         {
@@ -1196,7 +1176,7 @@ export default {
     "server.provider"(Val) {
         this.server.web_server = 'apache2';
         this.server.database_type = 'mysql';
-        this.server.version = '22';
+        this.server.version = '24';
         this.server.nodejs = false;
         this.server.yarn = false;
         this.server.region = null;
@@ -1204,12 +1184,7 @@ export default {
         this.server.sizeSlug = '';
         this.server.name = '';
         this.server.availabilityZone = '';
-        this.server.linode_root_password = '';
-
-        if(Val == "lightsail" && this.server.version == "24") {
-        this.server.version = "22";
-        }
-        
+        this.server.linode_root_password = '';    
         this.selectRegion = [];
         this.selectPlan = [];
         this.newPlanList = [];
@@ -1230,7 +1205,6 @@ export default {
       this.newPlanList = [];
       this.selectAvailability = [];
       this.server.availabilityZone = null;
-
       if (this.server.provider === "lightsail" && Val) {
         this.fetchAvailabillity();
         this.fetchPlan();
@@ -1252,7 +1226,7 @@ export default {
   },
 
   async mounted() {
-    await this.getProviders();
+    await this.getProviders();    
   },
   methods: {
     setTableHeader() {
@@ -1285,6 +1259,13 @@ export default {
       } else {
         return false;
       }
+    },
+    SelectPalnRow(list) {
+      if (list.price > this.credits) return;
+      this.server.sizeSlug = list.slug;
+    },
+    onProviderChange(){
+      this.fetchRegion()
     },
     async getProviders() {
       this.fetchingProviders = true;

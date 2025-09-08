@@ -439,4 +439,38 @@ class Helper
 			];
 		}
 	}
+
+	public static function getVultrInstanceTypeName($identifier)
+    {
+        try {
+            $typeNameMap = [
+                'all'     => 'All available types',
+                'vc2'     => 'Cloud Compute',
+                'vdc'     => 'Dedicated Cloud',
+                'vhf'     => 'High Frequency Compute',
+                'vhp'     => 'High Performance',
+                'voc-g'   => 'General Purpose Optimized Cloud',
+                'voc-c'   => 'CPU Optimized Cloud',
+                'voc-m'   => 'Memory Optimized Cloud',
+                'voc-s'   => 'Storage Optimized Cloud',
+                'vcg'     => 'Cloud GPU',
+                'voc'     => 'All Optimized Cloud types',
+            ];
+
+            if (!$identifier) {
+                return 'Other';
+            }
+
+            foreach ($typeNameMap as $key => $name) {
+                if (str_contains($identifier, $key)) {
+                    return $name;
+                }
+            }
+
+            return 'Other';
+        } catch (\Exception $e) {
+            \Log::info('Vultr type detection failed: ' . $e->getMessage());
+            return 'Other';
+        }
+    }
 }

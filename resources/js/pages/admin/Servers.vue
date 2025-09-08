@@ -165,18 +165,17 @@
           <div class="text-gray-500" v-if="server.plan">
             <div class="flex items-center gap-2.5">
               <div class="flex items-center gap-0.5">
-              <span class="material-symbols-outlined text-[18px]" v-tooltip="'CPU'">
-                database
-              </span>
-              <p>{{ server.plan.bandwidth }} {{ server.cloud_provider.provider == 'hetzner'?'TB':'GB' }}</p>
+                <span class="material-symbols-outlined text-[18px]" v-tooltip="'Cores'">
+                  database
+                </span>
+                <p>{{ server.plan.cores}}</p>
               </div>
-            <div class="flex items-center gap-0.5">
-              <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
-                memory
-              </span>
-              <p class="">{{ server.plan.ram }} MB</p>
-            </div>
-
+              <div class="flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[20px]" v-tooltip="'RAM'">
+                  memory
+                </span>
+                <p class="">{{ (server.plan.ram/1024).toFixed(1) }} GB</p>
+              </div>
               <div class="flex items-center gap-0.5">
               <span class="material-symbols-outlined text-[18px]" v-tooltip="'Disk'">
                 sd_card
@@ -373,7 +372,7 @@ export default {
         "Server",
         "User",
         {
-          title: "Resources (CPU/RAM/Disk)",
+          title: "Resources (Cores/RAM/Disk)",
           classes: "whitespace-nowrap",
         },
         {

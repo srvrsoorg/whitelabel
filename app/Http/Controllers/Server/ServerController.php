@@ -18,7 +18,7 @@ use Exception, Storage;
 class ServerController extends Controller
 {
     // Server provider ubuntu version
-    private $lightsailUbuntuVersion = ["20" => 'ubuntu_20_04', "22" => 'ubuntu_22_04'];
+    private $lightsailUbuntuVersion = ["20" => 'ubuntu_20_04', "22" => 'ubuntu_22_04', "24" => 'ubuntu_24_04'];
     private $digitalOceanUbuntuVersion = ["20" => 'ubuntu-20-04-x64', "22" => 'ubuntu-22-04-x64',  "24" => 'ubuntu-24-04-x64'];
     private $vultrUbuntuVersion = ["20" => 387, "22" => 1743, "24" => 2284];
     private $linodeUbuntuVersion = ["20" => 'linode/ubuntu20.04', "22" => 'linode/ubuntu22.04', "24" => 'linode/ubuntu24.04'];

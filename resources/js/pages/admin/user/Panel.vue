@@ -2,7 +2,7 @@
   <Breadcrumb :breadcrumb="breadcrumb" />
   <template v-if="user">
     <div class="bg-white shadow flex-1 rounded-md w-full p-5 xl:py-5">
-      <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-5 grid-cols-1">
+      <div class="grid md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 xs:grid-cols-2 gap-5 items-center grid-cols-1">
         <div class="flex items-center space-x-2">
           <div class="relative">
             <div
@@ -72,7 +72,7 @@
             </span>
           </div>
         </div>
-        <div class="sm:flex items-center gap-5">
+        <div class="md:flex lg:justify-start xl:justify-end justify-end items-center gap-5">
           <button
             @click="deleteAccounts()"
             :disabled="user.is_admin"

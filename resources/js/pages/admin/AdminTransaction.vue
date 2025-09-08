@@ -232,7 +232,7 @@
     :modalTitle="'Update Transaction'"
     :modelIcon="'universal_currency'"
     :titleClass="'text-lg font-font-semibold border-b'"
-    :customClass="['md:max-w-xl']"
+    :customClass="['md:max-w-2xl']"
   >
     <form>
       <div class="grid md:grid-cols-2 grid-cols-1 gap-2.5 md:gap-4">
@@ -273,9 +273,9 @@
           ></small>
         </div>
       </div>
-      <div class="sm:flex gap-x-4 mt-3">
-        <div class="sm:flex gap-x-4">
-          <div class="sm:w-1/2 w-full">
+      <div class="md:flex gap-x-4 mt-3">
+        <div class="md:flex gap-x-4">
+          <div class="md:w-1/2 w-full">
             <label
               for="amount"
               class="text-tiny font-medium"
@@ -302,7 +302,7 @@
               class="error_message text-red-500 text-xs"
             ></small>
           </div>
-          <div class="sm:w-1/2 w-full mt-4 sm:mt-0">
+          <div class="md:w-1/2 w-full mt-3 md:mt-0">
             <label
               for="coupon_code"
               class="text-tiny font-medium"
@@ -323,9 +323,9 @@
             ></small>
           </div>
         </div>
-        <Button class="max-w-fit min-w-fit sm:mt-8 mt-4" @click="getTotal" :disabled="gettingTotal">{{gettingTotal ? 'Please wait' : 'Get a Total'}}</Button>
+        <Button class="max-w-fit min-w-fit md:mt-8 mt-4" @click="getTotal" :disabled="gettingTotal">{{gettingTotal ? 'Please wait' : 'Get a Total'}}</Button>
       </div>
-      <div class="border rounded-md px-3 py-2 mt-4" v-if="showCostOverview">
+      <div class="border rounded-md px-3 py-2 mt-5" v-if="showCostOverview">
         <span class="text-tiny font-medium">Final Cost Overview</span>
         <span class="text-[11px] mt-0.5 text-gray-500 block">
           Review your total cost, including taxes. Ensure all details are correct  before proceeding with payment.
@@ -415,23 +415,23 @@
             id="status_message"
           ></small>
         </div>
-        <div class="">
-          <label for="payment_link" class="text-tiny font-medium"
-            >Payment Link</label
-          >
-          <input
-            v-model="transaction.payment_link"
-            type="text"
-            name="payment_link"
-            id="payment_link"
-            class="border text-gray-900 text-sm mt-2 rounded-lg border-gray-300 focus:border-sa-500 focus:ring-0 block w-full p-2"
-            placeholder="Enter Payment Link..."
-          />
-          <small
-            class="text-red-500 error_message text-xs"
-            id="payment_link_message"
-          ></small>
-        </div>
+      </div>
+      <div class="my-2 md:my-3">
+        <label for="payment_link" class="text-tiny font-medium"
+          >Payment Link</label
+        >
+        <input
+          v-model="transaction.payment_link"
+          type="text"
+          name="payment_link"
+          id="payment_link"
+          class="border text-gray-900 text-sm mt-2 rounded-lg border-gray-300 focus:border-sa-500 focus:ring-0 block w-full p-2"
+          placeholder="Enter Payment Link..."
+        />
+        <small
+          class="text-red-500 error_message text-xs"
+          id="payment_link_message"
+        ></small>
       </div>
       <template v-if="transaction.status == 3">
         <hr class="mt-4 mb-3"/>

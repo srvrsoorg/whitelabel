@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->bigInteger('reminder_minimum_credit')->nullable()->after('credits');
+            $table->bigInteger('confirmation_timer')->default(5)->after('region_code');
         });
     }
 
@@ -22,9 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'reminder_minimum_credit')) {
-                $table->dropColumn('reminder_minimum_credit');
-            }
+            $table->dropColumn(['reminder_minimum_credit', 'confirmation_timer']);
         });
     }
 };
