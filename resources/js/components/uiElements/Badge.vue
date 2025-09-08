@@ -1,7 +1,7 @@
 <template>
     <span
         :class="badgeClasses"
-        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset"
+        class="inline-flex items-center rounded-full px-2.5 py-1 text-xs ring-1 ring-inset"
     >
         {{ badgeTitle }}
     </span>

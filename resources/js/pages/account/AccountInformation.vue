@@ -219,8 +219,8 @@
               label="name"
               track-by="value"
             >
-              <template v-slot:caret>
-                <div class="multiselect__select">
+              <template  #caret="{ toggle }">
+                <div class="multiselect__select" @mousedown.prevent.stop="toggle">
                   <span class="material-symbols-outlined mt-0.5 text-xl">
                     keyboard_arrow_down
                   </span>

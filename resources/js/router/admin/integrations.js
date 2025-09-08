@@ -22,5 +22,26 @@ export default [
             layout: AdminLayout,
         },
     },
-    
+    {
+        name: "Webhooks",
+        path: "integration/webhooks",
+        component: () => import("@/pages/admin/Integration/Webhooks.vue"),
+        meta: {
+            middleware: ["auth", "admin"],
+            title: "Webhooks | Integrations",
+            setupReqiures: true,
+            layout: AdminLayout,
+        },
+    },
+    {
+        name: "WebhookHistory",
+        path: "integration/webhooks/:id/history",
+        component: () => import("@/pages/admin/Integration/WebhookHistory.vue"),
+        meta: {
+            middleware: ["auth", "admin"],
+            title: "Webhook History | Integrations",
+            setupReqiures: true,
+            layout: AdminLayout,
+        },
+    },
 ];

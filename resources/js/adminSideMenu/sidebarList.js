@@ -62,6 +62,11 @@ export default [
                 name: "SMTP",
                 url: "/admin/integration/smtp",
             },
+            {
+                id: 4,
+                name: "Webhooks",
+                url: "/admin/integration/webhooks",
+            }
         ],
     },
     {
