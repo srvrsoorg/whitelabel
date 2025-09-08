@@ -369,6 +369,7 @@
             <option value="Paypal">Paypal</option>
             <option value="Razorpay">Razorpay</option>
             <option value="Stripe">Stripe</option>
+            <option value="Cashfree">Cashfree</option>
           </select>
           <small
             class="text-red-500 error_message text-xs"

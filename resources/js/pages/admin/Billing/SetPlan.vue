@@ -117,7 +117,14 @@
         <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Storage</th>
         <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Bandwidth</th>
         <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Price</th>
-        <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Amount ($)</th>
+         <th
+          class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363F] flex items-center gap-1"
+        >
+          {{ `Amount (${currencySymbol})` }}
+          <span class="text-custom-500 cursor-pointer material-symbols-outlined text-[16px]" v-tooltip="`This input field allows setting a custom price that users will be charged when they create a server. The value entered here will be shown to users instead of the actual provider price and will be used for billing purposes.`">
+            info
+          </span>
+        </th>
         <th class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f] tracking-wider">
             <label for="toggleAllPlan" class="cursor-pointer">Active</label>
             <input
@@ -304,6 +311,7 @@ export default {
     this.fetchPlans();
     this.fetchRegions();
     this.fetchSizes();
+    this.currencySymbol = window?.siteSettings?.currency_symbol;
   },
   methods: {
     isInPlan(regionValue) {

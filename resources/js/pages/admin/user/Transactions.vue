@@ -353,6 +353,7 @@
             <option value="Paypal">Paypal</option>
             <option value="Razorpay">Razorpay</option>
             <option value="Stripe">Stripe</option>
+            <option value="Cashfree">Cashfree</option>
           </select>
           <small
             class="text-red-500 error_message text-xs"
@@ -495,7 +496,7 @@
             v-if="processing"
             class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
           ></i>
-          {{ processing ? "Please wait" : "Create" }}
+          {{ processing ? "Please wait" : buttonType }}
         </Button>
         <button @click="closeModal" type="button" class="rounded-md border font-medium px-4 py-2 text-center text-sm">
         Cancel
@@ -604,6 +605,8 @@ export default {
       promocodes: [],
       gettingTotal: false,
       showCostOverview: false,
+      modalTitle:'',
+      buttonType:'',
     };
   },
 
@@ -613,6 +616,7 @@ export default {
       if (action === "create") {
         this.isEditing = false;
         this.modalTitle = "Create Transaction";
+        this.buttonType = "Create"
         this.payload = {
           id: null,
           service: "",
@@ -633,6 +637,7 @@ export default {
         };
       } else if (action === "edit") {
         this.modalTitle = " History";
+        this.buttonType = "Update"
         this.isEditing = true;
         this.transaction_id = transaction.id;
         this.payload = {

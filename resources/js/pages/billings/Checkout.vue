@@ -167,7 +167,7 @@
                   <div
                     :class="[
                       'justify-between items-center px-5 flex',
-                      gateway == 'Paypal' ? 'py-2.5' : 'py-1',
+                      gateway == 'Paypal' || gateway=='Cashfree' ? 'py-2.5' : 'py-1',
                     ]"
                   >
                     <div class="flex items-center">
@@ -401,6 +401,11 @@ export default {
           src: "/logo/stripe-logo.png",
           width: "70px",
           height: "25px",
+        },
+        Cashfree: {
+          src: "/logo/cashfree.svg",
+          width: "70px",
+          height: "30px",
         },
       };
       return (

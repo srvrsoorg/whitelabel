@@ -15,10 +15,16 @@
           class="w-28 h-auto"
         />
         <img
-          v-if="payment.provider == 'Stripe'"
-          src="/logo/stripe-logo.png"
+        v-if="payment.provider == 'Stripe'"
+        src="/logo/stripe-logo.png"
+        :alt="app_name"
+        class="w-auto h-10"
+        />
+        <img
+          v-if="payment.provider == 'Cashfree'"
+          src="/logo/cashfree.svg"
           :alt="app_name"
-          class="w-auto h-10"
+          class="w-28 h-auto"
         />
       </div>
     </div>
@@ -156,7 +162,7 @@
               </div>
             </div>
           </div>
-          <div class="mt-5" v-if="payment.provider === 'Paypal'">
+          <div class="mt-5" v-if="['Paypal','Cashfree'].includes(payment.provider)">
             <div
               class="border border-primary shadow-sm py-3.5 rounded-md flex justify-between items-start sm:items-center px-3"
             >
