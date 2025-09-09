@@ -36,14 +36,19 @@ class SendWebhook implements ShouldQueue
      */
     public function handle(): void
     {
+        $headers = [];
+
         try {
+            $headers = $this->getHeaders();
+
             // Send POST request to the webhook URL
-            $response = Http::post($this->webhook->url, $this->payload);
+            $response = Http::withHeaders($headers)->post($this->webhook->url, $this->payload);
 
             // Store webhook log on success/failure response
             $this->webhook->logs()->create([
                 'webhook_event_id' => $this->event?->id,
                 'payload'          => $this->payload,
+                'request_headers'  => $headers, 
                 'response_code'    => $response->status(),
                 'response_body'    => $response->body(),
                 'status'           => $response->successful() ? 'success' : 'failed',
@@ -54,11 +59,34 @@ class SendWebhook implements ShouldQueue
             $this->webhook->logs()->create([
                 'webhook_event_id' => $this->event?->id,
                 'payload'          => $this->payload,
+                'request_headers'  => $headers,
                 'response_code'    => 500,
                 'response_body'    => $e->getMessage(),
                 'status'           => 'failed',
                 'delivered_at'     => now(),
             ]);
         }
+    }
+
+    /**
+     * Prepare webhook headers
+     */
+    protected function getHeaders(): array
+    {
+        $headers = [
+            'Content-Type'        => 'application/json',
+            'X-Webhook-Event'     => strtolower($this->payload['event']['type']) . '.' . strtolower($this->payload['event']['action']),
+            'X-Webhook-Timestamp' => now()->toIso8601String(),
+        ];
+
+        $headers['Host'] = parse_url($this->webhook->url, PHP_URL_HOST);
+
+        if ($this->webhook->secret) {
+            // Create HMAC signature using SHA256
+            $signature = hash_hmac('sha256', json_encode($this->payload), $this->webhook->secret);
+            $headers['X-Webhook-Signature'] = $signature;
+        }
+
+        return $headers;
     }
 }

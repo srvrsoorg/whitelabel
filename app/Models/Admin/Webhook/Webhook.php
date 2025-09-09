@@ -27,6 +27,7 @@ class Webhook extends Model
     protected $fillable = [
         'name', 
         'url', 
+        'secret',
         'status'
     ];
 

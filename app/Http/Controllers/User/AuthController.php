@@ -57,6 +57,17 @@ class AuthController extends Controller
             // Log activity
             Helper::createActivity($user, 'Account', 'Update', 'Profile details have been updated.');
 
+            // ✅ Fire webhook directly here
+            app(\App\Services\WebhookService::class)->send('User', 'Updated', [
+                'id'           => $user->id,
+                'name'         => $user->name,
+                'email'        => $user->email,
+                'country_name' => $user->country_name,
+                'region_name'  => $user->region_name,
+                'timezone'     => $user->timezone,
+                'updated_at'   => $user->updated_at,
+            ]);
+
             // ✅ Success response
             return response()->json([
                 'message' => 'Profile has been updated successfully.',

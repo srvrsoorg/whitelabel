@@ -31,6 +31,7 @@ class UserObserver
             'email' => $user->email,
             'country_name' => $user->country_name,
             'region_name' => $user->region_name,
+            'timezone' => $user->timezone,
             'created_at' => $user->created_at,
         ]);
     }
@@ -54,6 +55,7 @@ class UserObserver
             'email' => $user->email,
             'country_name' => $user->country_name,
             'region_name' => $user->region_name,
+            'timezone' => $user->timezone,
             'deleted_at' => $user->deleted_at,
         ]);
     }

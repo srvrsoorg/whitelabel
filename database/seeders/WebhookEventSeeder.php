@@ -16,6 +16,7 @@ class WebhookEventSeeder extends Seeder
          $events = [
             // User events
             ['name' => 'user.created', 'type' => 'User', 'action' => 'Created'],
+            ['name' => 'user.udpated', 'type' => 'User', 'action' => 'Updated'],
             ['name' => 'user.deleted', 'type' => 'User', 'action' => 'Deleted'],
 
             // Server events
@@ -31,7 +32,7 @@ class WebhookEventSeeder extends Seeder
             // Ticket events
             ['name' => 'ticket.created', 'type' => 'Ticket', 'action' => 'Created'],
             ['name' => 'ticket.closed', 'type' => 'Ticket', 'action' => 'Closed'],
-
+            ['name' => 'ticket.reopened', 'type' => 'Ticket', 'action' => 'Reopened'],
         ];
 
         foreach ($events as $event) {

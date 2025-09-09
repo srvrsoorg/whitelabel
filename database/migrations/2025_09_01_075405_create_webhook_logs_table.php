@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('webhook_id')->nullable();
             $table->unsignedBigInteger('webhook_event_id')->nullable();
             $table->json('payload')->nullable();
+            $table->json('request_headers')->nullable();
             $table->integer('response_code')->nullable();
             $table->text('response_body')->nullable();
             $table->string('status')->default('pending');

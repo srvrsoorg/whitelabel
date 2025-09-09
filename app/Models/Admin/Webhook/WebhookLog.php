@@ -29,6 +29,7 @@ class WebhookLog extends Model
         'webhook_id', 
         'webhook_event_id',
         'payload',
+        'request_headers',
         'response_code',
         'response_body',
         'status',
@@ -45,6 +46,7 @@ class WebhookLog extends Model
      */
     protected $casts = [
         'payload' => 'array',
+        'request_headers' => 'array',
         'delivered_at' => 'datetime',
     ];
 

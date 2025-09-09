@@ -45,7 +45,7 @@ class WebhookService
                 'timestamp' => now(),
             ],
             'payload' => $payload,
-            'message'   => $this->formatMessage($type, $action, $payload),
+            'message' => $this->formatMessage($type, $action, $payload),
         ];
 
         // Dispatch job for each webhook subscribed to this event
@@ -69,6 +69,7 @@ class WebhookService
             },
             'user' => match (strtolower($action)) {
                 'created' => "New user registered: {$payload['email']} (ID: {$payload['id']}).",
+                'updated' => "User(#{$payload['id']}) profile has been updated.",
                 'deleted' => "User(#{$payload['id']}) account has been deleted.",
                 default   => "User event: {$action}.",
             },
@@ -80,6 +81,7 @@ class WebhookService
             'ticket' => match (strtolower($action)) {
                 'created' => "Ticket(#{$payload['id']}) has been created successfully.",
                 'closed' => "Ticket(#{$payload['id']}) has been closed.",
+                'reopened' => "Ticket(#{$payload['id']}) has been re-opened.",
                 default   => "Ticket event: {$action}.",
             },
             default => ucfirst($type) . " {$action} event triggered.",

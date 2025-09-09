@@ -40,14 +40,16 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
-        if($ticket->status == 'closed') {
-            $this->webhookService->send('Ticket', 'Closed', [
-                'id' => $ticket->id,
-                'user_id' => $ticket->user_id,
-                'title' => $ticket->title,
+        if ($ticket->wasChanged('status')) {
+            $action = $ticket->status == 'open' ? 'Reopened' : 'Closed';
+
+            $this->webhookService->send('Ticket', $action, [
+                'id'         => $ticket->id,
+                'user_id'    => $ticket->user_id,
+                'title'      => $ticket->title,
                 'department' => $ticket->department,
-                'status' => $ticket->status,
-                'updated_at' => $ticket->updated_at
+                'status'     => $ticket->status,
+                'updated_at' => $ticket->updated_at,
             ]);
         }
     }

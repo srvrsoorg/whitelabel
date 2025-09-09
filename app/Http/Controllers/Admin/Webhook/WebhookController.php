@@ -45,20 +45,56 @@ class WebhookController extends Controller
         $request->validate([
             'name' => 'required|string',
             'url' => 'required|url',
+            'secret' => 'nullable|string',
             'status' => 'required|boolean',
             'event_ids' => 'required|array|min:1',
             'event_ids.*' => 'exists:webhook_events,id',
+
         ]);
         
         try {
-            $webhook = Webhook::create($request->only(['name','url','status']));
+            $webhook = Webhook::create($request->only(['name','url', 'secret', 'status']));
 
             $webhook->events()->sync($request->event_ids);
 
             Helper::adminActivity(auth()->user(), 'Webhook', 'Create', 'Webhook ' . ($webhook->name) . ' has been created successfully.');
 
             return response()->json([
-                "message" => "Webhook created successfully."
+                "message" => "Webhook ({$webhook->name}) has been created successfully."
+            ], 200);
+        } catch(\Exception $e) {
+            report($e);
+            return response()->json([
+                "message" => "Something went wrong!"
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a specific webhook with limited details (id, name, url) 
+     * along with its associated events (id, name only).
+     *
+     * @param  Webhook  $webhook
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Webhook $webhook) {
+        try {
+            // Load only the events with id and name
+            $webhook->load('events:id,name');
+
+            // Select only the fields you want from webhook
+            $webhookData = $webhook->only(['id', 'name', 'url']);
+
+            // Attach the events
+            $webhookData['events'] = $webhook->events->map(function($event) {
+                return [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                ];
+            });
+
+            return response()->json([
+                "webhook" => $webhookData
             ], 200);
         } catch(\Exception $e) {
             report($e);
@@ -79,20 +115,21 @@ class WebhookController extends Controller
         $request->validate([
             'name' => 'required|string',
             'url' => 'required|url',
+            'secret' => 'nullable|string',
             'status' => 'required|boolean',
             'event_ids' => 'required|array|min:1',
             'event_ids.*' => 'exists:webhook_events,id',
         ]);
 
         try {
-            $webhook->update($request->only(['name','url','status']));
+            $webhook->update($request->only(['name','url','secret', 'status']));
 
             $webhook->events()->sync($request->event_ids);
 
             Helper::adminActivity(auth()->user(), 'Webhook', 'Update', 'Webhook ' . ($webhook->name) . ' has been updated successfully.');
 
             return response()->json([
-                "message" => "Webhook updated successfully."
+                "message" => "Webhook ({$webhook->name}) has been updated successfully."
             ], 200);
         } catch(\Exception $e) {
             report($e);
@@ -117,7 +154,7 @@ class WebhookController extends Controller
             Helper::adminActivity(auth()->user(), 'Webhook', 'Delete', 'Webhook ' . ($webhookName) . ' has been deleted successfully.');
 
             return response()->json([
-                "message" => "Webhook deleted successfully."
+                "message" => "Webhook ({$webhookName}) has been deleted successfully."
             ], 200);
         } catch(\Exception $e) {
             report($e);
@@ -145,7 +182,7 @@ class WebhookController extends Controller
             Helper::adminActivity(auth()->user(), 'Webhook', 'Update', 'Webhook ' . ($webhook->name) . ' has been ' . $status . '.');
 
             return response()->json([
-                'message' => "Webhook({$webhook->name}) has been {$status} successfully."
+                'message' => "Webhook ({$webhook->name}) has been {$status} successfully."
             ], 200);
         } catch(\Exception $e) {
             report($e);
@@ -199,7 +236,6 @@ class WebhookController extends Controller
                 ->paginate($perPage);
 
             return response()->json([
-                'webhook' => $webhook->name,
                 'logs' => $logs
             ], 200);
         } catch(\Exception $e) {
@@ -218,10 +254,10 @@ class WebhookController extends Controller
      */
     public function testWebhook(Webhook $webhook, WebhookService $webhookService) {
         try {
-            $payload = $webhookService->test($webhook);
+            $webhookService->test($webhook);
 
             return response()->json([
-                'message' => 'Webhook triggered successfully.',
+                "message" => "Test webhook for ({$webhook->name}) triggered successfully."
             ]);
         } catch(\Exception $e) {
             report($e);
