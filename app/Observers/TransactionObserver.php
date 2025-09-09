@@ -33,17 +33,10 @@ class TransactionObserver
      */
     public function updated(Transaction $transaction): void
     {
-        if($transaction->wasChanged('status')) {
-            $status = $transaction->status;
+       if ($transaction->wasChanged('status')) {
+            $action = $this->mapStatus($transaction->status);
 
-            $action = match ($status) {
-                1 => 'success',
-                0 => 'failed',
-                3 => 'refunded',
-                default => null,
-            };
-
-            if($action) {
+            if ($action != 'unknown') {
                 $this->webhookService->send('Transaction', ucfirst($action), $this->buildPayload($transaction));
             }
         }
