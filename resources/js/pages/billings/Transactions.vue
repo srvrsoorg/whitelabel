@@ -95,7 +95,7 @@
             :disabled="isProcessing && activeTransactionKey === transaction.key"
             @click="executePayment(transaction)"
             v-if="
-              transaction.status === 2 &&
+              transaction.status === 2 && transaction.payment_gateway !== 'Cashfree' &&
               isEnabledPaymentProvider(transaction.payment_gateway) 
             "
           >
@@ -114,7 +114,7 @@
             class=""
             v-if="
               (transaction.status == 2 &&
-                (!isEnabledPaymentProvider(transaction.payment_gateway))) ||
+              (transaction.payment_gateway === 'Cashfree' || !isEnabledPaymentProvider(transaction.payment_gateway))) ||
               transaction.status == 0 ||
               transaction.status == 3
             "

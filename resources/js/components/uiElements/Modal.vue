@@ -40,7 +40,7 @@
           >
             <DialogPanel
               :class="[
-                'relative transform overflow-hidden px-4 py-2 rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md',
+                'relative transform  px-4 py-2 rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md',
                 ...customClass,
               ]"
             >
