@@ -16,7 +16,7 @@ class WebhookEventSeeder extends Seeder
          $events = [
             // User events
             ['name' => 'user.created', 'type' => 'User', 'action' => 'Created'],
-            ['name' => 'user.udpated', 'type' => 'User', 'action' => 'Updated'],
+            ['name' => 'user.updated', 'type' => 'User', 'action' => 'Updated'],
             ['name' => 'user.deleted', 'type' => 'User', 'action' => 'Deleted'],
 
             // Server events
