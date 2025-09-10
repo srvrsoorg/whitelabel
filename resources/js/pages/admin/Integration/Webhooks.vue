@@ -1,9 +1,14 @@
 <template>
     <Breadcrumb :breadcrumb="breadcrumb" />
     <div class="sm:flex justify-between items-center gap-5">
-        <h1 class="text-xl font-medium text-[#31363f] flex items-center">
-            Webhooks
-        </h1>
+        <div class="flex items-center gap-1">
+            <h1 class="text-xl font-medium text-[#31363f] flex items-center">
+                Webhooks
+            </h1>
+            <span v-tooltip="'Set up a webhook URL to receive instant notifications for key events like user actions, transactions, and ticket updates — delivered as structured JSON payloads to your system.'" class="material-symbols-outlined text-[18px] text-custom-500 cursor-pointer">
+                info
+            </span>
+        </div>
         <div class="flex gap-5 items-center mt-4 sm:mt-0">
             <Button @click="openCreateWebhookModal"> Create </Button>
             <div class="flex items-center gap-5 sm:mt-0">
@@ -34,8 +39,8 @@
                 :key="webhook.id"
             >
                 <td class="py-4 px-4 font-medium">#{{ webhook.id }}</td>
-                <td class="whitespace-nowrap py-4 px-4 max-w-44 truncate" v-tooltip="webhook.name">
-                    {{ webhook.name }}
+                <td class="whitespace-nowrap py-4 px-4 max-w-44 truncate" >
+                    <span v-tooltip="webhook.name">{{ webhook.name }}</span>
                 </td>
                 <td class="whitespace-nowrap py-4 px-4 max-w-60 truncate" >
                     <span v-tooltip="webhook.url">{{ webhook.url }}</span>
@@ -163,7 +168,7 @@
         </template>
         <template #content>
             <p class="my-5 text-tiny font-medium" v-if="this.currentWebhook"> 
-                Are you sure you want to delete this webhook {{ this.currentWebhook.name }}?
+                Are you sure you want to delete this webhook ({{ this.currentWebhook.name }})?
             </p>
         </template>
     </Confirmation>
@@ -248,7 +253,9 @@
                     id="Secret_message"
                     class="error_message text-red-500 text-xs"
                 ></small>
-            </div>
+                <div v-if="isUpdate && webhook.secret" class="mt-3 bg-blue-50 text-blue-500 text-sm px-4 py-2 rounded-md">
+                    <b class="font-medium"> Note:</b>There is currently a secret configured for this webhook. If you've lost or forgotten this secret, you can change it, but be aware that any integrations using this secret will need to be updated.</div>
+                </div>
             <div class="mt-2.5">
                 <label
                     for="events"
@@ -499,16 +506,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-:deep(.multiselect__content-wrapper) {
-  max-height: 300px !important;
-  overflow-y: auto !important;
-}
-
-.md\:max-h-\[550px\] {
-  max-height: 90vh;
-  overflow: visible;
-}
-</style>
-

@@ -3,7 +3,7 @@
     <div class="sm:flex justify-between items-center gap-5">
         <div class="flex flex-col gap-1">
             <h1 class="text-xl font-medium text-[#31363f]">
-                Webhook History
+                Webhook Detail
             </h1>
         </div>
         <div class="flex gap-5 items-center mt-4 sm:mt-0">
@@ -63,6 +63,11 @@
             </div>
         </div>
     </div>
+    <div class="flex flex-col gap-1">
+            <h1 class="text-xl font-medium text-[#31363f]">
+                Webhook History
+            </h1>
+        </div>
     <div class="h-full mt-5">
         <Table :head="thead" v-if="logs.length > 0">
             <tr
@@ -70,6 +75,9 @@
                 v-for="log in logs"
                 :key="log.id"
             >
+                <td class="whitespace-nowrap py-4 px-4 ">
+                    {{ log?.payload?.event?.name || '-' }}
+                </td>
                 <td class="whitespace-nowrap py-4 px-4 ">
                     {{ log.delivered_at }}
                 </td>
@@ -162,26 +170,39 @@
             </div>
         </template>
         <div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg px-4 py-3 my-1.5">
-              <div class="space-y-1">
-                <label class="block text-sm font-medium text-gray-500">Name</label>
-                <span 
-                  v-tooltip="webhook.name"
-                  class="inline-block md:max-w-[150px] max-w-[200px] truncate text-sm text-gray-900 font-medium"
-                >
-                  {{ webhook.name }}
-                </span>
-              </div>
-            
-              <div class="col-span-1 md:col-span-2 space-y-1">
-                <label class="block text-sm font-medium text-gray-500">URL</label>
-                <span 
-                  v-tooltip="webhook.url"
-                  class="inline-block md:max-w-[300px] sm:max-w-[350px] max-w-[200px] truncate text-sm text-gray-900 font-medium"
-                >
-                  {{ webhook.url }}
-                </span>
-              </div>
+            <div class="bg-gray-50 rounded-lg px-4 py-3 my-1.5 space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-x-14">
+                  <label class="text-gray-500 text-sm font-medium md:col-span-2">
+                    Name
+                  </label>
+                  <div class="sm:col-span-9 text-sm font-medium break-words">
+                    <span v-tooltip="webhook.name">
+                      {{ webhook.name }}
+                    </span>
+                  </div>
+                </div>
+              
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-x-14">
+                  <label class="text-gray-500 text-sm font-medium md:col-span-2">
+                    URL
+                  </label>
+                  <div class="md:col-span-9 text-sm font-medium break-all">
+                    <span v-tooltip="webhook.url">
+                      {{ webhook.url }}
+                    </span>
+                  </div>
+                </div>
+              
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-x-14">
+                  <label class="text-gray-500 text-sm font-medium md:col-span-2">
+                    Event
+                  </label>
+                  <div class="md:col-span-9 text-sm font-medium break-all">
+                    <span v-tooltip="currentLog?.payload?.event?.name">
+                      {{ currentLog?.payload?.event?.name || '-' }}
+                    </span>
+                  </div>
+                </div>
             </div>
             <nav class="flex gap-8 w-full" aria-label="Tabs">
                 <div class="border-b border-gray-200 text-sm flex space-x-5 w-full">
@@ -261,7 +282,7 @@ export default {
             webhook: {
               events: []
             },
-            thead: ['Attempted Time', 'Response Code', 'Status', {title: 'Delivery Details', classes: 'text-center'}],
+            thead: ['Event','Attempted Time', 'Response Code', 'Status', {title: 'Delivery Details', classes: 'text-center'}],
             logs: [],
             pagination: null,
             per_page: 10,

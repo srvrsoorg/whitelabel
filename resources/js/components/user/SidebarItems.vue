@@ -247,6 +247,25 @@ export default {
       return this.authStore.is_admin;
     },
   },
+  watch: {
+    $route(to) {
+      this.menuList.forEach((menu) => {
+        let allLinks = [menu.url];
+        if (menu.children) {
+          const childLinks = menu.children.map((row) => row.url);
+          allLinks = [...childLinks, ...allLinks];
+        }
+        if (allLinks.includes(to.path)) {
+          this.$nextTick(() => {
+            const btn = document.querySelector(`[data-id="${menu.id}"]`);
+            if (btn && btn.getAttribute("aria-expanded") === "false") {
+              btn.click();
+            }
+          });
+        }
+      });
+    },
+  },
   methods: {
     toggleDropdown(id) {
       const elements = document.querySelectorAll("[data-id]");
