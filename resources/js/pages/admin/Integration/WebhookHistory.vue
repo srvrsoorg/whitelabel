@@ -5,9 +5,6 @@
             <h1 class="text-xl font-medium text-[#31363f]">
                 Webhook History
             </h1>
-            <span class="text-sm text-gray-500">
-                History for: {{ webhookName }}
-            </span>
         </div>
         <div class="flex gap-5 items-center mt-4 sm:mt-0">
             <div class="flex items-center gap-5 sm:mt-0">
@@ -27,6 +24,42 @@
                         refresh
                     </span>
                 </button>
+            </div>
+        </div>
+    </div>
+    <div class="h-full border rounded-md border-gray-200 w-full p-4 px-5 space-y-4 my-4">
+        <div class="grid grid-cols-1 sm:grid-cols-12 xl:gap-5 gap-x-14">
+            <label class="text-gray-500 text-sm font-medium">Name</label>
+              <div class="sm:col-span-11 text-sm font-medium break-words">
+                <span v-tooltip="webhook.name">{{ webhook.name }}</span>
+              </div>
+          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-12 xl:gap-5 gap-x-14">
+          <label class="text-gray-500 text-sm font-medium">URL</label>
+        <div class="sm:col-span-10 text-sm font-medium break-all">
+          <span v-tooltip="webhook.url">{{ webhook.url }}</span>
+        </div>
+    </div>
+        <div class="grid grid-cols-1 sm:grid-cols-12 xl:gap-5 gap-x-14">
+          <label class="text-gray-500 text-sm font-medium sm:mb-0 mb-2">Events</label>
+            <div class="sm:col-span-11 text-sm font-medium flex flex-wrap gap-2">
+              <span
+                v-for="event in displayedEvents"
+                :key="event.id"
+                class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              >
+                {{ event.name }}
+              </span>
+          
+              <button
+                v-if="webhook.events.length > (windowWidth < 640 ? 5 : 8)"
+                @click="handleMoreClick"
+                class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 cursor-pointer transition-colors"
+              >
+                {{ showAllEvents && windowWidth >= 640 
+                    ? '- Show less' 
+                    : `+${moreCount} more` }}
+              </button>
             </div>
         </div>
     </div>
@@ -82,6 +115,22 @@
         </template>
     </div>
 
+    <Modal
+      :show="showEventsModal"
+      @closeModal="showEventsModal = false"
+      :modalTitle="'All Events'"
+      :customClass="['md:max-w-lg']"
+    >
+      <div class="flex flex-wrap gap-2">
+        <span
+          v-for="event in webhook.events"
+          :key="event.id"
+          class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-sm font-medium"
+        >
+          {{ event.name }}
+        </span>
+      </div>
+    </Modal>
     <Modal 
         :show="showLogDetailsModal"
         @closeModal="closeLogDetailsModal"
@@ -89,7 +138,51 @@
         :modelIcon="'integration_instructions'"
         :customClass="['md:max-w-2xl']"
     >
+        <template #titleExtra>
+            <div class="flex items-center capitalize sm:gap-3">
+              <span 
+                v-if="currentLog"
+                :class="[
+                  currentLog.status === 'success' 
+                    ? 'sm:bg-green-100 sm:text-green-500 sm:border-green-200'
+                    : 'sm:bg-red-100 sm:text-red-500 sm:border-red-200',
+                  'px-2.5 py-0.5 rounded-full font-medium flex items-start sm:items-center gap-1 sm:border'
+                ]"
+              >
+                <span 
+                  class="sm:hidden material-symbols-outlined text-[12px] rounded-full"
+                :class="currentLog.status === 'success' ? 'bg-green-500 text-green-500' : 'bg-red-500 text-red-500'"
+                >
+                  circle
+                </span>
+                <span class="relative top-px text-[12px] hidden sm:inline">
+                  {{ currentLog.status }}
+                </span>
+              </span>
+            </div>
+        </template>
         <div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg px-4 py-3 my-1.5">
+              <div class="space-y-1">
+                <label class="block text-sm font-medium text-gray-500">Name</label>
+                <span 
+                  v-tooltip="webhook.name"
+                  class="inline-block md:max-w-[150px] max-w-[200px] truncate text-sm text-gray-900 font-medium"
+                >
+                  {{ webhook.name }}
+                </span>
+              </div>
+            
+              <div class="col-span-1 md:col-span-2 space-y-1">
+                <label class="block text-sm font-medium text-gray-500">URL</label>
+                <span 
+                  v-tooltip="webhook.url"
+                  class="inline-block md:max-w-[300px] sm:max-w-[350px] max-w-[200px] truncate text-sm text-gray-900 font-medium"
+                >
+                  {{ webhook.url }}
+                </span>
+              </div>
+            </div>
             <nav class="flex gap-8 w-full" aria-label="Tabs">
                 <div class="border-b border-gray-200 text-sm flex space-x-5 w-full">
                     <button
@@ -120,6 +213,16 @@
                         </template>
                     </div>
                 </div>
+                <div v-else-if="currentTab==='request_headers'">
+                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
+                        <template v-if="wrapValue(currentLog.request_headers).type === 'pre'">
+                            <pre>{{ wrapValue(currentLog.request_headers).content }}</pre>
+                        </template>
+                        <template v-else-if="wrapValue(currentLog.request_headers).type === 'html'">
+                            <div v-html="wrapValue(currentLog.request_headers).content"></div>
+                        </template>
+                    </div>
+                </div>
 
                 <div v-else>
                     <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
@@ -144,23 +247,30 @@ export default {
             breadcrumb: {
                 icon: "webhook",
                 pages: [
+                    { name: "Integrations"},
                     { name: "Webhook", path: { name: "Webhooks" } },
                     { name: "History" }
                 ]
             },
             tabs: [
-                { name: "Response", current: true, status: "response", count: 0 },
                 { name: "Payload", current: false, status: "payload", count: 0 },
+                { name: "Headers", current: false, status: "request_headers", count: 0 },
+                { name: "Response", current: true, status: "response", count: 0 },
             ],
             currentTab: 'response',
-            webhookName: '',
+            webhook: {
+              events: []
+            },
             thead: ['Attempted Time', 'Response Code', 'Status', {title: 'Delivery Details', classes: 'text-center'}],
             logs: [],
             pagination: null,
             per_page: 10,
             refreshing: false,
             currentLog: null,
-            showLogDetailsModal: false
+            showLogDetailsModal: false,
+            showAllEvents: false,
+            showEventsModal: false,
+            windowWidth: window.innerWidth
         }
     },
     computed: {
@@ -174,10 +284,29 @@ export default {
             } catch {
                 return String(this.currentLog?.payload ?? '');
             }
-        }
+        },
+        displayedEvents() {
+            if (this.windowWidth < 640) {
+              return this.webhook.events.slice(0, 5);
+            }
+            return this.showAllEvents
+              ? this.webhook.events
+              : this.webhook.events.slice(0, 8);
+          },
+          moreCount() {
+            if (this.windowWidth < 640) {
+              return this.webhook.events.length - 5;
+            }
+            return this.webhook.events.length - 8;
+          }
     },
     created(){
-        this.fetchLogs()
+        this.fetchLogs();
+        this.fetchWebhook();
+        window.addEventListener('resize', this.updateWindowWidth);
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.updateWindowWidth);
     },
     methods: {
         isObject(val) {
@@ -204,6 +333,19 @@ export default {
                 return JSON.stringify(val, null, 2);
             } catch {
                 return String(val);
+            }
+        },
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth;
+            if (this.windowWidth >= 640 && this.showEventsModal) {
+            this.showEventsModal = false;
+          }
+        },
+        handleMoreClick() {
+            if (this.windowWidth < 640) {
+              this.showEventsModal = true;
+            } else {
+              this.showAllEvents = !this.showAllEvents;
             }
         },
         wrapValue(val) {
@@ -242,13 +384,24 @@ export default {
         async fetchLogs(page = 1){
             this.refreshing = true
             await this.$axios.get(`/admin/webhooks/${this.$route.params.id}/logs?per_page=${this.per_page}&page=${page}`).then(({data}) => {
-                this.webhookName = data.webhook
                 this.logs = data.logs.data
                 this.pagination = data.logs
             }).catch(({ response }) => {
                 this.$toast.error(response.data.message);
             }).finally(() => {
                 this.refreshing = false;
+            });
+        },
+        async fetchWebhook() {
+          await this.$axios.get(`/admin/webhooks/${this.$route.params.id}`)
+            .then(({data}) => {
+              this.webhook = {
+                ...data.webhook,
+                events: data.webhook?.events || []
+              };
+            })
+            .catch(error => {
+              this.$toast.error(error.response?.data?.message);
             });
         }
     }

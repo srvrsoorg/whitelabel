@@ -37,6 +37,9 @@
                 <td class="whitespace-nowrap py-4 px-4 max-w-44 truncate" v-tooltip="webhook.name">
                     {{ webhook.name }}
                 </td>
+                <td class="whitespace-nowrap py-4 px-4 max-w-60 truncate" >
+                    <span v-tooltip="webhook.url">{{ webhook.url }}</span>
+                </td>
                 <td class="whitespace-nowrap py-4 px-4 flex gap-2">
                     <template v-if="webhook.events.length > 0">
                         <template v-for="(event,key) in webhook.events.slice(0, 2)" :key="key">
@@ -53,9 +56,6 @@
                     <template v-else>
                         <span>-</span>
                     </template>
-                </td>
-                <td class="whitespace-nowrap py-4 px-4 max-w-60 truncate" v-tooltip="webhook.url">
-                    {{ webhook.url }}
                 </td>
                 <td class="whitespace-nowrap py-4 px-4 text-center">
                     <Switch
@@ -92,12 +92,20 @@
                                 history
                             </span>
                         </router-link>
-                         <button v-tooltip="'Send Test'" @click="sendTest(webhook.id)">
-                            <span class="material-symbols-outlined bg-blue-100 text-blue-500 rounded-md p-1.5 text-[20px]">
-                                arrow_outward
-                            </span>
+                        <button
+                            v-tooltip="webhook.status === 1 ? 'Send Test' : 'Enable webhook to trigger.'"
+                            @click="sendTest(webhook.id)"
+                            :disabled="webhook.status !== 1"
+                            :class="[
+                              'rounded-md p-1.5 text-[20px] material-symbols-outlined',
+                                webhook.status === 1
+                                ? 'bg-blue-100 text-blue-500 cursor-pointer'
+                                : 'bg-blue-100 text-blue-400 opacity-50 cursor-not-allowed'
+                            ]"
+                          >
+                          arrow_outward
                         </button>
-                         <button v-tooltip="'Update'" @click="openUpdateWebhookModal(webhook)">
+                        <button v-tooltip="'Update'" @click="openUpdateWebhookModal(webhook)">
                             <span class="material-symbols-outlined bg-custom-50 text-custom-500 rounded-md p-1.5 text-[20px]">
                                 edit_square
                             </span>
@@ -223,6 +231,26 @@
             </div>
             <div class="mt-2.5">
                 <label
+                    for="name"
+                    class="text-tiny font-medium"
+                >
+                    Secret
+                </label>
+                <input
+                    v-model="webhook.secret"
+                    type="text"
+                    name="secret"
+                    id="secret"
+                    class="border text-gray-900 text-sm mt-1 rounded-lg border-primary focus:border-primary focus:ring-0 block w-full p-2"
+                    placeholder="Enter Secret"
+                />
+                <small
+                    id="Secret_message"
+                    class="error_message text-red-500 text-xs"
+                ></small>
+            </div>
+            <div class="mt-2.5">
+                <label
                     for="events"
                     class="text-tiny  after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
                 >
@@ -310,7 +338,7 @@ export default {
                 ]
             },
             refreshing: false,
-            thead: ['ID', 'Name', 'Events', 'URL', {title: 'Status', classes: 'text-center'}, {title: 'Actions', classes: 'text-center'}],
+            thead: ['ID', 'Name', 'URL', 'Events', {title: 'Status', classes: 'text-center'}, {title: 'Actions', classes: 'text-center'}],
             webhooks: [],
             pagination: null,
             per_page: 10,
@@ -322,6 +350,7 @@ export default {
             webhook: {
                 name: '',
                 url: '',
+                secret: '',
                 event_ids: [],
                 status: true
             },
@@ -385,6 +414,7 @@ export default {
         setWebhookData(webhook){
             this.webhook.id = webhook.id
             this.webhook.name = webhook.name
+            this.webhook.secret = webhook.secret
             this.webhook.url = webhook.url
             this.webhook.status = webhook.status ? true : false
             this.webhook.event_ids = webhook.events ? webhook.events.map(event => event.id) : []
@@ -392,6 +422,7 @@ export default {
         resetFormData(){
             this.webhook.name = ''
             this.webhook.url = ''
+            this.webhook.secret = ''
             this.webhook.event_ids = ''
             this.webhook.status = true
             delete this.webhook.id
@@ -425,6 +456,7 @@ export default {
         },
         async createOrUpdateWebhook(){
             this.savingWebhook = true
+            this.hideError()
             let payload = {...this.webhook}
             let url = `/admin/webhooks`
             if(this.isUpdate){
@@ -467,3 +499,16 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+:deep(.multiselect__content-wrapper) {
+  max-height: 300px !important;
+  overflow-y: auto !important;
+}
+
+.md\:max-h-\[550px\] {
+  max-height: 90vh;
+  overflow: visible;
+}
+</style>
+

@@ -66,6 +66,7 @@
                   >
                     {{ modalTitle }}
                   </h2>
+                  <slot name="titleExtra"></slot>
                   <slot name="titleDescription"> </slot>
                 </div>
                 <button
