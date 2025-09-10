@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\Webhook\Webhook;
 use App\Models\Admin\Webhook\WebhookEvent;
 use Database\Seeders\WebhookEventSeeder;
-use Illuminate\Support\Facades\Artisan;
+use Artisan;
 use App\Services\WebhookService;
 use App\Http\Helper;
 
@@ -204,6 +204,7 @@ class WebhookController extends Controller
             if (!WebhookEvent::exists()) {
                 Artisan::call('db:seed', [
                     '--class' => WebhookEventSeeder::class,
+                    '--force' => true,
                 ]);
             }
 
@@ -254,11 +255,15 @@ class WebhookController extends Controller
      */
     public function testWebhook(Webhook $webhook, WebhookService $webhookService) {
         try {
-            $webhookService->test($webhook);
-
+            $payload = $webhookService->test($webhook);
+            if($payload == null) {
+                return response()->json([
+                    "message" => "Webhook ({$webhook->name}) is disabled, test not triggered!"
+                ], 500);
+            }
             return response()->json([
                 "message" => "Test webhook for ({$webhook->name}) triggered successfully."
-            ]);
+            ], 200);
         } catch(\Exception $e) {
             report($e);
             return response()->json([

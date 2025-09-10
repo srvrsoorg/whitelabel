@@ -91,8 +91,13 @@ class WebhookService
     /**
      * Trigger a test webhook for a given webhook.
      */
-    public function test(Webhook $webhook): array
+    public function test(Webhook $webhook): ?array
     {
+        if (!$webhook->status) {
+            \Log::info("Skipping test webhook for ({$webhook->name}) because it is disabled.");
+            return null; // don’t dispatch job
+        }
+
         $payload = [
             'event' => [
                 'name'      => 'test.webhook',

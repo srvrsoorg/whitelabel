@@ -53,7 +53,8 @@ class WebhookLog extends Model
     // Accessor for the `delivered_at` attribute.
     public function getDeliveredAtAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d M Y h:iA') : null;
+        $user = auth()->user();
+        return $value ? Carbon::parse($value)->timezone(optional($user)->timezone ?? config('app.timezone'))->format('d M Y h:iA') : null;
     }
 
     /**

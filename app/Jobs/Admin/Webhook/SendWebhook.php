@@ -77,6 +77,7 @@ class SendWebhook implements ShouldQueue
             'Content-Type'        => 'application/json',
             'X-Webhook-Event'     => strtolower($this->payload['event']['type']) . '.' . strtolower($this->payload['event']['action']),
             'X-Webhook-Timestamp' => now()->toIso8601String(),
+            'user-agent'          => request()->userAgent() ?? null,
         ];
 
         $headers['Host'] = parse_url($this->webhook->url, PHP_URL_HOST);
