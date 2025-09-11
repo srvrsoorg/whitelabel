@@ -487,7 +487,7 @@ export default {
     VOtpInput,
   },
   created() {
-    this.getUser();
+    // this.getUser();
     this.tfa = this.user && this.user.two_fa_enable;
     this.authenticatorApp.enable = this.user && this.user.google2fa_enable;
     this.currentTab =

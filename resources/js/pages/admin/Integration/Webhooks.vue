@@ -45,22 +45,30 @@
                 <td class="whitespace-nowrap py-4 px-4 max-w-60 truncate" >
                     <span v-tooltip="webhook.url">{{ webhook.url }}</span>
                 </td>
-                <td class="whitespace-nowrap py-4 px-4 flex gap-2">
-                    <template v-if="webhook.events.length > 0">
-                        <template v-for="(event,key) in webhook.events.slice(0, 2)" :key="key">
-                            <Badge :badgeTitle="event.name" variant="dark" :rounded="true"/>
+                <td class="whitespace-nowrap py-4 px-4">
+                    <div class="flex gap-2 items-center">
+                        <template v-if="webhook.events.length > 0">
+                            <template v-for="(event,key) in webhook.events.slice(0, 2)" :key="key">
+                                <Badge :badgeTitle="event.name" variant="dark" :rounded="true"/>
+                            </template>
+                            <button
+                                v-if="webhook.events.length > 2"
+                                @click="openShowEventsModal(webhook)"
+                                class="bg-gray-50 text-gray-500 rounded-full px-2.5 py-1 ring-1 ring-gray-200 text-xs"
+                            >
+                                +{{ webhook.events.length - 2 }} more
+                            </button>
                         </template>
-                        <button
-                            v-if="webhook.events.length > 2"
-                            @click="openShowEventsModal(webhook)"
-                            class="bg-gray-50 text-gray-500 rounded-full px-2.5 py-1 ring-1 ring-gray-200 text-xs"
-                        >
-                            +{{ webhook.events.length - 2 }} more
-                        </button>
-                    </template>
-                    <template v-else>
-                        <span>-</span>
-                    </template>
+                        <template v-else>
+                            <span>-</span>
+                        </template>
+                    </div>
+                </td>
+                <td class="whitespace-nowrap py-5 px-3 max-w-60">
+                    <div class="grid gap-1.5">
+                        <Badge v-if="webhook.last_event" :badgeTitle="webhook.last_event" variant="dark" :rounded="true" class="w-fit"/>
+                        <span class="pl-1.5">{{ webhook?.last_hit || '-' }}</span>
+                    </div>
                 </td>
                 <td class="whitespace-nowrap py-4 px-4 text-center">
                     <Switch
@@ -193,7 +201,7 @@
         :modelIcon="'webhook'"
         :customClass="['overflow-visible md:max-w-2xl']"
     >
-        <div class="md:max-h-[550px] overflow-auto">
+        <div class="overflow-auto">
             <div class="">
                 <label
                     for="name"
@@ -345,7 +353,7 @@ export default {
                 ]
             },
             refreshing: false,
-            thead: ['ID', 'Name', 'URL', 'Events', {title: 'Status', classes: 'text-center'}, {title: 'Actions', classes: 'text-center'}],
+            thead: ['ID', 'Name', 'URL', 'Events',' Last Event Hit', {title: 'Status', classes: 'text-center'}, {title: 'Actions', classes: 'text-center'}],
             webhooks: [],
             pagination: null,
             per_page: 10,
@@ -499,6 +507,9 @@ export default {
         async sendTest(id){
             await this.$axios.get(`/admin/webhooks/${id}/test`).then(({data}) => {
                 this.$toast.success(data.message)
+                setTimeout(() => {
+                    this.fetchWebhooks()
+                }, 4000)
             }).catch(({ response }) => {
                 this.$toast.error(response.data.message);
             })

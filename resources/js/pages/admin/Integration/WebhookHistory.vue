@@ -43,21 +43,21 @@
         <div class="grid grid-cols-1 sm:grid-cols-12 xl:gap-5 gap-x-14">
           <label class="text-gray-500 text-sm font-medium sm:mb-0 mb-2">Events</label>
             <div class="sm:col-span-11 text-sm font-medium flex flex-wrap gap-2">
-              <span
-                v-for="event in displayedEvents"
-                :key="event.id"
-                class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-              >
-                {{ event.name }}
-              </span>
-          
+              <template v-if="displayedEvents.length > 0">
+                  <template v-for="event in displayedEvents" :key="event.id">
+                    <Badge :badgeTitle="event.name" variant="dark" :rounded="true"/>
+                  </template>
+                </template>
+                <template v-else>
+                  <span>-</span>
+                </template>
               <button
                 v-if="webhook.events.length > (windowWidth < 640 ? 5 : 8)"
                 @click="handleMoreClick"
                 class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 cursor-pointer transition-colors"
               >
                 {{ showAllEvents && windowWidth >= 640 
-                    ? '- Show less' 
+                    ? 'Show less' 
                     : `+${moreCount} more` }}
               </button>
             </div>

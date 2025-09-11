@@ -391,7 +391,7 @@ export default {
   async created() {
     await this.fetchTimezones();
     await this.getCountries();
-    await this.getUser();
+    // await this.getUser();
     this.userInfo = { ...this.user };
     if (this.userInfo.timezone) {
       this.timezone = this.timezones.find(

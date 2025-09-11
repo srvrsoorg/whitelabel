@@ -94,24 +94,30 @@
               Get an email alert when credits drop below a set amount.
             </p>
           </div>
-        
           <div class="mt-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <div class="flex-1">
-              <input 
-                type="number" 
-                v-model="user.reminder_minimum_credit"
-                class="w-full text-sm p-2 sm:p-2.5 rounded-lg border border-slate-300 focus:border-sa-500 focus:ring-0"
-                placeholder="Enter Minimum Credit"
-              >
-              <div class="flex items-center">
-                <small
-                  id="reminder_minimum_credit_message"
-                  class="text-red-500 error_message text-xs block mt-1.5"
-                ></small>
+            <div class="flex-1 flex flex-col">
+              <div class="flex flex-1 items-center shadow-sm rounded-md">
+                <div class="pointer-events-none bg-gray-50 h-full flex items-center px-3 border border-r-0 border-slate-300 rounded-l-md">
+                  <span class="text-sm font-medium text-gray-700">
+                    {{ siteSettings.currency_symbol }}
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  v-model="user.reminder_minimum_credit"
+                  class="w-full text-sm p-2.5 border border-slate-300 focus:border-slate-300 focus:ring-0 rounded-r-md"
+                  placeholder="Enter Minimum Credit"
+                  aria-describedby="reminder_minimum_credit_message"
+                >
               </div>
+              <small
+                id="reminder_minimum_credit_message"
+                class="text-red-500 error_message text-xs block mt-1.5"
+              ></small>
             </div>
+
             <Button
-              class="w-full sm:w-auto px-4 py-2.5 text-sm"
+              class="w-full sm:w-auto px-4 py-2.5 text-sm whitespace-nowrap"
               :disabled="saveDisabled"
               @click="updateReminderMinCredit()"
             >

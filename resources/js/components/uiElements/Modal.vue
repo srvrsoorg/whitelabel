@@ -136,17 +136,3 @@ export default {
   },
 };
 </script>
-
-<style>
-/* width */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #b6b8b8;
-  border-radius: 10px;
-  background-clip: content-box;
-}
-
-</style>

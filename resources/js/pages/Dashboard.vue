@@ -181,7 +181,7 @@
             >
               <div class="text-gray-500 py-0.5 flex items-center gap-2.5" v-if="server.plan">
                 <div class="flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Cores'">
+                  <span class="material-symbols-outlined text-[18px]" v-tooltip="'Core'">
                     database
                   </span>
                   <p>
@@ -481,7 +481,7 @@ export default {
           classes: ["max-w-[10rem] w-10 pl-10"],
         },
         {
-          title: "Resources (Cores/RAM/Disk)",
+          title: "Resources (Core/RAM/Disk)",
           classes: ["w-10 whitespace-nowrap"],
         },
         {

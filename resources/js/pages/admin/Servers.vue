@@ -165,7 +165,7 @@
           <div class="text-gray-500" v-if="server.plan">
             <div class="flex items-center gap-2.5">
               <div class="flex items-center gap-0.5">
-                <span class="material-symbols-outlined text-[18px]" v-tooltip="'Cores'">
+                <span class="material-symbols-outlined text-[18px]" v-tooltip="'Core'">
                   database
                 </span>
                 <p>{{ server.plan.cores}}</p>
@@ -372,7 +372,7 @@ export default {
         "Server",
         "User",
         {
-          title: "Resources (Cores/RAM/Disk)",
+          title: "Resources (Core/RAM/Disk)",
           classes: "whitespace-nowrap",
         },
         {
