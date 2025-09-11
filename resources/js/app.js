@@ -69,6 +69,10 @@ const Breadcrumb = defineAsyncComponent(() =>
     import("@/components/uiElements/Breadcrumb.vue")
 );
 
+const CustomScrollbar = defineAsyncComponent(() => 
+    import('@/components/uiElements/CustomScrollbar.vue'))
+
+
 import { createI18n } from 'vue-i18n'
 const i18n = createI18n({
     legacy: false,
@@ -112,6 +116,7 @@ app.component("Table", Table);
 app.component("TableSkeleton", TableSkeleton);
 app.component("Pagination", Pagination);
 app.component("Perpage", Perpage);
+app.component('CustomScrollbar', CustomScrollbar);
 
 // Create Pinia store
 const pinia = createPinia();

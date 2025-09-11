@@ -136,3 +136,14 @@ input[type="number"] {
 .error-bar {
     background: red;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e2e2;
+  border-radius: 9999px;
+}

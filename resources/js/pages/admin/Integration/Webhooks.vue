@@ -201,7 +201,7 @@
         :modelIcon="'webhook'"
         :customClass="['overflow-visible md:max-w-2xl']"
     >
-        <div class="overflow-auto">
+        <div class="">
             <div class="">
                 <label
                     for="name"
