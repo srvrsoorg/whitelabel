@@ -30,7 +30,8 @@ class Webhook extends Model
         'url', 
         'secret',
         'status',
-        'last_hit'
+        'last_hit',
+        'last_event'
     ];
 
     // Dates that should be treated as date objects

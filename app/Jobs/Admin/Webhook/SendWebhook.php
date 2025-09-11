@@ -45,7 +45,10 @@ class SendWebhook implements ShouldQueue
             $response = Http::withHeaders($headers)->post($this->webhook->url, $this->payload);
 
             // Update last_hit when webhook is triggered (regardless of success or failure)
-            $this->webhook->update(['last_hit' => now()]);
+            $this->webhook->update([
+                'last_hit'   => now(),
+                'last_event' => $this->payload['event']['name']
+            ]);
 
             // Store webhook log on success/failure response
             $this->webhook->logs()->create([
@@ -59,8 +62,11 @@ class SendWebhook implements ShouldQueue
             ]);
         } catch (\Exception $e) {
             // still update last hit on failure
-            $this->webhook->update(['last_hit' => now()]); 
-            
+            $this->webhook->update([
+                'last_hit'   => now(),
+                'last_event' => $this->payload['event']['name']
+            ]);
+
             // Store webhook log if the request completely fails
             $this->webhook->logs()->create([
                 'webhook_event_id' => $this->event?->id,

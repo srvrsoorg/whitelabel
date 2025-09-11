@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('secret')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamp('last_hit')->nullable();
+            $table->string('last_event')->nullable();
             $table->timestamps();
         });
     }
