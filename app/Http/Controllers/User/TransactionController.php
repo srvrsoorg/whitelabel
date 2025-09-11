@@ -188,7 +188,8 @@ class TransactionController extends Controller
                 'company_tax_numbers' => $companyBillingDetails ? $companyBillingDetails->tax_numbers : null,
                 'tax_details' => $tax_details,
                 'address' => $billingAddress,
-                'tax_numbers' => $billingDetail ? $billingDetail->tax_numbers : null
+                'tax_numbers' => $billingDetail ? $billingDetail->tax_numbers : null,
+                'status' => 2,
             ])->refresh(); 
 
             // Success response: Transaction created

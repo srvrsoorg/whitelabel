@@ -57,7 +57,7 @@ class WebhookController extends Controller
 
             $webhook->events()->sync($request->event_ids);
 
-            Helper::adminActivity(auth()->user(), 'Webhook', 'Create', 'Webhook ' . ($webhook->name) . ' has been created successfully.');
+            Helper::adminActivity(auth()->user(), 'Webhook', 'Create', "Webhook ({$webhook->name}) has been created successfully.");
 
             return response()->json([
                 "message" => "Webhook ({$webhook->name}) has been created successfully."
@@ -126,7 +126,7 @@ class WebhookController extends Controller
 
             $webhook->events()->sync($request->event_ids);
 
-            Helper::adminActivity(auth()->user(), 'Webhook', 'Update', 'Webhook ' . ($webhook->name) . ' has been updated successfully.');
+            Helper::adminActivity(auth()->user(), 'Webhook', 'Update', "Webhook ({$webhook->name}) has been updated successfully.");
 
             return response()->json([
                 "message" => "Webhook ({$webhook->name}) has been updated successfully."
@@ -151,7 +151,7 @@ class WebhookController extends Controller
             $webhookName = $webhook->name;
             $webhook->delete();
             
-            Helper::adminActivity(auth()->user(), 'Webhook', 'Delete', 'Webhook ' . ($webhookName) . ' has been deleted successfully.');
+            Helper::adminActivity(auth()->user(), 'Webhook', 'Delete', "Webhook ({$webhookName}) has been deleted successfully.");
 
             return response()->json([
                 "message" => "Webhook ({$webhookName}) has been deleted successfully."
@@ -179,7 +179,7 @@ class WebhookController extends Controller
             // Determine status text for response
             $status = $webhook->status ? 'enabled' : 'disabled';
 
-            Helper::adminActivity(auth()->user(), 'Webhook', 'Update', 'Webhook ' . ($webhook->name) . ' has been ' . $status . '.');
+            Helper::adminActivity(auth()->user(), 'Webhook', 'Update', "Webhook ({$webhook->name}) has been {$status}.");
 
             return response()->json([
                 'message' => "Webhook ({$webhook->name}) has been {$status} successfully."
