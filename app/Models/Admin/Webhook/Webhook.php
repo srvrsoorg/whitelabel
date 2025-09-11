@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Admin\Webhook\WebhookLog;
 use App\Models\Admin\Webhook\WebhookEvent;
 use App\Traits\DateTime;
+use Carbon\Carbon;
 
 class Webhook extends Model
 {
@@ -28,11 +29,19 @@ class Webhook extends Model
         'name', 
         'url', 
         'secret',
-        'status'
+        'status',
+        'last_hit'
     ];
 
     // Dates that should be treated as date objects
     protected $dates = ['created_at', 'updated_at'];
+
+    // Accessor for the `delivered_at` attribute.
+    public function getLastHitAttribute($value)
+    {
+        $user = auth()->user();
+        return $value ? Carbon::parse($value)->timezone(optional($user)->timezone ?? config('app.timezone'))->format('d-m-Y H:i:s') : null;
+    }
 
     /**
      * The events that belong to the webhook.

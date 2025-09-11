@@ -49,7 +49,6 @@ class WebhookController extends Controller
             'status' => 'required|boolean',
             'event_ids' => 'required|array|min:1',
             'event_ids.*' => 'exists:webhook_events,id',
-
         ]);
         
         try {
