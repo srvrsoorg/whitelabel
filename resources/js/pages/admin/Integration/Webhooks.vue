@@ -152,10 +152,10 @@
             </template>
         </Table>
         <template v-else>
-            <TableSkeleton :heads="6" v-if="refreshing" />
+            <TableSkeleton :heads="7" v-if="refreshing" />
             <Table :head="thead" v-else>
                 <tr>
-                    <td colspan="6" class="text-center text-sm px-6 py-5">
+                    <td colspan="7" class="text-center text-sm px-6 py-5">
                         {{ refreshing ? "Please Wait" : "No Webhooks Found" }}
                     </td>
                 </tr>

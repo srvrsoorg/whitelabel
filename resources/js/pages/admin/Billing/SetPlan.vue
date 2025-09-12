@@ -20,7 +20,7 @@
       />
     </div>
   </div>
-  <div class="flex justify-end" v-if="plans.region">
+  <div class="flex justify-end md:mt-0 mt-4" v-if="plans.region">
     <label for="toggleAllSizes" class="flex items-center w-fit cursor-pointer bg-sa-50 px-4 py-2 rounded-lg border border-sa-200 hover:bg-sa-100 transition-colors duration-200">
       <input
           type="checkbox"
@@ -107,8 +107,8 @@
       </div>
     </div>
   </div>
-  <div class="h-full mt-5" v-if="sizes.length > 0">
-  <table class="min-w-full shadow-md rounded-lg">
+  <div class="h-full overflow-x-auto rounded-md shadow mt-5" v-if="sizes.length > 0">
+  <table class="w-full">
     <thead class="bg-[#F6F6F6] sticky top-0 min-w-full whitespace-nowrap">
       <tr>
         <th v-if="this.cloudProvider.provider === 'hetzner' || cloudProvider.provider === 'linode'" class="px-4 mx-10 py-4 text-left text-[15px] font-medium text-[#31363f]">Name</th>
@@ -196,18 +196,16 @@
       </tr>
     </tbody>
   </table>
-
-  <div class="mt-5 text-end" v-if="plans.region">
-    <Button @click="save" :disabled="processing">
-      <i
-        v-if="processing"
-        class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
-      ></i>
-      {{ processing ? "Please wait" : "Save" }}
-    </Button>
   </div>
-</div>
-
+    <div class="mt-5 text-end" v-if="plans.region">
+      <Button @click="save" :disabled="processing">
+        <i
+          v-if="processing"
+          class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
+        ></i>
+        {{ processing ? "Please wait" : "Save" }}
+      </Button>
+    </div>
 </template>
 
 <script>
