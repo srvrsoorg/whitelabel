@@ -43,5 +43,16 @@ export default[
             title: `Security | Account`, // Title for the route
             setupReqiures: true,
         }
+    },
+    {
+        path:'/account/settings',
+        name:'AccountSettings',
+        component: () => import('@/pages/account/Settings.vue'),
+        meta: {
+            middleware: ["auth"], 
+            layout: userLayout,
+            title: `Settings | Account`, // Title for the route
+            setupReqiures: true,
+        }
     }
 ];

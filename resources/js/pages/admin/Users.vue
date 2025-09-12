@@ -2,8 +2,8 @@
   <Breadcrumb :breadcrumb="breadcrumb" />
   <div class="sm:flex justify-between items-center gap-4">
     <p class="text-xl font-medium">Users</p>
-    <div class="xs:flex justify-end sm:mt-0 mt-3 items-center gap-5">
-      <div class="relative xl:min-w-96 w-full">
+    <div class="flex-1 xs:flex justify-end sm:mt-0 mt-3 items-center gap-5">
+      <div class="relative xl:min-w-96 max-w-40 w-full">
         <input
           v-model="search"
           @input="handleSearch()"
@@ -50,6 +50,16 @@
           </span>
         </button>
         <Button @click="openModal"> Create </Button>
+        <Button class="flex items-center gap-1" @click="exportUsers()" :disabled="exporting"> 
+          <span class="material-symbols-outlined text-[20px]" v-if="!exporting">
+            download
+          </span>
+          <i
+            v-if="exporting"
+            class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
+          ></i>
+          Export Users
+        </Button>
       </div>
     </div>
   </div>
@@ -507,8 +517,10 @@
 import Multiselect from "vue-multiselect";
 import { useAuthStore } from "@/store/auth";
 import { mapState } from "pinia";
+import downloadCsv from "@/mixins/downloadCsv";
 
 export default {
+  mixins: [downloadCsv],
   data() {
     return {
       breadcrumb: {
@@ -594,6 +606,7 @@ export default {
       per_page: 10,
       refreshing: false,
       open: false,
+      exporting: false
     };
   },
   components: {
@@ -793,6 +806,35 @@ export default {
       this.search = "";
       this.handleSearch();
     },
+    async exportUsers(){
+      this.exporting = true
+      await this.$axios.get(`/admin/users`).then(({data}) => {
+        let columns = {
+            id: "ID",
+            name: "Name",
+            email: "Email",
+            email_verified_at: "Email Verified At",
+            credits: "Credits",
+            mobile_no: "Mobile No.",
+            servers_count: "Servers",
+            country_name: "Country",
+            region_name: "Region",
+            status: "Status",
+            created_at: "Created At"
+        };
+
+        this.downloadCSV(
+              data.users,
+              columns,
+              "users.csv"
+          );
+      }).catch(({ response }) => {
+        this.$toast.error(response.data.message);
+      })
+      .finally(() => {
+        this.exporting = false;
+      });
+    }
   },
 };
 </script>

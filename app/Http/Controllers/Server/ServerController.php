@@ -267,6 +267,12 @@ class ServerController extends Controller
             return ['success' => false, 'message' => 'Selected plan not found!', 'status' => 404];
         }
 
+        $missingAmount = $plan->price_per_month - $user->credits;
+        if($user->credits < $plan->price_per_month) {
+            \Log::info(" udjash");
+            return ['success' => false, 'message' => 'The credits are insufficient. Please add $' . round($missingAmount) . ' to the credits before creating a server!', 'status' => 500];
+        }
+
         $providerVersions = $this->getProviderVersions();
 
         // Check if provider is valid
