@@ -230,6 +230,8 @@ class AuthController extends Controller
                 'confirmation_timer' => $request->confirmation_timer,
             ]);
 
+            Helper::createActivity($user, 'Account', 'Update', 'Confirmation timer updated to ' . $request->confirmation_timer . ' second(s).');
+
             return response()->json([
                 "message" => "Confirmation timer updated successfully."
             ], 200);
