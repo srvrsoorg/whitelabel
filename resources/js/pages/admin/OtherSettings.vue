@@ -172,6 +172,7 @@ export default {
             this.processing = true
             await this.$axios.post(`/admin/links`, this.payload).then(({data}) => {
                 this.$toast.success(data.message)
+                this.fetchData()
             }).catch(({ response }) => {
                 if(response.status === 422) {
                     this.displayError(response.data);
