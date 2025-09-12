@@ -58,7 +58,7 @@ export const routes = [
         {
             name: "otherSettings",
             path: "other-settings",
-            component: () => import("@/pages/admin/otherSettings.vue"),
+            component: () => import("@/pages/admin/OtherSettings.vue"),
             meta: {
                 middleware: ["auth", "admin"],
                 title: "Other Settings | Admin",
