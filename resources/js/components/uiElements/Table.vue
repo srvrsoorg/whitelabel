@@ -43,10 +43,10 @@
           </table>
         </div>
       </div>
-      <div class="">
+      </div>
+      <div class="-mx-4">
         <slot name="pagination"></slot>
       </div>
-    </div>
   </div>
 </template>
 
