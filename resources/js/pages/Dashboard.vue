@@ -598,10 +598,10 @@ export default {
         .get(`/servers/${id}/panel`)
         .then((response) => {
           if (response.data.agent_status === 1) {
-            window.open(`http://${response.data.panelUser.domain}`, "_blank");
+            window.open(`http://${response.data.panelUser.domain}?confirmation_timer=${this.user.confirmation_timer}`, "_blank");
           } else {
             window.open(
-              `http://${response.data.panelUser.domain}/host/login?key=${response.data.panelUser.key}&server=${id}&redirect=false`,
+              `http://${response.data.panelUser.domain}/host/login?key=${response.data.panelUser.key}&server=${id}&redirect=false&confirmation_timer=${this.user.confirmation_timer}`,
               "_blank"
             );
           }
