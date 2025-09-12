@@ -209,4 +209,38 @@ class AuthController extends Controller
             return response()->json(['message' => 'Failed to log out!'], 500);
         }
     }
+
+    /**
+     * Update the confirmation timer for the authenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateConfirmationTimer(Request $request)
+    {
+        $request->validate([
+            'confirmation_timer' => 'required|integer|min:0|max:5',
+        ]);
+
+        try {
+            $user = auth()->user();
+
+            // Update the user's confirmation timer
+            $user->update([
+                'confirmation_timer' => $request->confirmation_timer,
+            ]);
+
+            Helper::createActivity($user, 'Account', 'Update', 'Confirmation timer updated to ' . $request->confirmation_timer . ' second(s).');
+
+            return response()->json([
+                "message" => "Confirmation timer updated successfully."
+            ], 200);
+        } catch (\Exception $e) {
+            report($e->getMessage());
+            // ❌ Error response for exceptions
+            return response()->json([
+                'message' => 'Something went wrong while updating confirmation timer!'
+            ], 500);
+        }
+    }
 }

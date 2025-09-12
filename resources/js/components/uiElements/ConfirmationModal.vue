@@ -95,6 +95,7 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/store/auth';
 import {
   Dialog,
   DialogPanel,
@@ -144,6 +145,10 @@ export default {
       default: false,
       required: false,
     },
+     timerValue: {
+       type: Number,
+       required: false
+      }
   },
   computed: {
     isDisabled() {
@@ -151,6 +156,12 @@ export default {
             return true; // ⏳ 5 second wait
         }
         return this.timer > 0 || this.showBtnLoader || this.disableButton;
+    },
+    authStore(){
+        return useAuthStore()
+    },
+    user(){
+        return this.authStore.user
     },
   },
   watch: {
@@ -165,6 +176,15 @@ export default {
     showLoader(val) {
       this.showBtnLoader = val;
     },
+    'user': {
+        handler(val){
+            if(this.timerValue){
+                this.timer = this.timerValue
+            }else{
+                this.timer = val && (val.confirmation_timer || val.confirmation_timer == 0) ? val.confirmation_timer : 5
+            }
+        }
+    }
   },
   data() {
     return {
@@ -177,12 +197,16 @@ export default {
   methods: {
     init(val) {
       this.open = val;
-      if (val) {
-        this.timer = 5;
-        this.interval = setInterval(() => {
-          this.timer = this.timer - 1;
-        }, 1000);
-      }
+        if(val){
+            if(this.timerValue){
+                this.timer = this.timerValue
+            }else{
+                this.timer = this.user && (this.user.confirmation_timer || this.user.confirmation_timer == 0) ? this.user.confirmation_timer : 5
+            }
+            this.interval = setInterval(()=>{
+                this.timer = this.timer - 1
+            }, 1000)
+        }
     },
     resetTimer() {
       this.timer = 0;

@@ -43,7 +43,8 @@ class User extends Authenticatable
         'timezone',
         'two_fa_enable',
         'stripe_id',
-        'reminder_minimum_credit'
+        'reminder_minimum_credit',
+        'confirmation_timer'
     ];
 
     /**

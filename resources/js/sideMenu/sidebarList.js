@@ -61,6 +61,12 @@ export default [
                 url: "/account/activities",
                 parentId: 3,
             },
+            {
+                id: 4,
+                name: "Settings",
+                url: "/account/settings",
+                parentId: 3,
+            },
         ],
     },
     {

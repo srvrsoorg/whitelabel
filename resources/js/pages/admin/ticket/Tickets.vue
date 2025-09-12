@@ -52,8 +52,8 @@
     </div>
   </div>
   <div class="border-b border-gray-200 my-4">
-    <nav class="flex gap-8" aria-label="Tabs">
-      <div class="border-gray-200 text-sm flex sm:space-x-7 space-x-5">
+    <nav class="flex sm:gap-8" aria-label="Tabs">
+      <div class="border-gray-200 text-sm flex sm:space-x-7 xs:space-x-5 space-x-2">
         <button
           @click="changeStatus(tab)"
           v-for="tab in tabs"

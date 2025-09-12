@@ -108,10 +108,9 @@ class PublicController extends Controller
         // Request validation
         $request->validate([
             'email' => 'required|email|max:255|exists:users,email,deleted_at,NULL',
-            'password' => 'required|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/'
+            'password' => 'required|min:8|max:32'
         ],[
             'email.exists' => 'The selected email is not registered.',
-            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).'
         ]);
 
         try {

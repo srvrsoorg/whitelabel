@@ -20,15 +20,20 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::when(request('search'), function ($query) {
+            $query = User::when(request('search'), function ($query) {
                     $query->where('name', 'like', '%' . request('search') . '%')
                         ->orWhere('email', 'like', '%' . request('search') . '%');
                 })
-                ->select('id', 'name', 'email', 'avatar', 'email_verified_at', 'credits', 'status', 'country_name', 'country_code', 'created_at')
+                ->select('id', 'name', 'email', 'avatar', 'email_verified_at', 'credits', 'status', 'mobile_no', 'region_name', 'region_code', 'country_name', 'country_code', 'created_at')
                 ->with('banLockReason')
                 ->withCount('servers')
-                ->orderByDesc('created_at')
-                ->paginate(request()->input('per_page'));
+                ->orderByDesc('created_at');
+
+            if (request()->has('per_page') && request()->input('per_page')) {
+                $users = $query->paginate(request()->input('per_page'));
+            } else {
+                $users = $query->get();
+            }
 
             // ✅ Success response: Return paginated users with their associated data
             return response()->json([

@@ -63,7 +63,7 @@
         <td class="whitespace-nowrap py-4 px-4">
           <span v-tooltip="promoCode.code">{{ promoCode.code }}</span>
         </td>
-        <td class="py-4 px-4">
+        <td class="py-4 px-4 whitespace-nowrap">
           {{ promoCode.usage_status ? promoCode.usage_status : "-" }}
         </td>
         <td class="py-4 px-4">{{ promoCode.discount }}%</td>
