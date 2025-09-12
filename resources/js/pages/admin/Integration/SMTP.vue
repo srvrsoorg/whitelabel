@@ -435,7 +435,7 @@ export default {
           if (response.status === 422) {
             this.displayError(response.data);
           } else {
-            this.$toast.error(data.message);
+            this.$toast.error(response.data.message);
           }
           this.closeModal();
         });
