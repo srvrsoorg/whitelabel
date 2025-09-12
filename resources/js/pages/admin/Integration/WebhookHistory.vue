@@ -127,7 +127,7 @@
       :show="showEventsModal"
       @closeModal="showEventsModal = false"
       :modalTitle="'All Events'"
-      :modelIcon="'event_list'"
+      :modelIcon="'bolt'"
       :customClass="['md:max-w-lg']"
     >
       <div class="flex flex-wrap gap-2">
