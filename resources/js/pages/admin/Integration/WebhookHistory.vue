@@ -64,10 +64,10 @@
         </div>
     </div>
     <div class="flex flex-col gap-1">
-            <h1 class="text-xl font-medium text-[#31363f]">
-                Webhook History
-            </h1>
-        </div>
+        <h1 class="text-xl font-medium text-[#31363f]">
+            Webhook History
+        </h1>
+    </div>
     <div class="h-full mt-5">
         <Table :head="thead" v-if="logs.length > 0">
             <tr
@@ -76,7 +76,7 @@
                 :key="log.id"
             >
                 <td class="whitespace-nowrap py-4 px-4 ">
-                    {{ log?.payload?.event?.name || '-' }}
+                    <Badge :badgeTitle="log?.payload?.event?.name || '-'" variant="dark" :rounded="true"/>
                 </td>
                 <td class="whitespace-nowrap py-4 px-4 ">
                     {{ log.delivered_at }}
@@ -127,15 +127,15 @@
       :show="showEventsModal"
       @closeModal="showEventsModal = false"
       :modalTitle="'All Events'"
+      :modelIcon="'event_list'"
       :customClass="['md:max-w-lg']"
     >
       <div class="flex flex-wrap gap-2">
         <span
           v-for="event in webhook.events"
           :key="event.id"
-          class="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-sm font-medium"
         >
-          {{ event.name }}
+            <Badge :badgeTitle="event?.name" variant="dark" :rounded="true"/>
         </span>
       </div>
     </Modal>
@@ -147,7 +147,7 @@
         :customClass="['md:max-w-2xl']"
     >
         <template #titleExtra>
-            <div class="flex items-center capitalize sm:gap-3">
+            <div class="flex items-center capitalize ml-2">
               <span 
                 v-if="currentLog"
                 :class="[
@@ -157,11 +157,19 @@
                   'px-2.5 py-0.5 rounded-full font-medium flex items-start sm:items-center gap-1 sm:border'
                 ]"
               >
-                <span 
-                  class="sm:hidden material-symbols-outlined text-[12px] rounded-full"
-                :class="currentLog.status === 'success' ? 'bg-green-500 text-green-500' : 'bg-red-500 text-red-500'"
-                >
-                  circle
+                <span
+                class="relative flex items-center justify-center sm:-ml-0 -ml-2"
+                v-tooltip.top="`${currentLog.status === 'success' ? 'Success' : currentLog.status === 'failed' ? 'failed' : currentLog.status}`"
+                >                                                   
+                <span
+                  v-if="currentLog.status === 'success' || currentLog.status === 'failed'"
+                  class="sm:hidden absolute inline-flex h-[9px] w-[9px] animate-ping rounded-full"
+                  :class="currentLog.status === 'success' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
+                ></span>                                         
+                <span
+                  class="sm:hidden relative inline-flex h-[9px] w-[9px] rounded-full"
+                  :class="currentLog.status === 'success' ? 'bg-green-600' : currentLog.status === 'failed' ? 'bg-red-500' : 'bg-gray-500'"
+                ></span>
                 </span>
                 <span class="relative top-px text-[12px] hidden sm:inline">
                   {{ currentLog.status }}
@@ -198,9 +206,7 @@
                     Event
                   </label>
                   <div class="md:col-span-9 text-sm font-medium break-all">
-                    <span v-tooltip="currentLog?.payload?.event?.name">
-                      {{ currentLog?.payload?.event?.name || '-' }}
-                    </span>
+                    <Badge :badgeTitle="currentLog?.payload?.event?.name" variant="dark" :rounded="true"/>
                   </div>
                 </div>
             </div>

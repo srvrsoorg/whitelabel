@@ -60,6 +60,7 @@
                   >
                     {{ modelIcon }}
                   </span>
+                  <div class="flex items-center">
                   <h2
                     v-if="modalTitle"
                     class="font-medium text-gray-900 text-base"
@@ -67,6 +68,7 @@
                     {{ modalTitle }}
                   </h2>
                   <slot name="titleExtra"></slot>
+                  </div>
                   <slot name="titleDescription"> </slot>
                 </div>
                 <button
