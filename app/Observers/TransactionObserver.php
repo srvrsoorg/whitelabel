@@ -79,9 +79,10 @@ class TransactionObserver
 
     protected function buildPayload(Transaction $transaction): array
     {
+        $user = $transaction->user;
         return [
             'id'             => $transaction->id,
-            'user_id'        => $transaction->user_id,
+            'transaction_id' => $transaction->transaction_id,
             'payment_gateway'=> $transaction->payment_gateway,
             'service'        => $transaction->service,
             'amounts' => [
@@ -91,10 +92,12 @@ class TransactionObserver
                 'final'    => $transaction->final_amount,
             ],
             'status'         => $this->mapStatus($transaction->status),
-            'transaction_id' => $transaction->transaction_id,
             'paid_at'        => $transaction->paid_at,
             'refunded_at'    => $transaction->refunded_at,
             'refund_reason'  => $transaction->refund_reason,
+            'user_id'        => $transaction->user_id,
+            'user_name'      => $user?->name,
+            'user_email'     => $user?->email,
         ];
     }
 }

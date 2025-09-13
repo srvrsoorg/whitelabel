@@ -25,9 +25,12 @@ class TicketObserver
      */
     public function created(Ticket $ticket): void
     {
+        $user = $ticket->user;
         $this->webhookService->send('Ticket', 'Created', [
             'id' => $ticket->id,
             'user_id' => $ticket->user_id,
+            'user_name' => $user?->name,
+            'user_email' => $user?->email,
             'title' => $ticket->title,
             'department' => $ticket->department,
             'status' => 'open',
@@ -40,12 +43,15 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
+        $user = $ticket->user;
         if ($ticket->wasChanged('status')) {
             $action = $ticket->status == 'open' ? 'Reopened' : 'Closed';
 
             $this->webhookService->send('Ticket', $action, [
                 'id'         => $ticket->id,
                 'user_id'    => $ticket->user_id,
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
                 'title'      => $ticket->title,
                 'department' => $ticket->department,
                 'status'     => $ticket->status,
