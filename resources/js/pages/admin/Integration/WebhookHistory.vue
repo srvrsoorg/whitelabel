@@ -151,30 +151,30 @@
               <span 
                 v-if="currentLog"
                 :class="[
-                  currentLog.status === 'success' 
-                    ? 'sm:bg-green-100 sm:text-green-500 sm:border-green-200'
-                    : 'sm:bg-red-100 sm:text-red-500 sm:border-red-200',
-                  'px-2.5 py-0.5 rounded-full font-medium flex items-start sm:items-center gap-1 sm:border'
+                  currentLog?.status === 'success' 
+                    ? 'bg-green-100 text-green-500 border-green-200'
+                    : 'bg-red-100 text-red-500 border-red-200',
+                  'px-2.5 py-0.5 rounded-full font-medium sm:flex items-start gap-1 border relative top-px text-[12px] hidden'
                 ]"
               >
+                {{ currentLog.status }}
+              </span>
+            </div>
+            <div class="ml-2">
                 <span
                 class="relative flex items-center justify-center sm:-ml-0 -ml-2"
-                v-tooltip.top="`${currentLog.status === 'success' ? 'Success' : currentLog.status === 'failed' ? 'failed' : currentLog.status}`"
+                v-tooltip.top="`${currentLog?.status === 'success' ? 'Success' : currentLog?.status === 'failed' ? 'Failed' : currentLog?.status}`"
                 >                                                   
                 <span
-                  v-if="currentLog.status === 'success' || currentLog.status === 'failed'"
+                  v-if="currentLog?.status === 'success' || currentLog?.status === 'failed'"
                   class="sm:hidden absolute inline-flex h-[9px] w-[9px] animate-ping rounded-full"
-                  :class="currentLog.status === 'success' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
+                  :class="currentLog?.status === 'success' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
                 ></span>                                         
                 <span
                   class="sm:hidden relative inline-flex h-[9px] w-[9px] rounded-full"
-                  :class="currentLog.status === 'success' ? 'bg-green-600' : currentLog.status === 'failed' ? 'bg-red-500' : 'bg-gray-500'"
+                  :class="currentLog?.status === 'success' ? 'bg-green-600' : currentLog?.status === 'failed' ? 'bg-red-500' : 'bg-gray-500'"
                 ></span>
                 </span>
-                <span class="relative top-px text-[12px] hidden sm:inline">
-                  {{ currentLog.status }}
-                </span>
-              </span>
             </div>
         </template>
         <div>
@@ -211,7 +211,7 @@
                 </div>
             </div>
             <nav class="flex gap-8 w-full" aria-label="Tabs">
-                <div class="border-b border-gray-200 text-sm flex space-x-5 w-full">
+                <div class="border-b border-gray-200 text-sm flex xs:space-x-5 space-x-2 w-full">
                     <button
                         @click="changeCurrentTab(tab)"
                         v-for="tab in tabs"
