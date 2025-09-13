@@ -1262,7 +1262,13 @@
                   class="min-h-full h-10 min-w-[4px] rounded-xl bg-green-500"
                 ></div>
                 <span class="flex-1 sm:text-xl text-lg">Connected Servers</span>
-                <i class="fa-solid fa-circle text-green-500 text-sm px-2"></i>
+                <span class="relative flex items-center justify-center h-3 w-3 mr-2">
+                    <span
+                    class="absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75 animate-ping"
+                    ></span>
+                    <!-- Actual dot (stable) -->
+                    <i class="relative fa-solid fa-circle text-green-500 text-sm"></i>
+                </span>
               </div>
               <hr class="my-3" />
               <div class="w-full">
@@ -1280,8 +1286,13 @@
                 ></div>
                 <span class="flex-1 sm:text-xl text-lg"
                   >Disconnected Servers</span
-                >
-                <i class="fa-solid fa-circle text-red-500 text-sm px-2"></i>
+                  >
+                    <span class="relative flex items-center justify-center h-3 w-3 mr-2">
+                        <span
+                        class="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping"
+                        ></span>
+                        <i class="fa-solid fa-circle text-red-500 text-sm px-2"></i>
+                    </span>
               </div>
               <hr class="my-3" />
               <div class="w-full">

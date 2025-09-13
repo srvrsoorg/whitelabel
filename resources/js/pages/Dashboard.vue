@@ -98,23 +98,38 @@
           >
             <td class="whitespace-nowrap py-3 pl-10 px-4 min-w-[300px]">
               <div class="flex items-center gap-5">
-                <div class="flex justify-center items-center gap-4">
-                  <i
-                    :class="[
-                      server.agent_status === '0'
-                        ? 'text-red-500 fa-solid fa-circle text-[10px] capitalize'
-                        : server.agent_status === '1'
-                        ? 'text-green-500 fa-solid fa-circle text-[10px] capitalize'
-                        : 'text-gray-500 fa-solid fa-circle text-[10px] capitalize',
-                    ]"
-                    v-tooltip="
-                      server.agent_status === '0'
-                        ? 'Disconnected'
-                        : server.agent_status === '1'
-                        ? 'Connected'
-                        : server.agent_status
-                    "
-                  ></i>
+                  <div class="flex justify-center items-center gap-4">
+                      <span class="relative flex h-2.5 w-2.5">
+                          <!-- Pinging effect -->
+                          <span
+                            :class="[
+                                'absolute inline-flex h-full w-full rounded-full opacity-75',
+                                server.agent_status === '0'
+                                ? 'bg-red-500 animate-ping'
+                                : server.agent_status === '1'
+                                ? 'bg-green-500 animate-ping'
+                                : '',
+                                ]"
+                            ></span>
+                        <!-- Actual icon -->
+                        <i
+                            :class="[
+                            'relative fa-solid fa-circle text-[10px] capitalize',
+                            server.agent_status === '0'
+                                ? 'text-red-500'
+                                : server.agent_status === '1'
+                                ? 'text-green-500'
+                                : 'text-gray-500',
+                            ]"
+                            v-tooltip="
+                            server.agent_status === '0'
+                                ? 'Disconnected'
+                                : server.agent_status === '1'
+                                ? 'Connected'
+                                : server.agent_status
+                            "
+                        ></i>
+                    </span>
                   <template v-if="CloudLogos && server.provider_name">
                     <img
                       :src="CloudLogos[server.provider_name].logo"
