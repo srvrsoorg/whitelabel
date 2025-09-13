@@ -112,10 +112,10 @@
             </template>
         </Table>
         <template v-else>
-            <TableSkeleton :heads="4" v-if="refreshing" />
+            <TableSkeleton :heads="5" v-if="refreshing" />
             <Table :head="thead" v-else>
                 <tr>
-                    <td colspan="4" class="text-center text-sm px-6 py-5">
+                    <td colspan="5" class="text-center text-sm px-6 py-5">
                         {{ refreshing ? "Please Wait" : "No History Found" }}
                     </td>
                 </tr>
@@ -233,10 +233,10 @@
                 <div v-if="currentTab==='response'">
                     <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
                         <template v-if="wrapValue(currentLog.response_body).type === 'pre'">
-                            <pre>{{ wrapValue(currentLog.response_body).content }}</pre>
+                            <pre class="whitespace-pre-wrap break-words">{{ wrapValue(currentLog.response_body).content }}</pre>
                         </template>
                         <template v-else-if="wrapValue(currentLog.response_body).type === 'html'">
-                            <div v-html="wrapValue(currentLog.response_body).content"></div>
+                            <div class="[&>a]:text-blue-400 [&>a]:underline [&>a]:hover:text-blue-300" v-html="wrapValue(currentLog.response_body).content"></div>
                         </template>
                     </div>
                 </div>
@@ -380,6 +380,9 @@ export default {
                 return { type: 'pre', content: this.pretty(val) };
             }
             if (this.isHtml(val)) {
+                if (val.includes('<!DOCTYPE html') || val.includes('<html')) {
+                return { type: 'pre', content: val };
+            }
                 return { type: 'html', content: val };
             }
             if (this.isBoolean(val) || this.isNumber(val)) {
