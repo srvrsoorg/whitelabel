@@ -22,7 +22,9 @@ class WebhookController extends Controller
     public function index(Request $request) {
         try {
             $perPage = $request->input('per_page', 10);
-            $webhooks = Webhook::with('events:id,name')->paginate($perPage);
+            $webhooks = Webhook::with('events:id,name')
+                ->orderByDesc('created_at')
+                ->paginate($perPage);
 
             return response()->json([
                 "webhooks" => $webhooks

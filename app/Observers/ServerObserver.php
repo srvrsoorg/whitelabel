@@ -34,9 +34,13 @@ class ServerObserver
      */
     public function updated(Server $server): void
     {
-       if($server->agent_status == 'finalizing') {
+        $user = $server->user;
+        if($server->agent_status == 'finalizing') {
             $this->webhookService->send('Server', 'Created', [
                 'id'    => $server->id,
+                'user_id' => $user?->id,
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
                 'name'  => $server->name,
                 'ip' => $server->ip,
                 'provider' => $server->provider_name,
@@ -44,7 +48,7 @@ class ServerObserver
                 'version' => $server->version,
                 'created_at' => $server->created_at,
             ]);
-       }
+        }
     }
 
     /**
@@ -52,8 +56,12 @@ class ServerObserver
      */
     public function deleted(Server $server): void
     {
+        $user = $server->user;
         $this->webhookService->send('Server', 'Deleted', [
             'id'    => $server->id,
+            'user_id' => $user?->id,
+            'user_name' => $user?->name,
+            'user_email' => $user?->email,
             'name'  => $server->name,
             'ip' => $server->ip,
             'provider' => $server->provider_name,
