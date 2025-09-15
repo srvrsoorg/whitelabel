@@ -274,7 +274,7 @@
                         <span
                           class="text-[11px] xs:text-[12px] 2xl:text-sm font-medium mt-3"
                         >
-                          {{ service.title }}
+                          {{ service.title == "NodeJs" ? 'Node Stack' : service.title }}
                         </span>
                         <p
                           v-if="service.title === 'NodeJs'"
@@ -327,12 +327,6 @@
                         v-if="service.title === 'NodeJs'"
                         class="px-1 py-2.5 text-[11px] xs:text-[12px] xl:text-[11px] 2xl:text-[12px] text-gray-600"
                       >
-                        <div class="py-1 flex 2xl:items-center gap-2">
-                          <i
-                            class="fa-solid fa-circle text-[5px] 2xl:pt-0 pt-1.5"
-                          ></i>
-                          <span>Node Stack</span>
-                        </div>
                         <div class="py-1 flex 2xl:items-center gap-2">
                           <i
                             class="fa-solid fa-circle text-[5px] 2xl:pt-0 pt-1.5"
@@ -594,7 +588,7 @@
       v-if="server.provider && providerList.length > 0"
     >
       <div
-        v-if="server.region !== null && selectPlan.length > 0"
+        v-if="server.region !== null "
         class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
         aria-hidden="true"
       ></div>
@@ -692,9 +686,9 @@
     </div>
     <div
       class="relative my-5"
-      v-if="server.region !== null && selectPlan.length > 0"
+      v-if="server.region !== null "
     >
-      <div
+      <div v-if="server.region !== null && selectPlan.length > 0"
         class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
         aria-hidden="true"
       ></div>
@@ -764,6 +758,9 @@
                   </div>
                 </RadioGroup>
               </perfectScrollbar>
+                <div v-else>
+                    <Skeleton :count="11" v-if="refreshing"/>
+                </div>
             </div>
             <small
               id="plan_message"
@@ -852,24 +849,24 @@
                   </td>
                 </tr>
               </Table>
-              <template v-else>
-                <TableSkeleton :heads="6" v-if="refreshing" />
-                <Table :head="thead" v-else>
-                  <tr>
-                    <td
-                      colspan="6"
-                      class="text-center text-sm whitespace-nowrap py-4 px-4"
-                    >
-                      {{ refreshing ? "Please Wait" : "No Data Found" }}
-                    </td>
-                  </tr>
-                </Table>
-              </template>
               <small
-                id="sizeSlug_message"
-                class="error_message text-red-500 text-xs"
+              id="sizeSlug_message"
+              class="error_message text-red-500 text-xs"
               ></small>
             </div>
+            <template v-else>
+              <TableSkeleton :heads="6" v-if="refreshing" />
+              <Table :head="thead" v-else>
+                <tr>
+                  <td
+                    colspan="6"
+                    class="text-center text-sm whitespace-nowrap py-4 px-4"
+                  >
+                    {{ refreshing ? "Please Wait" : "No Data Found" }}
+                  </td>
+                </tr>
+              </Table>
+            </template>
           </div>
         </div>
       </div>
@@ -967,7 +964,7 @@
     </div>
     <div
       class="my-5 flex justify-end"
-      v-if="server.provider && providerList.length > 0"
+      v-if="server.provider && providerList.length > 0 && server.region !== null && selectPlan.length > 0"
     >
       <div v-if="user">
         <div
@@ -1066,7 +1063,6 @@ export default {
       selectRegion: [],
       selectPlan: [],
       newPlanList: [],
-      fetchingPlan: false,
       selectAvailability: [],
       thead: [
         {
@@ -1290,7 +1286,6 @@ export default {
       if (this.user.email_verified_at === null) {
         return;
       }
-      this.refreshing = true;
       const loader = this.$loading.show();
       await this.$axios
         .get(`/cloud-providers/${this.providerId}/regions`)
@@ -1309,8 +1304,6 @@ export default {
 
     async fetchPlan() {
       this.refreshing = true;
-      this.fetchingPlan = true;
-      const loader = this.$loading.show();
       await this.$axios
         .get(
           `/cloud-providers/${this.providerId}/sizes?region=${this.server.region}`
@@ -1326,10 +1319,6 @@ export default {
           this.$toast.error(response.data.message);
         })
         .finally(() => {
-          if (loader) {
-            loader.hide();
-          }
-          this.fetchingPlan = false;
           this.refreshing = false;
         });
     },

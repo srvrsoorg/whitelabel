@@ -111,12 +111,14 @@
           </span>
         </td>
 
-        <td class="whitespace-nowrap text-left max-w-44 truncate py-5 px-4 text-sm" v-tooltip="ticket?.latest_reply ? `${ticket.latest_reply.created_at_human} by ${ticket.latest_reply.reply_by}` : '-'">
-          {{
+        <td class="whitespace-nowrap text-left max-w-44 truncate py-5 px-4 text-sm">
+         <span v-tooltip="ticket?.latest_reply ? `${ticket.latest_reply.created_at_human} by ${ticket.latest_reply.reply_by}` : '-'">
+           {{
             ticket?.latest_reply
               ? `${ticket.latest_reply.created_at_human} by ${ticket.latest_reply.reply_by}`
               : "-"
           }}
+         </span>
         </td>
         <td class="whitespace-nowrap text-left py-5 px-4 text-sm">
           {{ ticket.formatted_created_at }}

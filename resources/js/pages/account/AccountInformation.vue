@@ -246,7 +246,7 @@
       </div>
     </div>
 
-    <div class="flex flex-row-reverse p-5 xl:px-14">
+    <div class="flex flex-row-reverse p-5 xl:px-14" v-if="user">
       <div class="text-end">
         <Button :disabled="processing" @click="updateProfile">
           <i
@@ -391,13 +391,13 @@ export default {
   async created() {
     await this.fetchTimezones();
     await this.getCountries();
-    await this.getUser();
-    this.userInfo = { ...this.user };
-    if (this.userInfo.timezone) {
-      this.timezone = this.timezones.find(
-        (timezone) => timezone.value === this.userInfo.timezone
-      );
-    }
+    // this.userInfo = { ...this.user };
+    // if (this.userInfo.timezone) {
+    //   this.timezone = this.timezones.find(
+    //     (timezone) => timezone.value === this.userInfo.timezone
+    //   );
+    // }
+    this.loadData()
   },
   methods: {
     ...mapActions(useAuthStore, ["getUser", "authLogout"]),
@@ -411,6 +411,20 @@ export default {
           this.$toast.error(response.data.message);
         });
     },
+    async loadData() {
+      const loader = this.$loading.show();
+        try {
+          await this.getUser(); // fetch user from API
+          this.userInfo = { ...this.user };
+          if (this.userInfo.timezone) {
+            this.timezone = this.timezones.find(
+              (timezone) => timezone.value === this.userInfo.timezone
+            );
+          }
+        } finally {
+          loader.hide()
+        }
+      },
     async fetchTimezones() {
       await this.$axios
         .get("/timezone")

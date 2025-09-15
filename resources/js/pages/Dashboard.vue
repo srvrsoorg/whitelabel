@@ -103,12 +103,12 @@
                           <!-- Pinging effect -->
                           <span
                             :class="[
-                                'absolute inline-flex h-full w-full rounded-full opacity-75',
+                                'absolute inline-flex animate-ping h-full w-full rounded-full opacity-75',
                                 server.agent_status === '0'
-                                ? 'bg-red-500 animate-ping'
+                                ? 'bg-red-500'
                                 : server.agent_status === '1'
-                                ? 'bg-green-500 animate-ping'
-                                : '',
+                                ? 'bg-green-500'
+                                : 'bg-gray-600',
                                 ]"
                             ></span>
                         <!-- Actual icon -->

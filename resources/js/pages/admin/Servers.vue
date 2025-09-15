@@ -99,9 +99,8 @@
                 v-tooltip.top="`${server.agent_status == '1' ? 'Connected' : server.agent_status == '0' ? 'Not Connected' : server.agent_status}`"
                 >                                                   
                 <span
-                  v-if="server.agent_status == '1' || server.agent_status == '0'"
-                  class="absolute inline-flex h-[9px] w-[9px] animate-ping rounded-full"
-                  :class="server.agent_status == '1' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
+                  class="absolute inline-flex h-[9px] w-[9px] animate-ping opacity-75 rounded-full"
+                   :class="server.agent_status == '1' ? 'bg-green-600' : server.agent_status == '0' ? 'bg-red-500' : 'bg-gray-500'"
                 ></span>                                         
                 <span
                   class="relative inline-flex h-[9px] w-[9px] rounded-full"
