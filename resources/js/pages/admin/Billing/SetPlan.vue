@@ -256,6 +256,7 @@ export default {
       currentTab: "",
       processing: false,
       currency: 'USD',
+      currencySymbol:'$'
     };
   },
   components: {
@@ -311,7 +312,7 @@ export default {
     this.fetchPlans();
     this.fetchRegions();
     this.fetchSizes();
-    this.currencySymbol = window?.siteSettings?.currency_symbol;
+    this.currencySymbol = window?.siteSettings?.currency_symbol || '$';
   },
   methods: {
     isInPlan(regionValue) {
