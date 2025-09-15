@@ -495,7 +495,7 @@ class TransactionController extends Controller
                 $requestData = [
                     'link_id' => $transaction->key,
                     'link_amount' => $finalAmount,
-                    'link_currency' => "INR",
+                    'link_currency' => $currency,
                     'link_purpose' => $transaction->service,
                     'customer_details' => [
                         'customer_email' => $user->email,
