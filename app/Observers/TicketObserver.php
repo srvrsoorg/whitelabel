@@ -27,14 +27,18 @@ class TicketObserver
     {
         $user = $ticket->user;
         $this->webhookService->send('Ticket', 'Created', [
-            'id' => $ticket->id,
-            'user_id' => $ticket->user_id,
-            'user_name' => $user?->name,
-            'user_email' => $user?->email,
-            'title' => $ticket->title,
-            'department' => $ticket->department,
-            'status' => 'open',
-            'created_at' => $ticket->created_at
+            'user' => [
+                'user_id' => $ticket->user_id,
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
+            ],
+            'ticket' => [
+                'id' => $ticket->id,
+                'title' => $ticket->title,
+                'department' => $ticket->department,
+                'status' => 'open',
+                'created_at' => $ticket->created_at
+            ]
         ]);
     }
 
@@ -48,14 +52,18 @@ class TicketObserver
             $action = $ticket->status == 'open' ? 'Reopened' : 'Closed';
 
             $this->webhookService->send('Ticket', $action, [
-                'id'         => $ticket->id,
-                'user_id'    => $ticket->user_id,
-                'user_name' => $user?->name,
-                'user_email' => $user?->email,
-                'title'      => $ticket->title,
-                'department' => $ticket->department,
-                'status'     => $ticket->status,
-                'updated_at' => $ticket->updated_at,
+                'user' => [
+                    'user_id'    => $ticket->user_id,
+                    'user_name' => $user?->name,
+                    'user_email' => $user?->email,
+                ],
+                'ticket' => [
+                    'id'         => $ticket->id,
+                    'title'      => $ticket->title,
+                    'department' => $ticket->department,
+                    'status'     => $ticket->status,
+                    'updated_at' => $ticket->updated_at,
+                ]
             ]);
         }
     }

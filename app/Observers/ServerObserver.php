@@ -37,16 +37,20 @@ class ServerObserver
         $user = $server->user;
         if($server->agent_status == 'finalizing') {
             $this->webhookService->send('Server', 'Created', [
-                'id'    => $server->id,
-                'user_id' => $user?->id,
-                'user_name' => $user?->name,
-                'user_email' => $user?->email,
-                'name'  => $server->name,
-                'ip' => $server->ip,
-                'provider' => $server->provider_name,
-                'web_server' => $server->web_server,
-                'version' => $server->version,
-                'created_at' => $server->created_at,
+                'user' => [
+                    'user_id' => $user?->id,
+                    'user_name' => $user?->name,
+                    'user_email' => $user?->email,
+                ],
+                'server' => [
+                    'id'    => $server->id,
+                    'name'  => $server->name,
+                    'ip' => $server->ip,
+                    'provider' => $server->provider_name,
+                    'web_server' => $server->web_server,
+                    'version' => $server->version,
+                    'created_at' => $server->created_at,
+                ]
             ]);
         }
     }
@@ -58,16 +62,20 @@ class ServerObserver
     {
         $user = $server->user;
         $this->webhookService->send('Server', 'Deleted', [
-            'id'    => $server->id,
-            'user_id' => $user?->id,
-            'user_name' => $user?->name,
-            'user_email' => $user?->email,
-            'name'  => $server->name,
-            'ip' => $server->ip,
-            'provider' => $server->provider_name,
-            'web_server' => $server->web_server,
-            'version' => $server->version,
-            'deleted_at' => $server->deleted_at,
+            'user' => [
+                'user_id' => $user?->id,
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
+            ],
+            'server' => [
+                'id'    => $server->id,
+                'name'  => $server->name,
+                'ip' => $server->ip,
+                'provider' => $server->provider_name,
+                'web_server' => $server->web_server,
+                'version' => $server->version,
+                'deleted_at' => $server->deleted_at,
+            ]
         ]);
     }
 

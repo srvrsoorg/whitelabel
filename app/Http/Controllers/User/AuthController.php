@@ -59,13 +59,15 @@ class AuthController extends Controller
 
             // ✅ Fire webhook directly here
             app(\App\Services\WebhookService::class)->send('User', 'Updated', [
-                'id'           => $user->id,
-                'name'         => $user->name,
-                'email'        => $user->email,
-                'country_name' => $user->country_name,
-                'region_name'  => $user->region_name,
-                'timezone'     => $user->timezone,
-                'updated_at'   => $user->updated_at,
+                'user' => [
+                    'id'           => $user->id,
+                    'name'         => $user->name,
+                    'email'        => $user->email,
+                    'country_name' => $user->country_name,
+                    'region_name'  => $user->region_name,
+                    'timezone'     => $user->timezone,
+                    'updated_at'   => $user->updated_at,
+                ]
             ]);
 
             // ✅ Success response

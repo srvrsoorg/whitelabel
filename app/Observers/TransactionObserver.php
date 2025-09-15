@@ -81,23 +81,27 @@ class TransactionObserver
     {
         $user = $transaction->user;
         return [
-            'id'             => $transaction->id,
-            'transaction_id' => $transaction->transaction_id,
-            'payment_gateway'=> $transaction->payment_gateway,
-            'service'        => $transaction->service,
-            'amounts' => [
-                'base'     => $transaction->base_amount,
-                'discount' => $transaction->discount_amount,
-                'tax'      => $transaction->tax_amount,
-                'final'    => $transaction->final_amount,
+            'user' => [
+                'user_id'        => $transaction->user_id,
+                'user_name'      => $user?->name,
+                'user_email'     => $user?->email,
             ],
-            'status'         => $this->mapStatus($transaction->status),
-            'paid_at'        => $transaction->paid_at,
-            'refunded_at'    => $transaction->refunded_at,
-            'refund_reason'  => $transaction->refund_reason,
-            'user_id'        => $transaction->user_id,
-            'user_name'      => $user?->name,
-            'user_email'     => $user?->email,
+            'transaction' => [
+                'id'             => $transaction->id,
+                'transaction_id' => $transaction->transaction_id,
+                'payment_gateway'=> $transaction->payment_gateway,
+                'service'        => $transaction->service,
+                'amounts' => [
+                    'base'     => $transaction->base_amount,
+                    'discount' => $transaction->discount_amount,
+                    'tax'      => $transaction->tax_amount,
+                    'final'    => $transaction->final_amount,
+                ],
+                'status'         => $this->mapStatus($transaction->status),
+                'paid_at'        => $transaction->paid_at,
+                'refunded_at'    => $transaction->refunded_at,
+                'refund_reason'  => $transaction->refund_reason,
+            ]
         ];
     }
 }

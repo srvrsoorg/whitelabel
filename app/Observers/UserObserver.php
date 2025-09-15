@@ -26,13 +26,15 @@ class UserObserver
     public function created(User $user): void
     {
         $this->webhookService->send('User', 'Created', [
-            'id'    => $user->id,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'country_name' => $user->country_name,
-            'region_name' => $user->region_name,
-            'timezone' => $user->timezone,
-            'created_at' => $user->created_at,
+            'user' => [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+                'country_name' => $user->country_name,
+                'region_name' => $user->region_name,
+                'timezone' => $user->timezone,
+                'created_at' => $user->created_at,
+            ]
         ]);
     }
 
@@ -50,13 +52,15 @@ class UserObserver
     public function deleted(User $user): void
     {
         $this->webhookService->send('User', 'Deleted', [
-            'id'    => $user->id,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'country_name' => $user->country_name,
-            'region_name' => $user->region_name,
-            'timezone' => $user->timezone,
-            'deleted_at' => $user->deleted_at,
+            'user' => [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+                'country_name' => $user->country_name,
+                'region_name' => $user->region_name,
+                'timezone' => $user->timezone,
+                'deleted_at' => $user->deleted_at,
+            ]
         ]);
     }
 
