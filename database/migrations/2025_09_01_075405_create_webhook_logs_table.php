@@ -18,7 +18,7 @@ return new class extends Migration
             $table->json('payload')->nullable();
             $table->json('request_headers')->nullable();
             $table->integer('response_code')->nullable();
-            $table->text('response_body')->nullable();
+            $table->longText('response_body')->nullable();
             $table->string('status')->default('pending');
             $table->timestamp('delivered_at')->nullable();
             $table->timestamps();
