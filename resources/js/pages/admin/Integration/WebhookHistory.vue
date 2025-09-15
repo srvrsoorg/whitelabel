@@ -112,10 +112,10 @@
             </template>
         </Table>
         <template v-else>
-            <TableSkeleton :heads="4" v-if="refreshing" />
+            <TableSkeleton :heads="5" v-if="refreshing" />
             <Table :head="thead" v-else>
                 <tr>
-                    <td colspan="4" class="text-center text-sm px-6 py-5">
+                    <td colspan="5" class="text-center text-sm px-6 py-5">
                         {{ refreshing ? "Please Wait" : "No History Found" }}
                     </td>
                 </tr>
@@ -151,30 +151,30 @@
               <span 
                 v-if="currentLog"
                 :class="[
-                  currentLog.status === 'success' 
-                    ? 'sm:bg-green-100 sm:text-green-500 sm:border-green-200'
-                    : 'sm:bg-red-100 sm:text-red-500 sm:border-red-200',
-                  'px-2.5 py-0.5 rounded-full font-medium flex items-start sm:items-center gap-1 sm:border'
+                  currentLog?.status === 'success' 
+                    ? 'bg-green-100 text-green-500 border-green-200'
+                    : 'bg-red-100 text-red-500 border-red-200',
+                  'px-2.5 py-0.5 rounded-full font-medium sm:flex items-start gap-1 border relative top-px text-[12px] hidden'
                 ]"
               >
+                {{ currentLog.status }}
+              </span>
+            </div>
+            <div class="ml-2">
                 <span
                 class="relative flex items-center justify-center sm:-ml-0 -ml-2"
-                v-tooltip.top="`${currentLog.status === 'success' ? 'Success' : currentLog.status === 'failed' ? 'failed' : currentLog.status}`"
+                v-tooltip.top="`${currentLog?.status === 'success' ? 'Success' : currentLog?.status === 'failed' ? 'Failed' : currentLog?.status}`"
                 >                                                   
                 <span
-                  v-if="currentLog.status === 'success' || currentLog.status === 'failed'"
+                  v-if="currentLog?.status === 'success' || currentLog?.status === 'failed'"
                   class="sm:hidden absolute inline-flex h-[9px] w-[9px] animate-ping rounded-full"
-                  :class="currentLog.status === 'success' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
+                  :class="currentLog?.status === 'success' ? 'bg-green-400 opacity-75' : 'bg-red-400 opacity-75'"
                 ></span>                                         
                 <span
                   class="sm:hidden relative inline-flex h-[9px] w-[9px] rounded-full"
-                  :class="currentLog.status === 'success' ? 'bg-green-600' : currentLog.status === 'failed' ? 'bg-red-500' : 'bg-gray-500'"
+                  :class="currentLog?.status === 'success' ? 'bg-green-600' : currentLog?.status === 'failed' ? 'bg-red-500' : 'bg-gray-500'"
                 ></span>
                 </span>
-                <span class="relative top-px text-[12px] hidden sm:inline">
-                  {{ currentLog.status }}
-                </span>
-              </span>
             </div>
         </template>
         <div>
@@ -211,7 +211,7 @@
                 </div>
             </div>
             <nav class="flex gap-8 w-full" aria-label="Tabs">
-                <div class="border-b border-gray-200 text-sm flex space-x-5 w-full">
+                <div class="border-b border-gray-200 text-sm flex xs:space-x-5 space-x-2 w-full">
                     <button
                         @click="changeCurrentTab(tab)"
                         v-for="tab in tabs"
@@ -233,10 +233,10 @@
                 <div v-if="currentTab==='response'">
                     <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
                         <template v-if="wrapValue(currentLog.response_body).type === 'pre'">
-                            <pre>{{ wrapValue(currentLog.response_body).content }}</pre>
+                            <pre class="whitespace-pre-wrap break-words">{{ wrapValue(currentLog.response_body).content }}</pre>
                         </template>
                         <template v-else-if="wrapValue(currentLog.response_body).type === 'html'">
-                            <div v-html="wrapValue(currentLog.response_body).content"></div>
+                            <div class="[&>a]:text-blue-400 [&>a]:underline [&>a]:hover:text-blue-300" v-html="wrapValue(currentLog.response_body).content"></div>
                         </template>
                     </div>
                 </div>
@@ -380,6 +380,9 @@ export default {
                 return { type: 'pre', content: this.pretty(val) };
             }
             if (this.isHtml(val)) {
+                if (val.includes('<!DOCTYPE html') || val.includes('<html')) {
+                return { type: 'pre', content: val };
+            }
                 return { type: 'html', content: val };
             }
             if (this.isBoolean(val) || this.isNumber(val)) {
