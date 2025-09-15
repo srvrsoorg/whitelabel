@@ -68,7 +68,7 @@ class WebhookService
                 default    => "Transaction event: {$action}.",
             },
             'user' => match (strtolower($action)) {
-                'created' => "New user registered with email {$payload['email']}.",
+                'created' => "New user registered with email {$payload['user']['email']}.",
                 'updated' => "User profile ({$payload['user']['email']}) has been updated.",
                 'deleted' => "User account ({$payload['user']['email']}) has been deleted.",
                 default   => "User event: {$action}.",
