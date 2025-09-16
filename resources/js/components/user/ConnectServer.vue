@@ -758,7 +758,7 @@
                   </div>
                 </RadioGroup>
               </perfectScrollbar>
-                <div v-else>
+                <div v-else class="p-2 px-3">
                     <Skeleton :count="11" v-if="refreshing"/>
                 </div>
             </div>

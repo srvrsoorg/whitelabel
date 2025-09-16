@@ -414,7 +414,7 @@ export default {
             if (loader) {
               loader.hide()
             }
-          }, 1000);
+          }, 500);
         });
     },
     async fetchTimezones() {
