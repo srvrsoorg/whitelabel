@@ -391,12 +391,8 @@ export default {
   async created() {
     await this.fetchTimezones();
     await this.getCountries();
-    // this.userInfo = { ...this.user };
-    // if (this.userInfo.timezone) {
-    //   this.timezone = this.timezones.find(
-    //     (timezone) => timezone.value === this.userInfo.timezone
-    //   );
-    // }
+  },
+  mounted(){ 
     this.loadData()
   },
   methods: {
@@ -422,7 +418,9 @@ export default {
             );
           }
         } finally {
-          loader.hide()
+          if (loader) {
+            loader.hide()
+          }
         }
       },
     async fetchTimezones() {
