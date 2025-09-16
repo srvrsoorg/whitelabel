@@ -924,6 +924,7 @@ export default {
       this.billingDetails.region =  region_data ? region_data.state_name : ''
     },
     async fetchCurrency() {
+      const loader = this.$loading.show()
       await this.$axios
         .get(`/currencies`)
         .then(({ data }) => {
@@ -934,6 +935,10 @@ export default {
         })
         .catch((error) => {
           this.$toast.error(error.response.data.message);
+        }).finally(()=>{
+          if (loader) {
+              loader.hide()
+          }
         });
     },
     async fetchBillingManagement() {

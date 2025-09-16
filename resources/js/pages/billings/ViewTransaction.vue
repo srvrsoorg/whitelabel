@@ -291,71 +291,13 @@ export default {
           }
         });
     },
-
     print() {
-      var printContents = document.getElementById("printableArea").innerHTML;
-      var iframe = document.createElement("iframe");
-      iframe.style.position = "absolute";
-      iframe.style.width = "0px";
-      iframe.style.height = "0px";
-      iframe.style.border = "none";
-
-      document.body.appendChild(iframe);
-
-      var doc = iframe.contentWindow.document;
-      doc.open();
-      doc.write(`
-          <html>
-          <head>
-              <style>
-                  @media print {
-                      @page {
-                          margin: 30px;
-                      }
-                      body::before {
-                          content: "";
-                          display: none;
-                      }
-                      body::after {
-                          content: "";
-                          display: none;
-                      }
-                  }
-                  body {
-                      padding: 30px;
-                  }
-              </style>
-      `);
-
-      Array.from(document.styleSheets).forEach((styleSheet) => {
-        if (styleSheet.href) {
-          doc.write(
-            `<link rel="stylesheet" type="text/css" href="${styleSheet.href}">`
-          );
-        } else {
-          try {
-            const css = Array.from(styleSheet.cssRules)
-              .map((rule) => rule.cssText)
-              .join("\n");
-            doc.write(`<style>${css}</style>`);
-          } catch (e) {
-            console.warn("Could not access stylesheet: ", styleSheet, e);
-          }
-        }
-      });
-
-      doc.write(`
-          </head>
-          <body>${printContents}</body>
-          </html>
-      `);
-      doc.close();
-
-      iframe.onload = function () {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-        document.body.removeChild(iframe);
-      };
+      const printableArea = document.getElementById('printableArea');
+      printableArea.classList.add('print-mode');
+      setTimeout(() => {
+        window.print();
+        printableArea.classList.remove('print-mode');
+      }, 100);
     },
   },
 };
@@ -363,20 +305,28 @@ export default {
 
 <style>
 @media print {
-  body {
-    padding: 0;
-    margin: 0;
-  }
+    @page {
+        margin: 0.1px 0.1px;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+    }
 
-  .top-notice,
-  .verify-notice,
-  .sidebar,
-  .print-btn,
-  .add-credit-btn,
-  .secondary-header,
-  footer,
-  nav {
-    display: none;
-  }
+    #printableArea {
+        width: 100%;
+        margin: 0 auto;
+        background: white;
+    }
+}
+.print-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+    padding: 20px;
 }
 </style>

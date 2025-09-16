@@ -389,15 +389,20 @@ export default {
     },
   },
   async created() {
-    await this.fetchTimezones();
     await this.getCountries();
-  },
-  mounted(){ 
-    this.loadData()
+    await this.fetchTimezones();
+    await this.getUser();
+    this.userInfo = { ...this.user };
+    if (this.userInfo.timezone) {
+      this.timezone = this.timezones.find(
+        (timezone) => timezone.value === this.userInfo.timezone
+      );
+    }
   },
   methods: {
     ...mapActions(useAuthStore, ["getUser", "authLogout"]),
     async getCountries() {
+      const loader = this.$loading.show();
       await this.$axios
         .get(`/countries`)
         .then(({ data }) => {
@@ -405,24 +410,12 @@ export default {
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
-        });
-    },
-    async loadData() {
-      const loader = this.$loading.show();
-        try {
-          await this.getUser(); // fetch user from API
-          this.userInfo = { ...this.user };
-          if (this.userInfo.timezone) {
-            this.timezone = this.timezones.find(
-              (timezone) => timezone.value === this.userInfo.timezone
-            );
-          }
-        } finally {
+        }).finally(()=>{
           if (loader) {
             loader.hide()
           }
-        }
-      },
+        });
+    },
     async fetchTimezones() {
       await this.$axios
         .get("/timezone")

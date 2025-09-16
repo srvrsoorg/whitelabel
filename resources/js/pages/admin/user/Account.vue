@@ -522,13 +522,14 @@ export default {
     },
   },
   created() {
-    this.fetchTimezones();
     this.getCountries();
+    this.fetchTimezones();
     this.$emit("pass-breadcrumb", this.breadcrumb);
     this.fetchUser();
   },
   methods: {
     async getCountries() {
+      const loader = this.$loading.show();
       await this.$axios
         .get(`/countries`)
         .then(({ data }) => {
@@ -536,6 +537,10 @@ export default {
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
+        }).finally(()=>{
+          if (loader) {
+              loader.hide()
+          }
         });
     },
     updateCountryName() {
@@ -557,7 +562,6 @@ export default {
       this.userInfo.region_name = region_data ? region_data.state_name : "";
     },
     async fetchUser() {
-      const loader = this.$loading.show();
       await this.$axios
         .get(`/admin/users/${this.$route.params.user}`)
         .then(({ data }) => {
@@ -581,11 +585,7 @@ export default {
         })
         .catch(({ response: data }) => {
           this.$toast.error(data.message);
-        }).finally(()=>{
-          if (loader) {
-            loader.hide()
-          }
-        });
+        })
     },
 
     async fetchTimezones() {
