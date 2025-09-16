@@ -203,8 +203,11 @@
       </tr>
     </tbody>
   </table>
-
-  <div class="mt-5 text-end" v-if="plans.region">
+  </div>
+  <div v-else class="mt-5">
+    <TableSkeleton :heads="7" v-if="refreshing" />
+  </div>
+  <div class="mt-5 text-end" v-if="plans.region && sizes.length > 0">
     <Button @click="save" :disabled="processing">
       <i
         v-if="processing"
@@ -213,8 +216,6 @@
       {{ processing ? "Please wait" : "Save" }}
     </Button>
   </div>
-</div>
-
 </template>
 
 <script>
@@ -232,7 +233,6 @@ export default {
   data() {
     return {
       breadcrumb: {
-        // title: "Integrations",
         icon: "rule_settings",
         pages: [
           {
@@ -255,6 +255,7 @@ export default {
       serverPlans: [],
       currentTab: "",
       processing: false,
+      refreshing:false,
       currency: 'USD',
       currencySymbol:'$'
     };
@@ -343,6 +344,7 @@ export default {
         })
     },
     fetchRegions() {
+      const loader = this.$loading.show();
       this.$axios
         .get(`/admin/cloud-providers/${this.cloudProviderId}/regions`)
         .then(({ data }) => {
@@ -350,13 +352,15 @@ export default {
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
+        }).finally(()=>{
+          loader.hide()
         });
     },
     async fetchSizes() {
       if (this.plans.region == "") return;
       this.currentTab = "";
       this.sizes = [];
-      const loader = this.$loading.show();
+      this.refreshing = true
       this.$axios
         .get(
           `/admin/cloud-providers/${this.cloudProviderId}/sizes?region=${this.plans.region}`
@@ -423,7 +427,7 @@ export default {
           this.$toast.error(response.data.message);
         })
         .finally(() => {
-          loader.hide();
+          this.refreshing = false
         });
     },
     save() {

@@ -446,6 +446,7 @@ export default {
       this.billingDetails.tax_numbers.splice(index, 1);
     },
     async getCountries() {
+       const loader = this.$loading.show()
       await this.$axios
         .get(`/countries`)
         .then(({ data }) => {
@@ -453,6 +454,10 @@ export default {
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
+        }).finally(()=>{
+          if (loader) {
+            loader.hide()
+          }
         });
     },
     updateCountryName() {

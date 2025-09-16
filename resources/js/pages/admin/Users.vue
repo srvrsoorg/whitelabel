@@ -433,7 +433,6 @@
           :close-on-select="false"
           :clear-on-select="false"
           :searchable="true"
-          :hideSelected="true"
           :closeOnSelect="true"
           placeholder="Select Timezone"
           label="name"

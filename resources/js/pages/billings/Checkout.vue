@@ -205,6 +205,12 @@
             id="payment_gateway_message"
             style="display: none"
           ></small>
+          <div v-if="siteSettings && siteSettings.refund_policy" class="mt-3 text-sm text-gray-600">
+            By proceeding with payment, you agree to our
+            <a :href="siteSettings.refund_policy" target="_blank" class="text-custom-500 hover:underline">
+              Refund Policy
+            </a>.
+          </div>
           <Button
             @click="pay()"
             :disabled="paying || !enabledPaymentProviders.length"

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full max-w-lg flex justify-center items-center min-h-screen p-4 mx-auto"
+    class="w-full max-w-xl flex justify-center items-center min-h-screen p-4 mx-auto"
   >
     <div class="relative bg-white shadowcls my-10 p-4 rounded-lg">
       <div
@@ -165,8 +165,25 @@
             </div>
           </div>
         </div>
-
-        <div class="text-end mt-5">
+        <div class="mt-4 text-sm text-gray-600" v-if="siteSettings && (siteSettings.privacy_policy || siteSettings.terms_condition)">
+          By registering, you agree to
+          <template v-if="siteSettings.terms_condition">
+            <a
+              :href="siteSettings.terms_condition"
+              target="_blank"
+              class="text-custom-500 hover:underline"
+            >Terms & Conditions</a>
+          </template>
+          <template v-if="siteSettings.privacy_policy && siteSettings.terms_condition"> and </template>
+          <template v-if="siteSettings.privacy_policy">
+            <a
+              :href="siteSettings.privacy_policy"
+              target="_blank"
+              class="text-custom-500 hover:underline"
+            >Privacy Policy</a>
+          </template>.
+        </div>
+        <div class="text-end mt-3">
           <Button class="text-tiny w-full" :disabled="processing">
             <i
               v-if="processing"

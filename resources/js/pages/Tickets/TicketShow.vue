@@ -17,7 +17,7 @@
       </router-link>
     </div>
     <div class="flex items-center justify-end mt-2 xs:mt-0 gap-5">
-      <Button
+      <Button v-if="tickets"
         @click="openConfirmation(tickets)"
         class="bg-red-500 text-white text-[15px] rounded-md"
       >
@@ -521,7 +521,7 @@ export default {
       }
     },
   },
-  mounted() {
+  mounted() { 
     this.fetchTicketShow();
     this.fetchMessage();
     setTimeout(() => {
