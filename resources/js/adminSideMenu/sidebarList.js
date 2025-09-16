@@ -98,4 +98,10 @@ export default [
         icon: "confirmation_number",
         url: "/admin/tickets",
     },
+    {
+        id: 8,
+        name: "Other Settings",
+        icon: "settings",
+        url: "/admin/other-settings",
+    },
 ];

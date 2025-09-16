@@ -140,28 +140,53 @@
         >
           <div class="flex justify-between items-center px-5 py-2.5">
             <span class="text-tiny font-medium">Status</span>
+            <!-- Status badge -->
             <div
-              class="bg-red-100 px-2.5 py-1.5 rounded-full text-xs text-red-500"
-              v-if="serverDetails.agent_status == 0"
+              :class="[
+                'flex items-center py-1.5 px-2.5 rounded-full text-xs relative max-w-44 truncate',
+                serverDetails.agent_status == 0
+                  ? 'bg-red-100 text-red-500'
+                  : serverDetails.agent_status == 1
+                  ? 'bg-green-100 text-green-500'
+                  : 'bg-gray-100 text-gray-500',
+              ]"
             >
-              <i class="fa-solid fa-circle pr-2 text-xs"></i>
-              <span class="text-xs">Disconnected</span>
-            </div>
-            <div
-              class="bg-green-100 px-2.5 py-1.5 text-xs rounded-full text-green-500"
-              v-else-if="serverDetails.agent_status == 1"
-            >
-              <i class="fa-solid fa-circle pr-2 text-xs"></i>
-              <span class="text-xs">Connected</span>
-            </div>
-            <div
-              class="bg-gray-100 px-2.5 max-w-36 truncate py-1.5 text-xs rounded-full text-gray-500"
-              v-else
-            >
-              <i class="fa-solid fa-circle pr-2 text-xs"></i>
-              <span class="text-xs " v-tooltip="serverDetails.agent_status">{{
-                serverDetails.agent_status
-              }}</span>
+              <!-- Ping animation -->
+              <span
+                class="absolute left-2.5 inline-flex h-2.5 w-2.5 rounded-full animate-ping opacity-75"
+                :class="[
+                  serverDetails.agent_status == 0
+                    ? 'bg-red-500'
+                    : serverDetails.agent_status == 1
+                    ? 'bg-green-500'
+                    : 'bg-gray-500',
+                ]"
+              ></span>
+              <!-- Actual circle icon -->
+              <i
+                class="fa-solid fa-circle relative pr-2 text-xs"
+                :class="[
+                  serverDetails.agent_status == 0
+                    ? 'text-red-500'
+                    : serverDetails.agent_status == 1
+                    ? 'text-green-500'
+                    : 'text-gray-500',
+                ]"
+              ></i>
+
+              <!-- Status text -->
+              <span
+                class="truncate"
+                v-tooltip="serverDetails.agent_status != 0 && serverDetails.agent_status != 1 ? serverDetails.agent_status : null"
+              >
+                {{
+                  serverDetails.agent_status == 0
+                    ? "Disconnected"
+                    : serverDetails.agent_status == 1
+                    ? "Connected"
+                    : serverDetails.agent_status
+                }}
+              </span>
             </div>
           </div>
           <div class="flex justify-between items-center px-5 py-2.5">

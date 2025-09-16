@@ -16,6 +16,7 @@ use App\Models\Server\Server;
 use Cache;
 use App\Http\Utilities\Client as CustomClient;
 use GuzzleHttp\Client;
+use App\Models\Admin\BasicDetail;
 
 class Helper
 {	
@@ -140,6 +141,15 @@ class Helper
 					$siteSetting->currency_symbol = "$";
 					$siteSetting->locale = "en-US";
 				}
+
+				// Fetch policy links from BasicDetails
+	            $policies = BasicDetail::whereIn('key', [
+	                'terms_condition', 'privacy_policy', 'refund_policy'
+	            ])->pluck('value', 'key');
+
+	            $siteSetting->terms_condition = $policies['terms_condition'] ?? null;
+	            $siteSetting->privacy_policy  = $policies['privacy_policy'] ?? null;
+	            $siteSetting->refund_policy   = $policies['refund_policy'] ?? null;
 	        }
 
 	        // ✅ Success response: Return the site setting

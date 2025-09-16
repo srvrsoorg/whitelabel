@@ -55,6 +55,17 @@ export const routes = [
                 layout: AdminLayout,
             },
         },
+        {
+            name: "otherSettings",
+            path: "other-settings",
+            component: () => import("@/pages/admin/OtherSettings.vue"),
+            meta: {
+                middleware: ["auth", "admin"],
+                title: "Other Settings | Admin",
+                setupReqiures: true,
+                layout: AdminLayout,
+            },
+        },
     ]),
 ];
 

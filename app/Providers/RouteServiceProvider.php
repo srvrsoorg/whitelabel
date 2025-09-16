@@ -38,6 +38,7 @@ class RouteServiceProvider extends ServiceProvider
                 require base_path('routes/admin/support.php');
                 require base_path('routes/admin/dashboard.php');
                 require base_path('routes/admin/webhook.php');
+                require base_path('routes/admin/other-setting.php');
                 
                 require base_path('routes/user/account.php');
                 require base_path('routes/user/cloud-provider.php');

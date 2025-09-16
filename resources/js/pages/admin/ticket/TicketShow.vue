@@ -17,7 +17,7 @@
       </router-link>
     </div>
     <div class="flex items-center justify-end gap-5 xs:mt-0 mt-3">
-      <Button
+      <Button v-if="tickets"
         @click="openConfirmation(tickets)"
         class="bg-red-500 text-white text-[15px] rounded-md"
       >
