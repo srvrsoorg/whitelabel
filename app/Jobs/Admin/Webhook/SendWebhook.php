@@ -90,7 +90,7 @@ class SendWebhook implements ShouldQueue
             'Content-Type'        => 'application/json',
             'X-Webhook-Event'     => strtolower($this->payload['event']['type']) . '.' . strtolower($this->payload['event']['action']),
             'X-Webhook-Timestamp' => now()->toIso8601String(),
-            'User-Agent'          => "{$this->productName}/webhook",
+            'User-Agent'          => "{$this->productName}/Webhook",
         ];
 
         if ($this->webhook->secret) {
