@@ -12,6 +12,9 @@
   <div class="my-5">
     <PaymentConf :provider="stripe" @updateValue="fetchData()"></PaymentConf>
   </div>
+  <div class="my-5">
+    <PaymentConf :provider="cashfree" @updateValue="fetchData()"></PaymentConf>
+  </div>
 </template>
 
 <script>
@@ -58,6 +61,15 @@ export default {
         mode: "sandbox",
         processing: false,
       },
+      cashfree: {
+        provider: "Cashfree",
+        enabled: false,
+        client_id: "",
+        client_secret: "",
+        mode: "sandbox",
+        isTestMode: true,
+        processing: false,
+      },
     };
   },
   methods: {
@@ -75,6 +87,10 @@ export default {
                 } else if (data.provider == "Paypal") {
                   this.paypal = data;
                   this.paypal.isTestMode =
+                    data.mode == "sandbox" ? true : false;
+                } else if (data.provider == "Cashfree") {
+                  this.cashfree = data;
+                  this.cashfree.isTestMode =
                     data.mode == "sandbox" ? true : false;
                 } else if (data.provider == "Stripe") {
                   this.stripe = data;

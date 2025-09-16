@@ -313,4 +313,52 @@ class Client {
             return true;
         }
     }
+
+    public static function cashfree($endpoint, $method, $clientId, $clientSecret, $mode,$requestData = null){
+        try {
+             // Base URL depending on mode
+            $baseUrl = $mode === 'sandbox'
+                ? "https://sandbox.cashfree.com/pg/"
+                : "https://api.cashfree.com/pg/";
+
+            // Create Guzzle client
+            $client = new \GuzzleHttp\Client([
+                'verify' => false,
+                'headers' => [
+                    'x-client-id'     => $clientId,
+                    'x-client-secret' => $clientSecret,
+                    'x-api-version'   => '2025-01-01',
+                    'Content-Type'    => 'application/json',
+                ]
+            ]);
+
+            $options = ['connect_timeout' => 300];
+
+            // Add body if data is present
+            if (!empty($requestData)) {
+                $options['body'] = json_encode($requestData);
+            }
+
+            // Send request
+            $response = $client->request($method, $baseUrl . $endpoint, $options);
+
+            if (in_array($response->getStatusCode(), [200, 201, 202])) {
+                return (string)$response->getBody();
+            } else {
+                return ["error" => true, "message" => (string)$response->getBody()];
+            }
+        } catch (\GuzzleHttp\Exception\ConnectException $ex) {
+            // Error response
+            return ["error" => true, "message" => "Something went really wrong!"];
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $exception = (string)$e->getResponse()->getBody();
+            $exception = json_decode($exception);
+            report($e);
+
+            return ["error" => true, "message" => $exception->message];
+        } catch(\Exception $e){
+            report($e);
+            return ["error" => true, "message" => "Something went really wrong!"];
+        }
+    }
 }

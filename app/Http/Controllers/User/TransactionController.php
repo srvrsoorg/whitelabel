@@ -16,6 +16,7 @@ use App\Helpers\Currency;
 use Mail;
 use Exception;
 use App\Rules\AmountFormatRule;
+use App\Http\Utilities\Client;
 
 // Paypal Library classes
 use PayPal\Rest\ApiContext;
@@ -489,6 +490,48 @@ class TransactionController extends Controller
                     "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong! Please try again after some times!",
                 ],500);
             }
+        } elseif($provider == PaymentGatewayEnum::CASHFREE()){
+            try {
+
+                $requestData = [
+                    'link_id' => $transaction->key,
+                    'link_amount' => $finalAmount,
+                    'link_currency' => $currency,
+                    'link_purpose' => $transaction->service,
+                    'customer_details' => [
+                        'customer_email' => $user->email,
+                        'customer_phone' => $user->mobile_no ?? "9876543210",
+                        'customer_name' => $user->name
+                    ],
+                    'link_meta' => [
+                        'return_url' => url(config('app.url')."/verify-transaction/$transaction->key?state=".request()->get('state'))
+                    ]
+                ];
+
+                $response = Client::cashfree("links", 'POST', $paymentConfig->client_id, $paymentConfig->client_secret, $paymentConfig->mode, $requestData);
+
+                if (isset($response['error'])) {
+                    // Error response
+                    return response()->json([
+                        "message" => $response['message'],
+                    ], 500);
+                }
+
+                $paymentLink = json_decode($response);
+                if ($paymentLink && isset($paymentLink->link_url)) {
+                    $transaction->payment_link = $paymentLink->link_url;
+                    $transaction->save();
+                } else {
+                    return response()->json([
+                        "message" => "Something went really wrong."
+                    ], 500);
+                }
+            } catch (\Exception $e) {
+                report($e);
+                return response()->json([
+                    "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong! Please try again after some times!"
+                ],500);
+            }
         } else {
             return response()->json([
                 "message" => "Payment gateway not found!"
@@ -536,6 +579,8 @@ class TransactionController extends Controller
                 
                 // ❌ Error response Check if razorpay_payment_id Exist!
                 if ($razorpay_payment_id == "") {
+                    $transaction->update(["status" => 0]);
+
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
                     ],500);
@@ -558,6 +603,8 @@ class TransactionController extends Controller
                     // Perform action on account based on purpose of transaction
                     $this->updateAccount($transaction);
                 } else {
+                    $transaction->update(["status" => 0]);
+
                      // ❌ Error response: Payment failed
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
@@ -571,6 +618,8 @@ class TransactionController extends Controller
 
                 // ❌ Error response Check if Payer ID and Token Exist!
                 if ($payer_id == "" || $token == "") {
+                    $transaction->update(["status" => 0]);
+                    
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
                     ],500);
@@ -601,6 +650,8 @@ class TransactionController extends Controller
                     // Perform action on account based on purpose of transaction
                     $this->updateAccount($transaction);
                 } else {
+                    $transaction->update(["status" => 0]);
+
                     // ❌ Error response: Payment failed
                     return response()->json([
                         "message" => "Something went really wrong! Please try again after some times!",
@@ -612,6 +663,8 @@ class TransactionController extends Controller
                 
                  // Error response: if session ID not exists
                 if ($sessionId=="") {
+                    $transaction->update(["status" => 0]);
+                    
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
                     ],500);
@@ -637,10 +690,40 @@ class TransactionController extends Controller
                     // Perform action on account based on purpose of transaction
                     $this->updateAccount($transaction);
                 } else {
+                    $transaction->update(["status" => 0]);
+
                     // ❌ Error response
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
                     ],500);
+                }
+            } else if($provider == PaymentGatewayEnum::CASHFREE()) {
+                $response = Client::cashfree("links/{$transaction->key}", "GET", $paymentConfig->client_id, $paymentConfig->client_secret, $paymentConfig->mode);
+
+                if(isset($response['error'])){
+                    $transaction->update(["status" => 0]);
+
+                    return response()->json([
+                        'message' => $response['message']
+                    ],500);
+                }
+
+                $paymentDetail = json_decode($response);
+
+                if($paymentDetail->link_status == "PAID"){
+                    $transaction->status = 1;
+                    $transaction->payment_link = null;
+                    $transaction->transaction_id = $paymentDetail->cf_link_id;
+                    $transaction->save();
+
+                    // Perform action on account based on purpose of transaction
+                    $this->updateAccount($transaction);
+                }else{
+                    $transaction->update(["status" => 0]);
+
+                    return response()->json([
+                        'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
+                    ], 500);
                 }
             }
 

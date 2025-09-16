@@ -12,4 +12,5 @@ enum PaymentGateway: string
     case STRIPE = 'Stripe';
     case RAZORPAY = 'Razorpay';
     case PAYPAL = 'Paypal';
+    case CASHFREE = 'Cashfree';
 }
