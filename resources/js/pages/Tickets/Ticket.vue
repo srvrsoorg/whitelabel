@@ -123,8 +123,8 @@
         <td class="whitespace-nowrap text-left py-5 px-4 text-sm">
           {{ ticket.formatted_created_at }}
         </td>
-        <td class="whitespace-nowrap text-center py-5 px-4 pr-6 text-sm">
-          <div class="flex justify-end items-center gap-2">
+        <td class="whitespace-nowrap text-center py-5 px-4 text-sm">
+          <div class="flex items-center gap-2">
             <router-link
               :to="{ name: 'ticketshow', params: { id: ticket.id } }"
               :class="[
@@ -394,7 +394,7 @@ export default {
       { title: "Department" },
       { title: "Last Response", classes: "whitespace-nowrap" },
       { title: "Created At", classes: "whitespace-nowrap" },
-      { title: "Actions", classes: "text-end pr-8" },
+      { title: "Actions", classes: "text-end" },
     ],
     ticketData: [],
     pagination: {
