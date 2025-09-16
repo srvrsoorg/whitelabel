@@ -389,10 +389,9 @@ export default {
     },
   },
   async created() {
+    this.userInfo = { ...this.user };
     await this.getCountries();
     await this.fetchTimezones();
-    await this.getUser();
-    this.userInfo = { ...this.user };
     if (this.userInfo.timezone) {
       this.timezone = this.timezones.find(
         (timezone) => timezone.value === this.userInfo.timezone
@@ -411,9 +410,11 @@ export default {
         .catch(({ response }) => {
           this.$toast.error(response.data.message);
         }).finally(()=>{
-          if (loader) {
-            loader.hide()
-          }
+          setTimeout(() => {  
+            if (loader) {
+              loader.hide()
+            }
+          }, 1000);
         });
     },
     async fetchTimezones() {
