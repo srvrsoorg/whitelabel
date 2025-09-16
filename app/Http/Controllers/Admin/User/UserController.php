@@ -195,6 +195,19 @@ class UserController extends Controller
             // Store Activity
             Helper::adminActivity(auth()->user(), 'User', 'Update', 'User (#' . $user->id . ') has been updated.');
 
+            // ✅ Fire webhook directly here
+            app(\App\Services\WebhookService::class)->send('User', 'Updated', [
+                'user' => [
+                    'id'           => $user->id,
+                    'name'         => $user->name,
+                    'email'        => $user->email,
+                    'country_name' => $user->country_name,
+                    'region_name'  => $user->region_name,
+                    'timezone'     => $user->timezone,
+                    'updated_at'   => $user->updated_at,
+                ]
+            ]);
+
             // ✅ Success response: User detail updated successfully
             return response()->json([
                 "message" => "User detail updated successfully."
