@@ -379,7 +379,7 @@
                 </Button>
               </div>
               <router-link
-                :to="{ name: 'Plan' }"
+                :to="{ name: 'integrateCloudPlatForms' }"
                 v-else
                 :class="[
                   isLightColor

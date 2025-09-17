@@ -336,7 +336,6 @@ export default {
           },
           {
             name: "Cloud Platforms",
-            path: { name: "integrateCloudPlatForms" }
           },
         ],
       },

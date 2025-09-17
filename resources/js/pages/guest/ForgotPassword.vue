@@ -31,7 +31,7 @@
         <div>
           <label
             for="email"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Email Address
           </label>

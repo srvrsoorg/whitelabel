@@ -772,6 +772,7 @@
               <Table
                 :bodyHeight="'max-h-[30rem]'"
                 :head="thead"
+                :customClass="['!mt-0']"
                 v-if="newPlanList[0] && newPlanList[0].list.length > 0"
               >
                 <tr
@@ -855,8 +856,8 @@
               ></small>
             </div>
             <template v-else>
-              <TableSkeleton :heads="6" v-if="refreshing" />
-              <Table :head="thead" v-else>
+              <TableSkeleton class="!mt-0" :heads="6" v-if="refreshing" />
+              <Table :head="thead" :customClass="['!mt-0']" v-else>
                 <tr>
                   <td
                     colspan="6"

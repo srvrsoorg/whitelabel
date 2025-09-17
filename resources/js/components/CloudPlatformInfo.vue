@@ -82,7 +82,7 @@
           process:
         </p>
       </div>
-      <div class="mt-2 sm:mt-0" v-if="!isSetProviders">
+      <div class="mt-2 sm:mt-0 inline-block" v-if="!isSetProviders">
         <router-link
           :to="{ name: 'integrateCloudPlatForms' }"
           :class="[
@@ -101,7 +101,8 @@
           </span>
         </router-link>
       </div>
-      <div class="mt-2 sm:mt-0" v-if="!isSetBilling">
+      <br>
+      <div class="mt-2 sm:mt-0 inline-block" v-if="!isSetBilling">
         <router-link
           :to="{ name: 'Settings' }"
           :class="[
@@ -132,7 +133,6 @@ export default {
   data() {
     return {
       breadcrumb: {
-        // title: "Integrations Required",
         icon: "integration_instructions",
         pages: [
         { name: "Integrations Required" }

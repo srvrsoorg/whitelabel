@@ -5,7 +5,7 @@
       <div>
         <label
           for="app_name"
-          class="block text-tiny text-neutral-800 font-medium"
+          class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
         >
           Application Name
         </label>
@@ -52,7 +52,7 @@
         <div class="mt-3">
           <label
             for="tag_line"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Tag Line
           </label>
@@ -260,7 +260,7 @@
         </div>
       </div>
       <div class="my-5 border rounded-md p-4">
-        <h1 class="font-medium">Organization</h1>
+        <h1 class="font-medium after:content-['*'] after:ml-0.5 after:text-red-500">Organization</h1>
         <p class="text-sm text-gray-500">
           In this organization, the server you create in your self-hosted panel
           will be managed through that panel.
