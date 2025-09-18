@@ -405,7 +405,7 @@
                 name="verified"
                 v-model="userInfo.isVerified"
                 :class="[isLightColor ? 'text-custom-700' : 'text-custom-500 ']"
-                class="h-5 w-5 items-end rounded border-gray-200 focus:ring-cutext-custom-500"
+                class="h-5 w-5 items-end rounded border-gray-200 focus:ring-cutext-custom-500 cursor-pointer"
               />
             </div>
           </div>
@@ -424,7 +424,7 @@
             v-model="userInfo.is_admin"
             :disabled="user.id == $route.params.user"
             :class="[isLightColor ? 'text-custom-700' : 'text-custom-500 ']"
-            class="h-5 w-5 items-end rounded border-gray-300 focus:ring-custom-500"
+            class="h-5 w-5 items-end rounded border-gray-300 focus:ring-custom-500 cursor-pointer"
           />
         </div>
         <div class="xs:max-w-[90%]">

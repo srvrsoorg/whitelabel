@@ -165,7 +165,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-4 text-sm text-gray-600" v-if="siteSettings && (siteSettings.privacy_policy || siteSettings.terms_condition)">
+        <div class="my-5 text-sm text-gray-600" v-if="siteSettings && (siteSettings.privacy_policy || siteSettings.terms_condition)">
           By registering, you agree to
           <template v-if="siteSettings.terms_condition">
             <a
@@ -183,7 +183,7 @@
             >Privacy Policy</a>
           </template>.
         </div>
-        <div class="text-end mt-3">
+        <div class="mt-5">
           <Button class="text-tiny w-full" :disabled="processing">
             <i
               v-if="processing"
