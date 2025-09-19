@@ -814,7 +814,6 @@ export default {
             email: "Email",
             email_verified_at: "Email Verified At",
             credits: "Credits",
-            mobile_no: "Mobile No.",
             servers_count: "Servers",
             country_name: "Country",
             region_name: "Region",
