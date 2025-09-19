@@ -33,7 +33,7 @@
         <div>
           <label
             for="name"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Name
           </label>
@@ -52,7 +52,7 @@
         <div class="mt-4">
           <label
             for="email"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Email
           </label>
@@ -74,7 +74,7 @@
         <div class="mt-4">
           <label
             for="password"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Password
           </label>
@@ -105,7 +105,7 @@
           <div class="mt-4">
             <label
               for="country_name"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >
               Country
             </label>
@@ -135,7 +135,7 @@
           <div class="mt-4">
             <label
               for="region_name"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >
               Region
             </label>
@@ -165,7 +165,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-4 text-sm text-gray-600" v-if="siteSettings && (siteSettings.privacy_policy || siteSettings.terms_condition)">
+        <div class="my-5 text-sm text-gray-600" v-if="siteSettings && (siteSettings.privacy_policy || siteSettings.terms_condition)">
           By registering, you agree to
           <template v-if="siteSettings.terms_condition">
             <a
@@ -183,7 +183,7 @@
             >Privacy Policy</a>
           </template>.
         </div>
-        <div class="text-end mt-3">
+        <div class="mt-5">
           <Button class="text-tiny w-full" :disabled="processing">
             <i
               v-if="processing"

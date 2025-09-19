@@ -6,7 +6,7 @@
         <div>
           <label
             for="name"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Name
           </label>
@@ -25,7 +25,7 @@
         <div class="mt-4">
           <label
             for="email"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Email
           </label>
@@ -48,7 +48,7 @@
           <div class="mt-4">
             <label
               for="password"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >
               Password
             </label>
@@ -79,7 +79,7 @@
           <div class="mt-4">
             <label
               for="country_name"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >
               Country
             </label>
@@ -109,7 +109,7 @@
           <div class="mt-4">
             <label
               for="region_name"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >
               Region
             </label>
@@ -142,7 +142,7 @@
         <div class="mt-4">
           <label
             for="region_name"
-            class="block text-tiny text-neutral-800 font-medium mb-1.5"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium mb-1.5"
             >Timezone</label
           >
           <multiselect

@@ -9,7 +9,7 @@
         <div>
           <label
             for="host"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Database Host
           </label>
@@ -28,7 +28,7 @@
         <div class="mt-4">
           <label
             for="database"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Database Name
           </label>
@@ -50,7 +50,7 @@
         <div class="mt-4">
           <label
             for="username"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Database Username
           </label>
@@ -72,7 +72,7 @@
         <div class="mt-4">
           <label
             for="password"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Database Password
           </label>

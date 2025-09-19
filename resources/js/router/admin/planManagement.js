@@ -11,4 +11,15 @@ export default [
             layout: AdminLayout,
         },
     },
+    {
+            name: "setPlan",
+            path: "integration/cloud-platforms/:id/plans",
+            component: () => import("@/pages/admin/Billing/SetPlan.vue"),
+            meta: {
+                middleware: ["auth", "admin"],
+                title: "Cloud Platform Plans | Integrations",
+                setupReqiures: true,
+                layout: AdminLayout,
+            },
+        },
 ];

@@ -65,9 +65,17 @@
             ticketDetails.server.agent_status == 1
               ? 'text-green-500'
               : 'text-red-500',
-            'text-tiny flex items-center gap-1',
+            'text-tiny flex items-center gap-1 relative',
           ]"
         >
+        <span
+            class="absolute flex h-3 w-3"
+            :class="ticketDetails.server.agent_status == 1 ? 'text-green-500' : 'text-red-500'"
+            >
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+              :class="ticketDetails.server.agent_status == 1 ? 'bg-green-400' : 'bg-red-400'">
+          </span>
+        </span>
           <i class="fa-solid fa-circle text-xs"></i>
           <span>{{
             ticketDetails.server.agent_status == 1

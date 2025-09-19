@@ -16,6 +16,7 @@ class SendWebhook implements ShouldQueue
     public $webhook;
     public $event;
     public array $payload;
+    protected string $productName;
 
     /**
      * Create a new job instance.

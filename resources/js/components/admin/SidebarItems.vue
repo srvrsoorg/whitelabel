@@ -235,6 +235,22 @@ export default {
     const authStore = useAuthStore();
     return { authStore };
   },
+  watch: {
+    $route(to) {
+     this.menuList.some((menu) => {
+      let allLinks = [menu.url, ...(menu.children?.map(row => row.url) || [])];
+      if (allLinks.includes(to.path)) {
+        this.$nextTick(() => {
+          const btn = document.querySelector(`[data-id="${menu.id}"]`);
+          if (btn && btn.getAttribute("aria-expanded") === "false") {
+            btn.click();
+          }
+        });
+        return true;
+      }
+    });
+    },
+  },
 
   computed: {
     user() {

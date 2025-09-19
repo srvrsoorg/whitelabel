@@ -25,7 +25,7 @@
       </p>
       <form class="mt-5" action="javascript:void(0)" @submit="login()">
         <div>
-          <label for="email" class="block text-tiny text-neutral-800 font-medium"
+          <label for="email" class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >Email</label
         >
           <div class="mt-1">
@@ -48,7 +48,7 @@
         <div class="mt-5">
           <label
           for="password"
-          class="block text-tiny text-neutral-800 font-medium"
+          class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >Password</label
         >
           <div class="mt-1">

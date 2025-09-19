@@ -1,29 +1,6 @@
 import AdminLayout from "@/pages/layouts/Admin.vue";
 export default [
     {
-        name: "Plan",
-        path: "billing/plan",
-        component: () => import("@/pages/admin/Billing/Plan.vue"),
-        meta: {
-            middleware: ["auth", "admin"],
-            title: "Plan | Billing",
-            setupReqiures: true,
-            layout: AdminLayout,
-        },
-    },
-    {
-        name: "setPlan",
-        path: "plan/:id/plans",
-        component: () => import("@/pages/admin/Billing/SetPlan.vue"),
-        meta: {
-            middleware: ["auth", "admin"],
-            title: "Cloud Platform Plans | Billing",
-            setupReqiures: true,
-            layout: AdminLayout,
-        },
-    },
-
-    {
         name: "promoCodes",
         path: "billing/promoCode",
         component: () => import("@/pages/admin/Billing/PromoCodes.vue"),

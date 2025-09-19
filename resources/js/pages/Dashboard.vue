@@ -9,9 +9,9 @@
         :isSetBilling="isSetBilling"
       />
     </template>
-    <template v-else-if="!servers.length && search == '' && !isSearching">
+    <div :class="[user && user.email_verified_at === null ? 'opacity-50 pointer-events-none select-none' : '']" v-else-if="!servers.length && search == '' && !isSearching">
       <ConnectServer />
-    </template>
+    </div>
     <template v-else>
       <Breadcrumb :breadcrumb="breadcrumb" />
       <div class="sm:flex justify-between items-center mb-3">

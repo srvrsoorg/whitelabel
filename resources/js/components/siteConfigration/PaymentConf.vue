@@ -75,6 +75,14 @@
             </p>
           </div>
           <div
+            class="text-tiny p-3 rounded-md my-5 text-[#308DEA] bg-[#EFF6FF]"
+            v-if="payment.provider === 'Cashfree'"
+          >
+            <p>
+              <b class="font-medium">Note:</b> Make sure the currency in your Cashfree account is the same as the billing currency set in your Reseller Panel.
+            </p>
+          </div>
+          <div
             class="grid sm:grid-cols-2 grid-cols-1 my-5 mb-5 xl:gap-40 sm:gap-14 gap-1 "
           >
             <div>

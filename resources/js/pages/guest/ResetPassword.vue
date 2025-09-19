@@ -27,7 +27,7 @@
         <div>
           <label
             for="password"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             New Password
           </label>
@@ -56,7 +56,7 @@
         <div class="mt-4">
           <label
             for="password_confirmation"
-            class="block text-tiny text-neutral-800 font-medium"
+            class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
           >
             Confirm Password
           </label>

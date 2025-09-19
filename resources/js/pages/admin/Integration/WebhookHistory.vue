@@ -231,7 +231,7 @@
             </nav>
             <div class="mt-5" v-if="currentLog">
                 <div v-if="currentTab==='response'">
-                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
+                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto 2xl:max-h-[450px] max-h-[300px] text-sm">
                         <template v-if="wrapValue(currentLog.response_body).type === 'pre'">
                             <pre class="whitespace-pre-wrap break-words">{{ wrapValue(currentLog.response_body).content }}</pre>
                         </template>
@@ -241,7 +241,7 @@
                     </div>
                 </div>
                 <div v-else-if="currentTab==='request_headers'">
-                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
+                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto 2xl:max-h-[450px] max-h-[300px] text-sm">
                         <template v-if="wrapValue(currentLog.request_headers).type === 'pre'">
                             <pre>{{ wrapValue(currentLog.request_headers).content }}</pre>
                         </template>
@@ -252,7 +252,7 @@
                 </div>
 
                 <div v-else>
-                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto max-h-[500px] text-sm">
+                    <div class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto 2xl:max-h-[450px] max-h-[300px] text-sm">
                         <template v-if="wrapValue(currentLog.payload).type === 'pre'">
                             <pre>{{ wrapValue(currentLog.payload).content }}</pre>
                         </template>

@@ -14,7 +14,7 @@
         to connect a server.
       </span>
     </div>
-    <div class="relative">
+    <div class="relative" v-if="providerList.length > 1">
       <div
         v-if="server.provider"
         class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
@@ -105,86 +105,7 @@
         ></small>
       </div>
     </div>
-    <div
-      class="relative my-5"
-      v-if="server.provider && providerList.length > 0"
-    >
-      <div
-        class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
-        aria-hidden="true"
-      ></div>
-      <span
-        :class="[
-          isLightColor ? 'text-custom-700' : 'text-custom-500',
-          ' z-10 justify-center  pl-[3px]   rounded-full tabular-nums',
-        ]"
-      >
-        <i class="fa-solid fa-circle text-[10px]"></i>
-      </span>
-      <div class="pl-8 -mt-5">
-        <h1 class="font-medium">OS Version</h1>
-        <RadioGroup v-model="server.version">
-          <div
-            class="mt-5 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-cols-1 gap-5"
-          >
-            <RadioGroupOption
-              as="template"
-              v-for="version in selectVersion"
-              :key="version.id"
-              :value="version.value"
-              v-slot="{ active, checked }"
-            >
-              <div
-                :class="[
-                  active || checked
-                    ? isLightColor
-                      ? 'border-custom-700'
-                      : 'border-custom-500'
-                    : '',
-                  'relative flex gap-2  overflow-hidden rounded-lg border '
-                ]"
-              >
-                <div
-                  :class="` absolute top-1 right-1  flex items-center p-1 justify-center ${
-                    checked
-                      ? isLightColor
-                        ? 'text-custom-700'
-                        : 'text-custom-500'
-                      : ' text-gray-400'
-                  }`"
-                >
-                  <span class="material-symbols-outlined text-[18px]">
-                    {{
-                      checked
-                        ? "radio_button_checked"
-                        : "radio_button_unchecked"
-                    }}
-                  </span>
-                </div>
-                <RadioGroupLabel as="span" class="flex">
-                  <div class="flex items-center gap-4 p-4">
-                    <div class="max-w-8 max-h-8">
-                      <img
-                        :src="`/logo/ubuntu.svg`"
-                        alt=""
-                        class="w-full h-full"
-                      />
-                    </div>
-                    <span class="text-tiny font-medium">{{
-                      version.title
-                    }}</span>
-                  </div>
-                </RadioGroupLabel>
-              </div>
-            </RadioGroupOption>
-          </div>
-        </RadioGroup>
-        <small
-          id="version_message"
-          class="text-red-500 error_message text-xs"
-        ></small>
-      </div>
-    </div>
+    
     <div
       class="relative my-5"
       v-if="server.provider && providerList.length > 0"
@@ -524,6 +445,86 @@
       >
         <i class="fa-solid fa-circle text-[10px]"></i>
       </span>
+      <div class="pl-8 -mt-5">
+        <h1 class="font-medium">OS Version</h1>
+        <RadioGroup v-model="server.version">
+          <div
+            class="mt-5 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-cols-1 gap-5"
+          >
+            <RadioGroupOption
+              as="template"
+              v-for="version in selectVersion"
+              :key="version.id"
+              :value="version.value"
+              v-slot="{ active, checked }"
+            >
+              <div
+                :class="[
+                  active || checked
+                    ? isLightColor
+                      ? 'border-custom-700'
+                      : 'border-custom-500'
+                    : '',
+                  'relative flex gap-2  overflow-hidden rounded-lg border '
+                ]"
+              >
+                <div
+                  :class="` absolute top-1 right-1  flex items-center p-1 justify-center ${
+                    checked
+                      ? isLightColor
+                        ? 'text-custom-700'
+                        : 'text-custom-500'
+                      : ' text-gray-400'
+                  }`"
+                >
+                  <span class="material-symbols-outlined text-[18px]">
+                    {{
+                      checked
+                        ? "radio_button_checked"
+                        : "radio_button_unchecked"
+                    }}
+                  </span>
+                </div>
+                <RadioGroupLabel as="span" class="flex">
+                  <div class="flex items-center gap-4 p-4">
+                    <div class="max-w-8 max-h-8">
+                      <img
+                        :src="`/logo/ubuntu.svg`"
+                        alt=""
+                        class="w-full h-full"
+                      />
+                    </div>
+                    <span class="text-tiny font-medium">{{
+                      version.title
+                    }}</span>
+                  </div>
+                </RadioGroupLabel>
+              </div>
+            </RadioGroupOption>
+          </div>
+        </RadioGroup>
+        <small
+          id="version_message"
+          class="text-red-500 error_message text-xs"
+        ></small>
+      </div>
+    </div>
+    <div
+      class="relative my-5"
+      v-if="server.provider && providerList.length > 0"
+    >
+      <div
+        class="absolute bg-gray-200 left-2 top-5 h-full w-[1px]"
+        aria-hidden="true"
+      ></div>
+      <span
+        :class="[
+          isLightColor ? 'text-custom-700' : 'text-custom-500',
+          ' z-10 justify-center  pl-[3px]   rounded-full tabular-nums',
+        ]"
+      >
+        <i class="fa-solid fa-circle text-[10px]"></i>
+      </span>
       <div class="pl-8 -mt-5" v-if="server.provider && providerList.length > 0">
         <h1 class="font-medium">Database</h1>
         <RadioGroup v-model="server.database_type">
@@ -772,6 +773,7 @@
               <Table
                 :bodyHeight="'max-h-[30rem]'"
                 :head="thead"
+                :customClass="['!mt-0']"
                 v-if="newPlanList[0] && newPlanList[0].list.length > 0"
               >
                 <tr
@@ -855,8 +857,8 @@
               ></small>
             </div>
             <template v-else>
-              <TableSkeleton :heads="6" v-if="refreshing" />
-              <Table :head="thead" v-else>
+              <TableSkeleton class="!mt-0" :heads="6" v-if="refreshing" />
+              <Table :head="thead" :customClass="['!mt-0']" v-else>
                 <tr>
                   <td
                     colspan="6"

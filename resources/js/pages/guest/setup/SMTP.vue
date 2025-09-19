@@ -10,7 +10,7 @@
         @submit="saveSmtpDetails()"
       >
         <div class="my-4">
-          <label for="host" class="block text-tiny text-neutral-800 font-medium"
+          <label for="host" class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
             >Host</label
           >
           <div class="mt-1.5">
@@ -29,7 +29,7 @@
           <div>
             <label
               for="username"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >Username</label
             >
             <div class="mt-1.5">
@@ -50,7 +50,7 @@
           <div class="md:mt-0 mt-4">
             <label
               for="password"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >Password</label
             >
             <div class="mt-1.5">
@@ -73,7 +73,7 @@
           <div class="">
             <label
               for="from_name"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >From Name</label
             >
             <div class="mt-1.5">
@@ -94,7 +94,7 @@
           <div class="md:mt-0 mt-4">
             <label
               for="from_email"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >From Email</label
             >
             <div class="mt-1.5">
@@ -117,7 +117,7 @@
           <div>
             <label
               for="port"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >Port</label
             >
             <div class="mt-1.5">
@@ -138,7 +138,7 @@
           <div class="md:mt-0 mt-4">
             <label
               for="encryption"
-              class="block text-tiny text-neutral-800 font-medium"
+              class="block text-tiny text-neutral-800 after:content-['*'] after:ml-0.5 after:text-red-500 font-medium"
               >Encryption</label
             >
             <div class="mt-1.5">
