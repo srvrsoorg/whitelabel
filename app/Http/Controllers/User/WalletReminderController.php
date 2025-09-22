@@ -27,11 +27,11 @@ class WalletReminderController extends Controller
             $user->update(['reminder_minimum_credit' => $newReminderCredit]);
 
             // Create an activity record
-            Helper::createActivity($user, 'Billing', 'Update', 'Reminder credit updated.');
+            Helper::createActivity($user, 'Billing', 'Update', 'Credit reminder updated.');
 
             // Success response
             return response()->json([
-                'message' => 'Reminder credit updated successfully.',
+                'message' => 'Credit Reminder updated successfully.',
             ], 200);
         } catch (\Exception $e) {
             // Error response: Handle and respond to any exceptions
