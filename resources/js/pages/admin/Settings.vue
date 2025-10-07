@@ -323,8 +323,8 @@
       <div class="py-5 grid sm:grid-cols-3 gap-x-5 rounded-md">
         <div class="sm:col-span-2">
           <p class="text-tiny py-2">
-            Every server you create in your self-hosted panel is created with
-            ServerAvatar and will be managed directly through the self-hosted
+            Every server you create in your reseller panel is created with
+            ServerAvatar and will be managed directly through the reseller
             panel of your organization.
           </p>
         </div>

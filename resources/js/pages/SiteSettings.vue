@@ -262,7 +262,7 @@
       <div class="my-5 border rounded-md p-4">
         <h1 class="font-medium after:content-['*'] after:ml-0.5 after:text-red-500">Organization</h1>
         <p class="text-sm text-gray-500">
-          In this organization, the server you create in your self-hosted panel
+          In this organization, the server you create in your reseller panel
           will be managed through that panel.
         </p>
         <select

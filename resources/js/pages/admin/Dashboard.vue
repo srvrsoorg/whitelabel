@@ -9,10 +9,10 @@
       <div class="bg-[#F6F6F6] shadow-sm rounded-md p-10 my-5">
         <div class="xl:flex gap-5">
           <div class="flex-1">
-            <p class="text-xl font-medium">Self-Hosted WhiteLabel</p>
+            <p class="text-xl font-medium">Reseller Panel</p>
             <div>
               <p class="text-tiny text-gray-500">
-                Welcome to your self-hosted whitelabel platform, where you can
+                Welcome to your reseller panel, where you can
                 completely customize your hosting panel, manage servers
                 efficiently, and seamlessly integrate other services.
               </p>
@@ -109,7 +109,7 @@
                 </div>
                 <p class="text-tiny text-gray-500 sm:pl-14 mt-2 sm:mt-0">
                   Easily configure and customize your application branding with
-                  a straightforward process using the self-hosted white-label
+                  a straightforward process using the reseller
                   panel.
                 </p>
               </div>
@@ -233,7 +233,7 @@
                 </div>
                 <p class="text-tiny text-gray-500 sm:pl-14 mt-2 sm:mt-0">
                   Enable and configure your email functionality easily by adding
-                  the SMTP credentials to the self-hosted white-label product.
+                  the SMTP credentials to the reseller panel.
                 </p>
               </div>
             </div>
@@ -294,7 +294,7 @@
                   </div>
                 </div>
                 <p class="text-tiny text-gray-500 sm:pl-14 mt-2 sm:mt-0">
-                  The self-hosted white-label platform supports multiple payment
+                  The reseller panel supports multiple payment
                   methods, allowing users to effortlessly adjust their plans
                   with various payment integration methods.
                 </p>
