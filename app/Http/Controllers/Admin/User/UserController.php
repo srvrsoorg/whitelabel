@@ -66,9 +66,9 @@ class UserController extends Controller
             'region_code' => 'required|string',
             'credits' => 'required|numeric|regex:/^-?\d{1,7}(\.\d{0,3})?$/',
             'timezone' => 'required|string',
-            'password' => 'required|confirmed|min:8|max:15|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/'
+            'password' => 'required|confirmed|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._+\-])[A-Za-z\d@$!%*?&._+\-]{8,32}$/'
         ],[
-            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).'
+            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&_+-.).'
         ]);
 
         try {
@@ -152,9 +152,9 @@ class UserController extends Controller
             'region_code' => 'required|string',
             'status' => 'required|in:'. implode(",", UserStatusEnum::values()),
             'timezone' => 'required|string',
-            'password' => 'nullable|min:8|max:15|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/'
+            'password' => 'nullable|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._+\-])[A-Za-z\d@$!%*?&._+\-]{8,32}$/'
         ],[
-            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).'
+            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&_+-.).'
         ]);
 
         try {
