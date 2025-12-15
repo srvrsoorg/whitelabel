@@ -612,11 +612,23 @@ export default {
       this.$axios
         .get(`/servers/${id}/panel`)
         .then((response) => {
+          const resellerDomain = window.location.origin;
+          const panelDomain = response.data.panelUser.domain;
+          const confirmationTimer = this.user.confirmation_timer;
           if (response.data.agent_status === 1) {
-            window.open(`http://${response.data.panelUser.domain}?confirmation_timer=${this.user.confirmation_timer}`, "_blank");
+            window.open(
+              `http://${panelDomain}?confirmation_timer=${confirmationTimer}&source=reseller&reseller_domain=${encodeURIComponent(resellerDomain)}`,
+              "_blank"
+            );
           } else {
             window.open(
-              `http://${response.data.panelUser.domain}/host/login?key=${response.data.panelUser.key}&server=${id}&redirect=false&confirmation_timer=${this.user.confirmation_timer}`,
+              `http://${panelDomain}/host/login` +
+                `?key=${response.data.panelUser.key}` +
+                `&server=${id}` +
+                `&redirect=false` +
+                `&confirmation_timer=${confirmationTimer}` +
+                `&source=reseller` +
+                `&reseller_domain=${encodeURIComponent(resellerDomain)}`,
               "_blank"
             );
           }
