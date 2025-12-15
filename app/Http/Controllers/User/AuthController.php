@@ -102,9 +102,9 @@ class AuthController extends Controller
                     }
                 },
             ],
-            'new_password'=>'required|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/|confirmed|different:current_password',
+            'new_password'=>'required|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._+\-])[A-Za-z\d@$!%*?&._+\-]{8,32}$/|confirmed|different:current_password',
         ],[
-            'new_password.regex' => 'The new password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).',
+            'new_password.regex' => 'The new password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&_+-.).',
             'new_password.different' => 'The new password must be different from your current password.',
         ]);
 

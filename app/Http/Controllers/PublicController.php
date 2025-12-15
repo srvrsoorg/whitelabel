@@ -39,9 +39,9 @@ class PublicController extends Controller
             'country_code' => 'required|string',
             'region_name' => 'required|string',
             'region_code' => 'required|string',
-            'password' => 'required|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/'
+            'password' => 'required|min:8|max:32|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._+\-])[A-Za-z\d@$!%*?&._+\-]{8,32}$/'
         ],[
-            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).'
+            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&_+-.).'
         ]);
 
         try {
@@ -302,7 +302,7 @@ class PublicController extends Controller
                 'confirmed',
                 'min:8',
                 'max:32',
-                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._+\-])[A-Za-z\d@$!%*?&._+\-]{8,32}$/',
                 function($attribute, $value, $fail) use ($user){
                     if(Hash::check($value, $user->password)){
                         $fail("New password must be different from your old password.");
@@ -310,7 +310,7 @@ class PublicController extends Controller
                 }
             ]
         ],[
-            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&).'
+            'password.regex' => 'The password must contain at least one uppercase letter, one digit, and one special character (@$!%*?&_+-.).'
         ]);
 
         try {
