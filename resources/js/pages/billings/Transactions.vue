@@ -221,6 +221,7 @@ export default {
         .get("/enable-providers")
         .then(({ data }) => {
           this.enabledPaymentProviders = data.payment;
+          this.razorpay_key = data.razorpay_client_id
         })
         .catch(({ response }) => {
           this.$toast.error(response.data.message);

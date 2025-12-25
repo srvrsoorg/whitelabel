@@ -381,6 +381,7 @@ export default {
         .get("/enable-providers")
         .then(({ data }) => {
           this.enabledPaymentProviders = data.payment;
+          this.razorpay_key = data.razorpay_client_id
           if (data.basic_details) {
             this.minimumAmount = data.basic_details.minimum_recharge_amount;
           }
