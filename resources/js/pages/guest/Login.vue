@@ -97,7 +97,7 @@
           </router-link>
         </div>
       </div>
-      <div class="flex items-center justify-center mt-2">
+      <div class="flex items-center justify-center mt-2" v-if="allowRegistration">
         <div class="text-sm leading-6 text-gray-500">
           <span class="">You don't have an account? </span>
           <router-link
@@ -122,6 +122,7 @@ import { useSetupStore } from "@/store/setup";
 export default {
   data() {
     return {
+      allowRegistration: import.meta.env.VITE_ALLOW_REGISTRATION==='true',
       email: "",
       password: "",
       processing: false,

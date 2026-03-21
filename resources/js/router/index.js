@@ -11,8 +11,13 @@ import AdminRoutes from "@/router/admin";
 import BillingRoutes from "@/router/billing";
 import TicketRoutes from '@/router/ticket'
 
+const allowRegistration = import.meta.env.VITE_ALLOW_REGISTRATION==='true';
+
 const routes = [
-    ...GuestRoutes, // Include guest routes
+    // ...GuestRoutes, // Include guest routes
+    ...GuestRoutes.filter(route =>
+        allowRegistration || route.name !== 'register'
+    ),
     ...DashboardRoutes, // Include dashboard routes
     ...AccountRoutes,
     ...ServerRoutes,
