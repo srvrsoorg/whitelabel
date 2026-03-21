@@ -67,7 +67,7 @@ class SiteSettingController extends Controller
             $siteSetting->analytics = $request->analytics;
 
             // Retrieve color palette information from an API
-            $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code)."?output=hex");
+            $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code));
             $colorPalette = json_decode($colorPalette);
             $colorPalette = json_decode($colorPalette);
 
@@ -194,7 +194,7 @@ class SiteSettingController extends Controller
 
             if($request->color_code) {
                 // Retrieve color palette information from an API
-                $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code)."?output=hex");
+                $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code));
                 $colorPalette = json_decode($colorPalette);
                 $colorPalette = json_decode($colorPalette);
 
