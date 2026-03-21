@@ -67,7 +67,8 @@ class SiteSettingController extends Controller
             $siteSetting->analytics = $request->analytics;
 
             // Retrieve color palette information from an API
-            $colorPalette = Http::get(config('app.color_palette_url').$request->color_code);
+            $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code)."?output=hex");
+            $colorPalette = json_decode($colorPalette);
             $colorPalette = json_decode($colorPalette);
 
             if($colorPalette && isset($colorPalette->brand)) {
@@ -193,7 +194,8 @@ class SiteSettingController extends Controller
 
             if($request->color_code) {
                 // Retrieve color palette information from an API
-                $colorPalette = Http::get(config('app.color_palette_url').$request->color_code);
+                $colorPalette = Http::get(config('app.new_color_palette_url').$this->serializeFromHex($request->color_code)."?output=hex");
+                $colorPalette = json_decode($colorPalette);
                 $colorPalette = json_decode($colorPalette);
 
                 if($colorPalette && isset($colorPalette->brand)) {
@@ -281,6 +283,51 @@ class SiteSettingController extends Controller
                 'message' => "Something want really wrong while getting details!",
             ],500);
         }
+    }
+    
+    private function serializeFromHex(string $hex): string
+    {
+        $COLOR_MODE_REVERSE = [
+            'linear' => 'l',
+            'perceived' => 'p',
+        ];
+    
+        $STOP_SELECTION_REVERSE = [
+            'auto' => 'a',
+            'manual' => 'm',
+        ];
+    
+        $VERSION = 'v1:';
+    
+        // Default values (same as your TS example)
+        $palette = [
+            'name' => 'brand',
+            'value' => strtoupper($hex),
+            'valueStop' => 500,
+            'colorMode' => 'perceived',
+            'h' => 0,
+            's' => 0,
+            'lMin' => 0,
+            'lMax' => 100,
+            'stopSelection' => 'auto',
+        ];
+    
+        $string = implode('|', [
+            $palette['name'],
+            $palette['value'],
+            $palette['valueStop'],
+            $COLOR_MODE_REVERSE[$palette['colorMode']],
+            $palette['h'],
+            $palette['s'],
+            $palette['lMin'],
+            $palette['lMax'],
+            $STOP_SELECTION_REVERSE[$palette['stopSelection']],
+        ]);
+    
+        $base64 = base64_encode($string);
+        $base64 = rtrim(strtr($base64, '+/', '-_'), '=');
+    
+        return $VERSION . $base64;
     }
 
     /**

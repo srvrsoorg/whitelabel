@@ -63,6 +63,8 @@ return [
 
     'color_palette_url' => env('COLOR_PALETTE_URL', 'https://www.tints.dev/api/brand/'),
 
+    'new_color_palette_url' => env('NEW_COLOR_PALETTE_URL', 'https://www.tints.dev/api/palette/'),
+
     'version' => 'v1.0',
     
     'asset_url' => env('ASSET_URL'),
