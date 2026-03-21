@@ -122,7 +122,7 @@ import { useSetupStore } from "@/store/setup";
 export default {
   data() {
     return {
-      allowRegistration: import.meta.env.VITE_ALLOW_REGISTRATION==='true',
+      allowRegistration: import.meta.env.VITE_ALLOW_REGISTRATION !== 'false',
       email: "",
       password: "",
       processing: false,
