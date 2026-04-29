@@ -135,15 +135,7 @@ class PromoCodeController extends Controller
             'usable' => 'nullable|required_if:expires_date,null|integer|min:1',
             'discount' => 'required|numeric|min:1|max:99',
             'customer_type' => 'required|string|in:new_customer,all_customer',
-            'expires_date' => [
-                'nullable',
-                'date_format:Y-m-d',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($value !== null && $request->input('usable') !== null) {
-                        $fail('The expires at field should only required if usable field is empty.');
-                    }
-                }
-            ],
+            'expires_date' => 'nullable|date_format:Y-m-d',
         ]);
 
         try {
@@ -188,15 +180,7 @@ class PromoCodeController extends Controller
             'usable' => 'nullable|required_if:expires_date,null|integer|min:1',
             'discount' => 'required|numeric|min:1|max:99',
             'customer_type' => 'required|string|max:255|in:new_customer,all_customer',
-            'expires_date' => [
-                'nullable',
-                'date_format:Y-m-d',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($value !== null && $request->input('usable') !== null) {
-                        $fail('The expires at field should only required if usable field is empty.');
-                    }
-                }
-            ],       
+            'expires_date' => 'nullable|date_format:Y-m-d',
         ]);
 
         try {
@@ -206,17 +190,10 @@ class PromoCodeController extends Controller
             $promoCode->description = $request->description;
             $promoCode->customer_type = $request->customer_type;
 
-           // Set expiration date and usability
-            if($request->expires_date && !$request->usable) {
-                $promoCode->expires_at = $request->expires_date;
-                $promoCode->usable = 0;
-            } elseif ($request->usable && !$request->expires_date) {
-                $promoCode->usable = $request->usable;
-                $promoCode->expires_at = null;
-            } else {
-                $promoCode->expires_at = null;
-                $promoCode->usable = 0;
-            }
+            // Both usage limit and expiry date can be set together.
+            // A promo code becomes unusable when either condition is reached first.
+            $promoCode->usable = $request->usable ? $request->usable : 0;
+            $promoCode->expires_at = $request->expires_date;
 
             // Store PromoCode data
             $promoCode->save();

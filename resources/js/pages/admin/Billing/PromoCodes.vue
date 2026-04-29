@@ -188,9 +188,8 @@
     </div>
     <div class="rounded-md px-4 py-2 mt-3 mb-2 text-[#308DEA] bg-[#EFF6FF]">
       <p class="text-sm">
-        <b class="font-medium">Note:</b> You can set only one value: either
-        "Usable" or "Expire At." If you select one, the other field will not be
-        accepted.
+        <b class="font-medium">Note:</b> You can set both "Usable" and "Expires
+        at". The promo code expires as soon as any one limit is reached.
       </p>
     </div>
     <div class="grid md:grid-cols-3 grid-cols-1 gap-x-4">
