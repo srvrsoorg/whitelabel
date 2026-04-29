@@ -106,6 +106,7 @@ export default {
     return {
       menuList: [],
       showNarrowSidebar: false,
+      enabledPaymentProviders: [],
     };
   },
   watch: {
@@ -114,13 +115,33 @@ export default {
     },
   },
   created() {
-    this.menuList = sideMenu;
-    this.changeMenuLinks();
+    this.fetchEnabledPaymentProviders();
   },
   methods: {
+    fetchEnabledPaymentProviders() {
+      this.$axios
+        .get("/enable-providers")
+        .then(({ data }) => {
+          this.enabledPaymentProviders = data.payment || [];
+          this.changeMenuLinks();
+        })
+        .catch(() => {
+          this.enabledPaymentProviders = [];
+          this.changeMenuLinks();
+        });
+    },
     changeMenuLinks() {
-        this.menuList = sideMenu;
-        this.showNarrowSidebar = false;
+      const links = JSON.parse(JSON.stringify(sideMenu));
+      const isStripeEnabled = this.enabledPaymentProviders.includes("Stripe");
+
+      this.menuList = links.map((item) => {
+        if (item.name === "Billing" && Array.isArray(item.children) && !isStripeEnabled) {
+          item.children = item.children.filter((child) => child.url !== "/billing/auto-recharge");
+        }
+        return item;
+      });
+
+      this.showNarrowSidebar = false;
     },
   },
 };

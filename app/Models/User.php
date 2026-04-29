@@ -44,6 +44,10 @@ class User extends Authenticatable
         'two_fa_enable',
         'stripe_id',
         'reminder_minimum_credit',
+        'auto_recharge_enabled',
+        'auto_recharge_minimum_credit',
+        'auto_recharge_amount',
+        'auto_recharge_payment_gateway',
         'confirmation_timer'
     ];
 
@@ -69,6 +73,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'google2fa_enable' => 'boolean',
         'two_fa_enable' => 'boolean',
+        'auto_recharge_enabled' => 'boolean',
     ];
 
     // Dates that should be treated as date objects

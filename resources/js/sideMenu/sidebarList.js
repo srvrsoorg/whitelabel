@@ -29,6 +29,12 @@ export default [
                 url: "/billing/settings",
                 parentId: 2,
             },
+            {
+                id: 4,
+                name: "Auto Recharge",
+                url: "/billing/auto-recharge",
+                parentId: 2,
+            },
         ],
     },
     {

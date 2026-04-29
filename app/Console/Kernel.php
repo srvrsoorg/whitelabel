@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
 
         // User Wallet Reminder
         $schedule->command('execute:wallet-reminder')->daily();
+        $schedule->command('execute:auto-recharge')->hourly();
     }
 
     /**

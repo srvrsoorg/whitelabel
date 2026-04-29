@@ -5,10 +5,17 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
     server: {
+        hmr: {
+            overlay: false,
+        },
         watch: {
             // Tell Vite to ignore changes to files or directories containing environment variables
             ignored: [
-                '**/.env'
+                '**/.env',
+                '**/vendor/**',
+                '**/node_modules/**',
+                '**/storage/**',
+                '**/.git/**'
             ],
         },
     },

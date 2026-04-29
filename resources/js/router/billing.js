@@ -45,6 +45,17 @@ export default [
         },
     },
     {
+        name: "autoRecharge",
+        path: "/billing/auto-recharge",
+        component: () => import("@/pages/billings/AutoRecharge.vue"),
+        meta: {
+            middleware: ["auth"],
+            title: `Auto Recharge | Billing`,
+            layout: userLayout,
+            setupReqiures: true,
+        },
+    },
+    {
         name: "viewTransaction",
         path: "/billing/transactions/:key",
         component: () => import("@/pages/billings/ViewTransaction.vue"),

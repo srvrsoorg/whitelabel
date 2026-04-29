@@ -41,4 +41,10 @@ Route::middleware(['auth:sanctum'])->controller(UsageSummaryController::class)->
 
 Route::middleware(['auth:sanctum'])->controller(WalletReminderController::class)->group(function () {
     Route::patch('/reminder-minimum-credit', 'reminderCredit');
+    Route::patch('/auto-recharge', 'autoRecharge');
+    Route::post('/auto-recharge/setup-session', 'createAutoRechargeSetupSession');
+    Route::post('/auto-recharge/verify-setup-session', 'verifyAutoRechargeSetupSession');
+    Route::get('/auto-recharge/payment-method-status', 'autoRechargePaymentMethodStatus');
+    Route::patch('/auto-recharge/default-payment-method', 'setAutoRechargeDefaultPaymentMethod');
+    Route::delete('/auto-recharge/default-payment-method', 'removeAutoRechargeDefaultPaymentMethod');
 });
