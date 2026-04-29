@@ -1,8 +1,8 @@
 <template>
   <Breadcrumb :breadcrumb="breadcrumb" />
-  <div class="container-fluid mx-auto pb-5">
-    <div class="mb-5">
-      <h1 class="text-[#2c3138] font-medium text-xl">Auto Recharge</h1>
+  <div class="container-fluid mx-auto pb-6 sm:pb-8">
+    <div class="mb-6 sm:mb-7">
+      <h1 class="text-[#2c3138] font-medium text-xl tracking-tight">Auto Recharge</h1>
       <p class="text-gray-500 text-sm mt-1">
         Configure automatic wallet recharge and a default payment method.
       </p>
@@ -24,14 +24,14 @@
       </div>
     </div>
 
-    <div v-else class="grid grid-cols-1 2xl:grid-cols-12 gap-5 items-start">
-      <div class="2xl:col-span-8 bg-white border border-slate-200 rounded-xl p-4 sm:p-6">
-        <div class="flex items-start gap-3 mb-5">
+    <div v-else class="grid grid-cols-1 xl:grid-cols-12 gap-5 sm:gap-6 items-start">
+      <div class="xl:col-span-7 bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
+        <div class="flex items-start gap-3 mb-4 sm:mb-5">
           <div class="w-10 h-10 min-w-[40px] rounded-lg bg-gray-50 border border-slate-200 flex items-center justify-center text-custom-500">
             <span class="material-symbols-outlined text-[22px]">autorenew</span>
           </div>
           <div>
-            <p class="font-medium text-base">Auto Recharge Settings</p>
+            <p class="font-medium text-base text-[#2c3138]">Auto Recharge Settings</p>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">
               Automatically recharge wallet when credits go below your configured threshold.
             </p>
@@ -61,22 +61,22 @@
         </template>
 
         <template v-else>
-          <div class="rounded-lg border border-slate-200 bg-gray-50 p-3 sm:p-4 mb-4">
+          <div class="rounded-lg border border-slate-200 bg-gray-50 p-3 sm:p-4 mb-5">
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="text-tiny font-medium text-[#2c3138]">Enable Auto Recharge</p>
+                <p class="text-sm font-medium text-[#2c3138]">Enable Auto Recharge</p>
                 <p class="text-xs text-gray-500 mt-1">Turn on automatic recharge checks for your wallet.</p>
               </div>
               <button
                 type="button"
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none"
+                class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-custom-400 focus-visible:ring-offset-2"
                 :class="form.auto_recharge_enabled ? 'bg-custom-500' : 'bg-slate-300'"
                 @click="handleAutoRechargeToggle"
                 :aria-pressed="form.auto_recharge_enabled ? 'true' : 'false'"
               >
                 <span
-                  class="inline-block h-5 w-5 transform rounded-full bg-white border border-slate-200 transition-transform duration-200"
-                  :class="form.auto_recharge_enabled ? 'translate-x-5' : 'translate-x-0.5'"
+                  class="absolute left-0.5 top-0.5 block h-5 w-5 transform rounded-full bg-white border border-slate-200 transition-transform duration-200"
+                  :class="form.auto_recharge_enabled ? 'translate-x-5' : 'translate-x-0'"
                 ></span>
               </button>
             </div>
@@ -85,15 +85,15 @@
 
           <div v-if="form.auto_recharge_enabled" class="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div>
-            <label class="text-xs text-gray-500 block mb-1.5">Minimum Threshold</label>
-            <div class="flex items-center shadow-sm rounded-md">
+            <label class="text-xs font-medium text-gray-600 block mb-1.5">Minimum Threshold</label>
+            <div class="flex items-center rounded-md">
               <div class="pointer-events-none bg-gray-50 h-[42px] flex items-center px-3 border border-r-0 border-slate-300 rounded-l-md">
                 <span class="text-sm font-medium text-gray-700">{{ siteSettings.currency_symbol }}</span>
               </div>
               <input
                 type="number"
                 v-model="form.auto_recharge_minimum_credit"
-                class="w-full h-[42px] text-sm p-2.5 border border-slate-300 focus:border-slate-300 focus:ring-0 rounded-r-md"
+                class="w-full h-[42px] text-sm p-2.5 border border-slate-300 focus:border-custom-400 focus:ring-0 rounded-r-md"
                 placeholder="Enter minimum threshold"
               >
             </div>
@@ -101,15 +101,15 @@
           </div>
 
           <div>
-            <label class="text-xs text-gray-500 block mb-1.5">Recharge Amount</label>
-            <div class="flex items-center shadow-sm rounded-md">
+            <label class="text-xs font-medium text-gray-600 block mb-1.5">Recharge Amount</label>
+            <div class="flex items-center rounded-md">
               <div class="pointer-events-none bg-gray-50 h-[42px] flex items-center px-3 border border-r-0 border-slate-300 rounded-l-md">
                 <span class="text-sm font-medium text-gray-700">{{ siteSettings.currency_symbol }}</span>
               </div>
               <input
                 type="number"
                 v-model="form.auto_recharge_amount"
-                class="w-full h-[42px] text-sm p-2.5 border border-slate-300 focus:border-slate-300 focus:ring-0 rounded-r-md"
+                class="w-full h-[42px] text-sm p-2.5 border border-slate-300 focus:border-custom-400 focus:ring-0 rounded-r-md"
                 placeholder="Enter recharge amount"
               >
             </div>
@@ -117,7 +117,7 @@
           </div>
 
           <div class="xl:col-span-2">
-            <label class="text-xs text-gray-500 block mb-1.5">Payment Gateway</label>
+            <label class="text-xs font-medium text-gray-600 block mb-1.5">Payment Gateway</label>
             <input
               type="text"
               value="Stripe"
@@ -132,19 +132,19 @@
             Auto recharge is disabled. Enable it to configure threshold, amount, and payment gateway.
           </div>
 
-          <Button class="w-full sm:w-auto mt-5 px-5 py-2.5 text-sm" :disabled="savingSettings" @click="saveSettings">
+          <Button class="w-full sm:w-auto mt-4 px-5 py-2.5 text-sm font-medium" :disabled="savingSettings" @click="saveSettings">
             {{ savingSettings ? "Please Wait" : "Save Settings" }}
           </Button>
         </template>
       </div>
 
-      <div class="2xl:col-span-4 bg-white border border-slate-200 rounded-xl p-4 sm:p-6">
-        <div class="flex items-start gap-3 mb-5">
+      <div class="xl:col-span-5 bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
+        <div class="flex items-start gap-3 mb-4 sm:mb-5">
           <div class="w-10 h-10 min-w-[40px] rounded-lg bg-gray-50 border border-slate-200 flex items-center justify-center text-custom-500">
             <span class="material-symbols-outlined text-[22px]">credit_card</span>
           </div>
           <div>
-            <p class="font-medium text-base">Default Payment Method</p>
+            <p class="font-medium text-base text-[#2c3138]">Default Payment Method</p>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">
               Save a default Stripe card so auto recharge can run without manual checkout.
             </p>
@@ -170,39 +170,54 @@
             <div
               v-for="card in paymentMethodStatus.payment_methods"
               :key="card.id"
-              class="rounded-lg border p-3 text-sm"
+              class="rounded-lg border p-3 text-sm transition-colors duration-200"
               :class="card.is_default ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-700'"
             >
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="flex items-start gap-3 min-w-0 flex-1">
                   <input
                     type="radio"
                     :checked="card.is_default"
                     name="default_payment_method"
-                    class="h-4 w-4 text-custom-500 border-slate-300 focus:ring-0"
+                    class="h-4 w-4 mt-1 text-custom-500 border-slate-300 focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
                     @change="setDefaultPaymentMethod(card.id)"
                     :disabled="updatingDefaultPaymentMethod || card.is_default"
                   >
                   <div class="min-w-0">
-                    <p class="font-medium truncate">
-                      {{ card.brand?.toUpperCase() }} ****{{ card.last4 }} - Exp: {{ card.exp_month }}/{{ card.exp_year }}
+                    <p class="font-medium flex flex-col gap-0.5 leading-[1.35]">
+                      <span class="break-all sm:break-normal">{{ card.brand?.toUpperCase() }} ****{{ card.last4 }}</span>
+                      <span class="text-xs font-medium" :class="card.is_default ? 'text-emerald-700/80' : 'text-slate-500'">
+                        Exp: {{ card.exp_month }}/{{ card.exp_year }}
+                      </span>
                     </p>
                   </div>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 pl-7 sm:pl-0 sm:justify-end">
+                  <span
+                    v-if="updatingDefaultPaymentMethod && updatingDefaultPaymentMethodId === card.id"
+                    class="material-symbols-outlined text-[16px] text-custom-500 animate-spin"
+                  >
+                    progress_activity
+                  </span>
                   <span
                     v-if="card.is_default"
-                    class="text-xs rounded-full bg-emerald-100 text-emerald-700 px-2 py-1 whitespace-nowrap"
+                    class="text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 px-2 py-1 whitespace-nowrap"
                   >
                     Default
                   </span>
                   <button
                     type="button"
-                    class="text-xs rounded-md px-2 py-1 border"
+                    class="text-xs rounded-md px-2 py-1 border transition-colors duration-200 inline-flex items-center gap-1.5"
                     :class="card.is_default ? 'border-slate-200 text-slate-400 cursor-not-allowed' : 'border-rose-200 text-rose-600 hover:bg-rose-50'"
                     :disabled="removingPaymentMethod || card.is_default"
                     @click="removeDefaultPaymentMethod(card.id)"
                   >
+                    <span
+                      v-if="removingPaymentMethod && removingPaymentMethodId === card.id"
+                      class="material-symbols-outlined text-[14px] animate-spin"
+                    >
+                      progress_activity
+                    </span>
                     Delete
                   </button>
                 </div>
@@ -215,7 +230,7 @@
         </div>
 
         <Button
-          class="w-full mt-5 px-4 py-2.5 text-sm"
+          class="w-full mt-6 px-4 py-2.5 text-sm font-medium"
           :disabled="savingPaymentMethod"
           @click="saveDefaultPaymentMethod"
         >
@@ -251,7 +266,9 @@ export default {
       savingSettings: false,
       savingPaymentMethod: false,
       removingPaymentMethod: false,
+      removingPaymentMethodId: null,
       updatingDefaultPaymentMethod: false,
+      updatingDefaultPaymentMethodId: null,
       fetchingProviders: false,
       fetchingPaymentMethodStatus: false,
       paymentMethodStatus: {
@@ -363,6 +380,7 @@ export default {
     },
     removeDefaultPaymentMethod(paymentMethodId) {
       this.removingPaymentMethod = true;
+      this.removingPaymentMethodId = paymentMethodId;
       this.$axios
         .delete("/auto-recharge/default-payment-method", {
           data: {
@@ -378,10 +396,12 @@ export default {
         })
         .finally(() => {
           this.removingPaymentMethod = false;
+          this.removingPaymentMethodId = null;
         });
     },
     setDefaultPaymentMethod(paymentMethodId) {
       this.updatingDefaultPaymentMethod = true;
+      this.updatingDefaultPaymentMethodId = paymentMethodId;
       this.$axios
         .patch("/auto-recharge/default-payment-method", {
           payment_method_id: paymentMethodId,
@@ -395,6 +415,7 @@ export default {
         })
         .finally(() => {
           this.updatingDefaultPaymentMethod = false;
+          this.updatingDefaultPaymentMethodId = null;
         });
     },
     verifySetupSessionFromQuery() {
