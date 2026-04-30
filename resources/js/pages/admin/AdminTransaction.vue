@@ -48,17 +48,6 @@
         <td class="whitespace-nowrap py-4 px-4 pl-10">
           <p>#{{ admin_transaction.id }}</p>
         </td>
-        <td class="whitespace-nowrap py-4 px-4 truncate max-w-[170px]">
-          <div v-tooltip="admin_transaction.transaction_id">
-          <p class="truncate max-w-[170px]">
-            {{
-              admin_transaction.transaction_id
-                ? admin_transaction.transaction_id
-                : "-"
-            }}
-          </p>
-        </div>
-        </td>
         <td class="whitespace-nowrap xl:max-w-[300px] truncate py-4 px-4">
           <div
             v-if="admin_transaction.user"
@@ -111,6 +100,11 @@
             </div>
           </div>
           <span v-else>-</span>
+        </td>
+        <td class="whitespace-nowrap py-4 px-4 truncate max-w-[220px]">
+          <p class="truncate max-w-[220px]" v-tooltip="admin_transaction.service">
+            {{ admin_transaction.service ? admin_transaction.service : "-" }}
+          </p>
         </td>
         <td class="whitespace-nowrap py-4 px-4">
           <p>
@@ -541,6 +535,17 @@
         <span v-else>-</span>
       </div>
       <div class="flex justify-between items-center gap-5 text-sm mt-2">
+        <span class="text-gray-500 min-w-fit">Description</span>
+        <span
+          class="truncate font-medium text-sm"
+          v-tooltip="viewTransaction.service"
+          v-if="viewTransaction.service"
+        >
+          {{ viewTransaction.service }}
+        </span>
+        <span class="truncate font-medium text-sm" v-else>-</span>
+      </div>
+      <div class="flex justify-between items-center gap-5 text-sm mt-2">
         <span class="text-gray-500 min-w-fit">Date</span>
         <span class="truncate font-medium text-sm">{{
           viewTransaction.created_at
@@ -651,11 +656,8 @@ export default {
       transaction_id: null,
       thead: [
         { title: "ID", classes: "font-medium pl-10" },
-        {
-          title: "Transaction ID",
-          classes: "font-medium whitespace-nowrap",
-        },
         { title: "User", classes: "font-medium" },
+        { title: "Description", classes: "font-medium whitespace-nowrap" },
         {
           title: "Final Amount",
           classes: " whitespace-nowrap font-medium",
