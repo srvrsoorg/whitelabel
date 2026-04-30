@@ -113,6 +113,20 @@ class WalletReminderController extends Controller
                     ], 422);
                 }
 
+                if (!$isIndiaUser) {
+                    $billingDetail = $user->billingDetail;
+                    if (!$billingDetail) {
+                        return response()->json([
+                            'message' => 'Billing details are required before enabling auto recharge.',
+                            'errors' => [
+                                'auto_recharge_enabled' => [
+                                    'Please add your billing details before enabling auto recharge.',
+                                ],
+                            ],
+                        ], 422);
+                    }
+                }
+
             }
 
             $user->update([

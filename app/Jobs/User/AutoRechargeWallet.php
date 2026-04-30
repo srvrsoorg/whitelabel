@@ -96,6 +96,14 @@ class AutoRechargeWallet implements ShouldQueue
             $companyBillingDetails = BillingDetail::first();
             $billingDetail = $user->billingDetail;
             $baseAmount = round((float) $user->auto_recharge_amount, 3);
+
+            if (!$billingDetail) {
+                $this->sendFailureEmail($user, 'Billing details are required for auto recharge. Please update Billing Details and try again.');
+                Log::warning('Auto recharge blocked: missing billing details relationship.', [
+                    'user_id' => $user->id,
+                ]);
+                return;
+            }
             Log::info('Auto recharge job amount prepared.', [
                 'user_id' => $user->id,
                 'base_amount' => $baseAmount,
@@ -163,6 +171,16 @@ class AutoRechargeWallet implements ShouldQueue
                 'automatic_payment_methods' => [
                     'enabled' => true,
                     'allow_redirects' => 'never',
+                ],
+                'shipping' => [
+                    'name' => $billingDetail->name ?: $user->name,
+                    'address' => [
+                        'line1' => $billingDetail->address,
+                        'city' => $billingDetail->city,
+                        'state' => $billingDetail->region,
+                        'postal_code' => $billingDetail->postal_code,
+                        'country' => $user->getCountryCodeValue(),
+                    ],
                 ],
             ];
 

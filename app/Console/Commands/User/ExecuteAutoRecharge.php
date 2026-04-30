@@ -38,7 +38,6 @@ class ExecuteAutoRecharge extends Command
                 ->whereNotNull('auto_recharge_amount')
                 ->whereNotNull('auto_recharge_payment_gateway')
                 ->whereColumn('credits', '<=', 'auto_recharge_minimum_credit')
-                ->where('status', UserStatusEnum::ACTIVE())
                 ->chunk(10, function ($users) use (&$queuedUsers, &$nextDelayInSeconds) {
                     foreach ($users as $user) {
                         AutoRechargeWallet::dispatch($user)
