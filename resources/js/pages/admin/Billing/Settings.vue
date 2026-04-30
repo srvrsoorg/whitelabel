@@ -328,23 +328,41 @@
       </span>
       <p class="font-medium">Billing Settings</p>
     </div>
-    <div class="xl:px-10 px-5">
-      <div
-        class="bg-orange-50 mt-5 text-orange-500 text-tiny px-4 py-2 rounded-md"
-      >
-        <b class="font-medium"> Note:</b> Once you set the currency, you can't
-        update it.
-      </div>
-    </div>
     <div
-      class="grid sm:grid-cols-2 grid-cols-1 xl:my-6 my-3 xl:px-10 px-5 2xl:gap-40 xl:gap-28 sm:gap-14 gap-1"
+      class="grid sm:grid-cols-2 grid-cols-1 xl:mt-6 mb-3 mt-6 xl:px-10 px-5 2xl:gap-x-40 xl:gap-x-28 sm:gap-x-14 gap-x-1 gap-y-3"
+    >
+    <div>
+     <div
+          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
+        >
+          <div class="xl:col-span-12 md:col-span-12 col-span-12">
+            <div class="bg-orange-50 text-orange-500 text-xs px-3 py-2 rounded-md md:mb-2">
+              <b class="font-medium">Note:</b> Once you set the currency, you can't update it.
+            </div>
+          </div>
+      </div>
+      </div>
+      <div>
+         <div
+          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
+        >
+          <div class="xl:col-span-12 md:col-span-12 col-span-12">
+            <div class="bg-blue-50 text-blue-600 text-xs px-3 py-2 rounded-md md:mb-2">
+              <b class="font-medium">Note:</b> Select a currency format, or use billing country format by default.
+            </div>
+          </div>
+          </div>
+      </div>
+  </div>
+    <div
+      class="grid sm:grid-cols-2 grid-cols-1 xl:mb-6 mt-3 xl:px-10 px-5 2xl:gap-x-40 xl:gap-x-28 sm:gap-x-14 gap-x-1 gap-y-3"
     >
       <div>
         <div
           class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
         >
           <div
-            class="xl:col-span-6 2xl:col-span-5 items-center flex gap-1 sm:col-span-3 col-span-12"
+            class="xl:col-span-6 2xl:col-span-5 items-center flex gap-1 col-span-12"
           >
             <label
               class="font-medium text-nowrap text-tiny after:content-['*'] after:text-red-500"
@@ -363,7 +381,8 @@
               info
             </span>
           </div>
-          <div class="2xl:col-span-7 xl:col-span-6 sm:col-span-8 col-span-12">
+          <div class="2xl:col-span-7 xl:col-span-6 col-span-12">
+            
             <select
               id="currency"
               name="currency"
@@ -398,10 +417,63 @@
       </div>
       <div>
         <div
-          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 mt-2 sm:gap-x-3 gap-2"
+          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
         >
           <div
-            class="xl:col-span-5 2xl:col-span-4 items-center flex gap-1 sm:col-span-x-3 col-span-12"
+            class="xl:col-span-5 2xl:col-span-4 items-center flex gap-1 sm:col-span-3 col-span-12"
+          >
+            <label class="font-medium text-nowrap text-tiny">
+              Currency Format
+            </label>
+            <span
+              v-tooltip="
+                `Select a Currency Format (locale) for number/currency display. If not selected, billing country locale will be used automatically.`
+              "
+              :class="[
+                isLightColor ? 'text-custom-700' : 'text-custom-500',
+                'material-symbols-outlined text-[16px] cursor-pointer',
+              ]"
+            >
+              info
+            </span>
+          </div>
+          <div class="2xl:col-span-8 xl:col-span-7 sm:col-span-8 col-span-12">
+            
+            <select
+              id="currency_locale"
+              v-model="billingDetails.currency_locale"
+              class="block w-full rounded-md border border-neutral-300 focus:border-neutral-300 py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
+            >
+              <option value="">Auto (based on Billing Country)</option>
+              <option
+                :value="locale.locale"
+                v-for="locale in sortedLocaleOptions"
+                :key="locale.locale"
+              >
+                {{ locale.country.name }} ({{ locale.locale }})
+              </option>
+            </select>
+          </div>
+        </div>
+        <div
+          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-1 items-center"
+        >
+          <div
+            class="xl:col-span-5 2xl:col-span-4 items-center flex gap-1 sm:col-span-3 col-span-12"
+          ></div>
+          <div class="2xl:col-span-8 xl:col-span-7 sm:col-span-8 col-span-12">
+            <small id="currency_locale_message" class="text-gray-500 text-xs">
+              Example: {{ currencyFormatExample }}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="grid xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-x-3 gap-2"
+        >
+          <div
+            class="2xl:col-span-5 xl:col-span-6 items-center flex gap-1 sm:col-span-3 col-span-12"
           >
             <label
               class="font-medium text-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
@@ -420,7 +492,7 @@
               info
             </span>
           </div>
-          <div class="xl:col-span-5 2xl:col-span-6 col-span-9">
+          <div class="2xl:col-span-7 xl:col-span-6 sm:col-span-8 col-span-12">
             <div class="flex flex-row 2xl:flex-row 2xl:gap-10 gap-5 w-full">
               <div class="flex items-center">
                 <input
@@ -830,6 +902,7 @@ export default {
           { name: "Settings" }],
       },
       currencies: [],
+      localeOptions: [],
       countries: [],
       processing: false,
       showLoader: false,
@@ -860,6 +933,7 @@ export default {
         due_days: "",
         currency: "",
         currency_symbol: "",
+        currency_locale: "",
         invoice_prefix: "",
         refund_period: "",
         retention_period: "",
@@ -882,16 +956,65 @@ export default {
       );
       return country ? country.states : [];
     },
+    sortedLocaleOptions() {
+      return [...this.localeOptions].sort((a, b) =>
+        (a.country?.name || "").localeCompare(b.country?.name || "")
+      );
+    },
+    effectiveCurrencyLocale() {
+      if (this.billingDetails.currency_locale) {
+        return this.billingDetails.currency_locale;
+      }
+
+      if (!this.billingDetails.country_code) {
+        return "en-US";
+      }
+
+      return this.resolveLocaleFromCountryCode(this.billingDetails.country_code);
+    },
+    currencyFormatExample() {
+      try {
+        const currencyCode = this.billingDetails.currency || "USD";
+        const formattedAmount = new Intl.NumberFormat(this.effectiveCurrencyLocale, {
+          style: "currency",
+          currency: currencyCode,
+          currencyDisplay: "code",
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        }).format(123456.789);
+
+        return formattedAmount.replace(currencyCode, this.currencySymbol).replace(/\s+/g, "");
+      } catch (error) {
+        return "$123,456.789";
+      }
+    },
   },
   mounted() {
     this.fetchBillingManagement();
     this.fetchCurrency();
+    this.fetchLocales();
     this.getCountries();
   },
   methods: {
     addTax() {
       let obj = { name: "", value: "" };
       this.billingDetails.tax_numbers.push(obj);
+    },
+    resolveLocaleFromCountryCode(countryCode) {
+      const matchedLocale = this.localeOptions.find(
+        (locale) => locale.country?.code === countryCode
+      );
+      return matchedLocale ? matchedLocale.locale : "en-US";
+    },
+    async fetchLocales() {
+      await this.$axios
+        .get(`/locales`)
+        .then(({ data }) => {
+          this.localeOptions = data.locales;
+        })
+        .catch(({ response }) => {
+          this.$toast.error(response.data.message);
+        });
     },
 
     removeTax(index) {
@@ -963,6 +1086,7 @@ export default {
             this.billingDetails = {
               ...data.billingDetail,
               tax_numbers: this.billingDetails.tax_numbers,
+              currency_locale: data.billingDetail.currency_locale || "",
             };
             if (
               data.billingDetail.currency !== "" &&

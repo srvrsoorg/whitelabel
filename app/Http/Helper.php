@@ -129,12 +129,12 @@ class Helper
 	            // Check billing exists
 	            if (BillingDetail::exists()) {
 					// Fetch the necessary fields in one query
-					$billingDetail = BillingDetail::select('currency', 'currency_symbol', 'country_code')->first();
+					$billingDetail = BillingDetail::select('currency', 'currency_symbol', 'country_code', 'currency_locale')->first();
 					
 					// Assign values to site settings
 					$siteSetting->currency = $billingDetail->currency;
 					$siteSetting->currency_symbol = $billingDetail->currency_symbol;
-					$siteSetting->locale = Locale::get($billingDetail->country_code);
+					$siteSetting->locale = $billingDetail->currency_locale ?: Locale::get($billingDetail->country_code);
 				} else {
 					// Assign values to site settings
 					$siteSetting->currency = "USD";

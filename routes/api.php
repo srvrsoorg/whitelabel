@@ -32,6 +32,7 @@ Route::controller(PublicController::class)->group(function () {
     Route::get('/verify/{token}', 'verify'); // Verify Email
     Route::get("/countries", "countries");
     Route::get("/currencies","currencies");
+    Route::get("/locales","locales");
 });
 
 Route::controller(SiteSettingController::class)->group(function () {

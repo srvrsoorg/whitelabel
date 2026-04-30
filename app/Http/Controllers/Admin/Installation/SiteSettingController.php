@@ -372,6 +372,7 @@ class SiteSettingController extends Controller
             'retention_period' => 'required|integer|max:30',
             'currency' => 'required|string|max:255',
             'currency_symbol' => 'required|string|max:255',
+            'currency_locale' => 'nullable|string|max:20',
             'tax_numbers' => [
                 "nullable",
                 "array",
@@ -432,6 +433,7 @@ class SiteSettingController extends Controller
             $billingDetail->minimum_recharge_amount = $request->minimum_recharge_amount;
             $billingDetail->due_days = $request->due_days;
             $billingDetail->retention_period = $request->retention_period;
+            $billingDetail->currency_locale = $request->currency_locale;
 
             // Save the Billing Details
             $billingDetail->save();

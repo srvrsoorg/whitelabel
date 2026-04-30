@@ -34,7 +34,8 @@ class BillingDetail extends Model
         'due_days',
         'retention_period',
         'currency',
-        'currency_symbol'
+        'currency_symbol',
+        'currency_locale'
     ]; 
 
     /**

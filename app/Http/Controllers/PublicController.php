@@ -565,4 +565,35 @@ class PublicController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Retrieve the available locales.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function locales()
+    {
+        try {
+            $path = base_path('config/locales.json');
+
+            if (!File::exists($path)) {
+                return response()->json([
+                    'message' => 'Locale file not found!'
+                ], 404);
+            }
+
+            $json = File::get($path);
+            $locales = json_decode($json, true);
+
+            return response()->json([
+                'locales' => $locales
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'message' => $e->getMessage() ? $e->getMessage() : 'Something went wrong!'
+            ], 500);
+        }
+    }
 }
