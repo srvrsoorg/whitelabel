@@ -7,13 +7,13 @@
     <b class="font-medium">Auto Recharge Note:</b> Enable Stripe payment gateway to allow auto recharge. Indian users (billing country India) cannot enable auto recharge due to RBI recurring payment rules.
   </div>
   <div class="my-5">
+    <PaymentConf :provider="stripe" @updateValue="fetchData()"></PaymentConf>
+  </div>
+  <div class="my-5">
     <PaymentConf :provider="razorpay" @updateValue="fetchData()"></PaymentConf>
   </div>
   <div class="my-5">
     <PaymentConf :provider="paypal" @updateValue="fetchData()"></PaymentConf>
-  </div>
-  <div class="my-5">
-    <PaymentConf :provider="stripe" @updateValue="fetchData()"></PaymentConf>
   </div>
   <div class="my-5">
     <PaymentConf :provider="cashfree" @updateValue="fetchData()"></PaymentConf>

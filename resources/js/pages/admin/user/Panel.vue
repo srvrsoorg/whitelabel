@@ -79,7 +79,7 @@
             v-if="!isOwnAccount"
             class="inline-block"
             :class="{ 'cursor-not-allowed': isLoginDisabled }"
-            v-tooltip="loginDisabledTooltip"
+            v-tooltip="loginTooltip"
           >
             <button
               @click="switchAccount()"
@@ -189,6 +189,11 @@ export default {
       if (this.user.status === "banned") return "You cannot login to a banned user account.";
       if (this.user.status === "locked") return "You cannot login to a locked user account.";
       return "";
+    },
+    loginTooltip() {
+      if (!this.user) return "";
+      if (this.isLoginDisabled) return this.loginDisabledTooltip;
+      return `Login as ${this.user.email}`;
     },
     isDeleteDisabled() {
       if (!this.user) return true;

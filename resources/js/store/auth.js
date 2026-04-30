@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import axios from '@/plugins/axios'
 import toast from '@/plugins/toast-notification'
 
 export const useAuthStore = defineStore({
@@ -43,6 +42,7 @@ export const useAuthStore = defineStore({
             this.switched_from_admin = false
         },
         async getUser(){
+            const { default: axios } = await import('@/plugins/axios')
             await axios.get('/me').then(({data}) => {
                 this.user = data.user
             }).catch(({ response:{data} }) => {

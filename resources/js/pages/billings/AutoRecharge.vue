@@ -133,6 +133,10 @@
           </div>
 
           <Button class="w-full sm:w-auto mt-4 px-5 py-2.5 text-sm font-medium" :disabled="savingSettings" @click="saveSettings">
+            <i
+              v-if="savingSettings"
+              class="fa-solid fa-circle-notch fa-spin mr-1 self-center inline-flex"
+            ></i>
             {{ savingSettings ? "Please Wait" : "Save Settings" }}
           </Button>
         </template>

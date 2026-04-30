@@ -73,7 +73,7 @@
                   },
                 }"
               >
-                <td
+                <div
                   class="whitespace-nowrap truncate text-tiny font-medium max-w-[200px]"
                 >
                   <span v-tooltip="admin_transaction.user.name">
@@ -83,10 +83,10 @@
                         : "-"
                     }}
                   </span>
-                </td>
+                </div>
               </router-link>
 
-              <td
+              <div
                 class="whitespace-nowrap text-gray-500 truncate items-center max-w-[150px]"
               >
                 <div class="flex items-center">
@@ -107,7 +107,7 @@
                     content_copy
                   </span>
                 </div>
-              </td>
+              </div>
             </div>
           </div>
           <span v-else>-</span>
