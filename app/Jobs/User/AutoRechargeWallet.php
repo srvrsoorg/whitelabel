@@ -95,7 +95,6 @@ class AutoRechargeWallet implements ShouldQueue
 
             $companyBillingDetails = BillingDetail::first();
             $billingDetail = $user->billingDetail;
-            $countryCode = strtoupper((string) $user->getCountryCodeValue());
             $baseAmount = round((float) $user->auto_recharge_amount, 3);
             Log::info('Auto recharge job amount prepared.', [
                 'user_id' => $user->id,
@@ -146,57 +145,13 @@ class AutoRechargeWallet implements ShouldQueue
             $currency = Helper::currency()['currency'];
             $finalAmount = (int) round((float) $transaction->final_amount * 100);
 
-            if (
-                $countryCode === 'IN' &&
-                (
-                    !$billingDetail ||
-                    empty($billingDetail->name) ||
-                    empty($billingDetail->address) ||
-                    empty($billingDetail->city) ||
-                    empty($billingDetail->region) ||
-                    empty($billingDetail->postal_code) ||
-                    empty($billingDetail->country_code)
-                )
-            ) {
-                $transaction->update(['status' => 0]);
-                $this->sendFailureEmail($user, 'For Indian cards, billing name and complete address are required. Please update Billing Details and try again.');
-                Log::warning('Auto recharge blocked: missing India export billing details.', [
-                    'user_id' => $user->id,
-                    'transaction_id' => $transaction->id,
-                ]);
-                return;
-            }
-
-            // Keep Stripe customer profile updated for compliant off-session charges.
-            $billingCountryCode = strtoupper((string) (($billingDetail && $billingDetail->country_code) ? $billingDetail->country_code : $user->getCountryCodeValue()));
-            $billingName = ($billingDetail && $billingDetail->name) ? $billingDetail->name : $user->name;
-            $billingEmail = ($billingDetail && $billingDetail->email) ? $billingDetail->email : $user->email;
-            $billingLine1 = $billingDetail ? $billingDetail->address : null;
-            $billingCity = $billingDetail ? $billingDetail->city : null;
-            $billingState = $billingDetail ? $billingDetail->region : null;
-            $billingPostalCode = $billingDetail ? $billingDetail->postal_code : null;
-
-            if ($billingDetail) {
-                $user->updateStripeCustomer([
-                    'name' => $billingName,
-                    'email' => $billingEmail,
-                    'address' => [
-                        'line1' => $billingLine1,
-                        'city' => $billingCity,
-                        'state' => $billingState,
-                        'postal_code' => $billingPostalCode,
-                        'country' => $billingCountryCode,
-                    ],
-                ]);
-            }
-
             Log::info('Auto recharge Stripe charge initiated.', [
                 'user_id' => $user->id,
                 'transaction_id' => $transaction->id,
                 'charge_amount_minor' => $finalAmount,
                 'currency' => $currency,
             ]);
-            $payment = $user->stripe()->paymentIntents->create([
+            $paymentIntentPayload = [
                 'amount' => $finalAmount,
                 'currency' => $currency,
                 'customer' => $user->stripe_id,
@@ -205,21 +160,13 @@ class AutoRechargeWallet implements ShouldQueue
                 'confirm' => true,
                 'description' => 'Auto recharge wallet credits',
                 'receipt_email' => $user->email,
-                'shipping' => [
-                    'name' => $billingName,
-                    'address' => [
-                        'line1' => $billingLine1,
-                        'city' => $billingCity,
-                        'state' => $billingState,
-                        'postal_code' => $billingPostalCode,
-                        'country' => $billingCountryCode,
-                    ],
-                ],
                 'automatic_payment_methods' => [
                     'enabled' => true,
                     'allow_redirects' => 'never',
                 ],
-            ]);
+            ];
+
+            $payment = $user->stripe()->paymentIntents->create($paymentIntentPayload);
 
             if (!in_array($payment->status, ['succeeded', 'processing'])) {
                 $transaction->update(['status' => 0]);

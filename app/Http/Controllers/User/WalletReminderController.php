@@ -72,6 +72,18 @@ class WalletReminderController extends Controller
 
             $enabled = (bool) $request->auto_recharge_enabled;
             $gateway = $request->auto_recharge_payment_gateway;
+            $isIndiaUser = strtoupper((string) $user->getCountryCodeValue()) === 'IN';
+
+            if ($enabled && $isIndiaUser) {
+                return response()->json([
+                    'message' => 'Auto recharge is currently unavailable for users in India.',
+                    'errors' => [
+                        'auto_recharge_enabled' => [
+                            'Auto recharge is currently unavailable for users in India.',
+                        ],
+                    ],
+                ], 422);
+            }
 
             if ($enabled) {
                 $missingErrors = [];
@@ -101,19 +113,6 @@ class WalletReminderController extends Controller
                     ], 422);
                 }
 
-                // Billing details API already validates required fields, so only ensure it exists.
-                if (strtoupper((string) $user->getCountryCodeValue()) === 'IN') {
-                    if (!$user->billingDetail) {
-                        return response()->json([
-                            'message' => 'Billing details are required before enabling auto recharge.',
-                            'errors' => [
-                                'auto_recharge_enabled' => [
-                                    'Please add billing details first.',
-                                ],
-                            ],
-                        ], 422);
-                    }
-                }
             }
 
             $user->update([
@@ -162,11 +161,6 @@ class WalletReminderController extends Controller
                 'customer' => $user->stripe_id,
                 'payment_method_types' => ['card'],
                 'mode' => 'setup',
-                'billing_address_collection' => 'required',
-                'customer_update' => [
-                    'name' => 'auto',
-                    'address' => 'auto',
-                ],
                 'success_url' => url(config('app.url') . '/billing/auto-recharge?setup_status=success&session_id={CHECKOUT_SESSION_ID}'),
                 'cancel_url' => url(config('app.url') . '/billing/auto-recharge?setup_status=cancelled'),
                 'metadata' => [
