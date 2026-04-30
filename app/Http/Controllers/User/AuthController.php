@@ -22,6 +22,7 @@ class AuthController extends Controller
         try {
             // Get the authenticated user
             $user = auth()->user();
+            $user->effective_country_code = $user->getCountryCodeValue();
 
             // Return user details in JSON response
             return response()->json(['user' => $user], 200);

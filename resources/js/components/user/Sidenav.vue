@@ -90,6 +90,8 @@ import {
   Dialog,
   DialogPanel,
 } from "@headlessui/vue";
+import { mapState } from "pinia";
+import { useAuthStore } from "@/store/auth";
 import SidebarItems from "./SidebarItems.vue";
 import sideMenu from "@/sideMenu/sidebarList";
 export default {
@@ -109,8 +111,21 @@ export default {
       enabledPaymentProviders: [],
     };
   },
+  computed: {
+    ...mapState(useAuthStore, ["user"]),
+    isIndiaUser() {
+      return (
+        this.user?.effective_country_code ||
+        this.user?.country_code ||
+        ""
+      ).toUpperCase() === "IN";
+    },
+  },
   watch: {
     $route() {
+      this.changeMenuLinks();
+    },
+    "user.country_code"() {
       this.changeMenuLinks();
     },
   },
@@ -135,8 +150,14 @@ export default {
       const isStripeEnabled = this.enabledPaymentProviders.includes("Stripe");
 
       this.menuList = links.map((item) => {
-        if (item.name === "Billing" && Array.isArray(item.children) && !isStripeEnabled) {
-          item.children = item.children.filter((child) => child.url !== "/billing/auto-recharge");
+        if (
+          item.name === "Billing" &&
+          Array.isArray(item.children) &&
+          (!isStripeEnabled || this.isIndiaUser)
+        ) {
+          item.children = item.children.filter(
+            (child) => child.url !== "/billing/auto-recharge"
+          );
         }
         return item;
       });

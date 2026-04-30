@@ -287,8 +287,19 @@ export default {
     stripeEnabled() {
       return this.paymentGateways.includes("Stripe");
     },
+    isIndiaUser() {
+      return (
+        this.user?.effective_country_code ||
+        this.user?.country_code ||
+        ""
+      ).toUpperCase() === "IN";
+    },
   },
   created() {
+    this.redirectIfIndiaUser();
+    if (this.isIndiaUser) {
+      return;
+    }
     this.initFromUser();
     this.fetchProviders();
     this.fetchPaymentMethodStatus();
@@ -318,6 +329,11 @@ export default {
           this.providersFetched = true;
           this.fetchingProviders = false;
         });
+    },
+    redirectIfIndiaUser() {
+      if (this.isIndiaUser) {
+        this.$router.replace({ name: "wallet" });
+      }
     },
     saveSettings() {
       this.savingSettings = true;

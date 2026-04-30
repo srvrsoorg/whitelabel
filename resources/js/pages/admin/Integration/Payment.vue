@@ -3,6 +3,9 @@
   <div class="">
     <span class="text-[#31363f] text-xl font-medium">Payment Integration</span>
   </div>
+  <div class="my-5 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+    <b class="font-medium">Auto Recharge Note:</b> Enable Stripe payment gateway to allow auto recharge. Indian users (billing country India) cannot enable auto recharge due to RBI recurring payment rules.
+  </div>
   <div class="my-5">
     <PaymentConf :provider="razorpay" @updateValue="fetchData()"></PaymentConf>
   </div>
