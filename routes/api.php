@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/user/logout', 'logout');
         Route::post('/user/delete', 'delete');
         Route::patch('/user/confirmation-timer', 'updateConfirmationTimer');
+        Route::post('/user/switch-back-to-admin', 'switchBackToAdmin');
     });
     Route::get('user/resend-verification-link', [PublicController::class, 'resendVerificationLink']);
 });

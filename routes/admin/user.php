@@ -26,6 +26,7 @@ Route::middleware(['auth:sanctum', 'adminOnly'])->prefix('/admin')->group(functi
         Route::patch('/{user}','update'); // Update a user
         Route::delete('/{user}','destory'); // Delete a user
         Route::post('/{user}/status-update/{action}', 'updateUserStatus'); // Update a user status 
+        Route::post('/{user}/switch-account', 'switchAccount'); // Switch to a user account
     }); 
 
     Route::controller(UsageSummaryController::class)->prefix('users/{user}')->group(function () {

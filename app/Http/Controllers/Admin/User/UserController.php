@@ -331,4 +331,55 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Switch the admin session to a customer account.
+     *
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function switchAccount(User $user)
+    {
+        try {
+            $admin = auth()->user();
+
+            if ($admin->id === $user->id) {
+                return response()->json([
+                    'message' => "You are already logged in with this account."
+                ], 422);
+            }
+
+            if ($user->isSuperAdmin()) {
+                return response()->json([
+                    'message' => "You cannot switch into an admin account."
+                ], 422);
+            }
+
+            if (in_array($user->status, [UserStatusEnum::BANNED(), UserStatusEnum::LOCKED()])) {
+                return response()->json([
+                    'message' => "You cannot switch into a {$user->status} account."
+                ], 422);
+            }
+
+            $token = $user->createToken('switched_by_admin:' . $admin->id)->plainTextToken;
+
+            $user['is_admin'] = false;
+            $user['switched_from_admin'] = true;
+
+            // Store Activity
+            Helper::adminActivity($admin, 'User', 'Switch', 'Switched into user (#' . $user->id . ') account.');
+
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+                'tokenType' => 'Bearer',
+                'message' => "Switched to {$user->email} account successfully."
+            ], 200);
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json([
+                'message' => "Something went really wrong!"
+            ], 500);
+        }
+    }
 }

@@ -178,21 +178,11 @@
             </div>
           </div>
         </div>
-        <router-link
-          v-if="user && is_admin"
-          :to="{
-            name: 'adminDashboard',
-          }"
-          :exact-active-class="[
-            showNarrowSidebar
-              ? isLightColor
-                ? ' !text-custom-700 border-r-4 border-custom-700 !px-6'
-                : ' !text-custom-500 border-r-4 border-custom-500 !px-6'
-              : isLightColor
-              ? ' !text-custom-700 !pr-5 [&_div>p]:bg-custom-700'
-              : ' !text-custom-500  !pr-5 [&_div>p]:bg-custom-500',
-          ]"
-          class="text-[#31363F] group w-full flex justify-between items-center pb-3 px-6 text-tiny font-medium"
+        <button
+          v-if="user && (is_admin || switched_from_admin)"
+          @click="switchToAdmin()"
+          class="w-full text-[#31363F] group flex justify-between items-center pb-3 px-6 text-tiny font-medium disabled:pointer-events-none disabled:opacity-60"
+          :disabled="switchingToAdmin"
         >
           <div class="flex items-center gap-3" v-if="user">
             <span
@@ -201,11 +191,11 @@
                 isLightColor ? 'text-custom-700' : 'text-custom-500',
               ]"
             >
-              step_over
+              {{ adminSwitchIcon }}
             </span>
-            Switch to Admin
+            {{ switchingToAdmin ? "Please wait..." : adminSwitchLabel }}
           </div>
-        </router-link>
+        </button>
         <button
           @click="logout"
           class="w-full flex items-center gap-3 text-tiny font-medium px-7 text-[#31363F]"
@@ -221,7 +211,6 @@
 </template>
 <script>
 import { useAuthStore } from "@/store/auth";
-import { mapState, mapActions } from "pinia";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
 export default {
@@ -237,7 +226,9 @@ export default {
     DisclosurePanel,
   },
   data() {
-    return {};
+    return {
+      switchingToAdmin: false,
+    };
   },
   computed: {
     user() {
@@ -245,6 +236,15 @@ export default {
     },
     is_admin() {
       return this.authStore.is_admin;
+    },
+    switched_from_admin() {
+      return this.authStore.switched_from_admin;
+    },
+    adminSwitchLabel() {
+      return this.switched_from_admin ? "Return to Admin" : "Switch to Admin";
+    },
+    adminSwitchIcon() {
+      return this.switched_from_admin ? "switch_account" : "step_over";
     },
   },
   watch: {
@@ -295,6 +295,28 @@ export default {
     },
     backServer() {
       this.$router.push({ path: "/" });
+    },
+    async switchToAdmin() {
+      if (this.is_admin) {
+        this.$router.push({ name: "adminDashboard" });
+        return;
+      }
+
+      this.switchingToAdmin = true;
+
+      await this.$axios
+        .post("/user/switch-back-to-admin")
+        .then(({ data }) => {
+          this.authStore.applySession({ token: data.token, user: data.user });
+          this.$toast.success(data.message);
+          this.$router.push({ name: "adminDashboard" });
+        })
+        .catch(({ response }) => {
+          this.$toast.error(response.data.message);
+        })
+        .finally(() => {
+          this.switchingToAdmin = false;
+        });
     },
     async logout() {
       await this.$axios

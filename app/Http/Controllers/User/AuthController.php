@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Helper;
+use App\Models\User;
+use App\Enums\UserStatus as UserStatusEnum;
 use DB;
 
 class AuthController extends Controller
@@ -253,6 +255,64 @@ class AuthController extends Controller
             // ❌ Error response for exceptions
             return response()->json([
                 'message' => 'Something went wrong while updating confirmation timer!'
+            ], 500);
+        }
+    }
+
+    /**
+     * Switch back to the original admin account from a switched session.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function switchBackToAdmin()
+    {
+        try {
+            $currentUser = auth()->user();
+            $currentToken = $currentUser->currentAccessToken();
+            $tokenName = $currentToken?->name ?? '';
+            $prefix = 'switched_by_admin:';
+
+            if (!str_starts_with($tokenName, $prefix)) {
+                return response()->json([
+                    'message' => 'This session is not switched from an admin account.'
+                ], 422);
+            }
+
+            $adminId = (int) str_replace($prefix, '', $tokenName);
+            $admin = User::find($adminId);
+
+            if (!$admin || !$admin->isSuperAdmin()) {
+                return response()->json([
+                    'message' => 'Admin account not found for switch back.'
+                ], 404);
+            }
+
+            if (in_array($admin->status, [UserStatusEnum::BANNED(), UserStatusEnum::LOCKED()])) {
+                return response()->json([
+                    'message' => "Admin account is {$admin->status}. Unable to switch back."
+                ], 422);
+            }
+
+            $currentToken->delete();
+            $admin->storeLogin();
+
+            $token = $admin->createToken('auth_token')->plainTextToken;
+            $admin['is_admin'] = true;
+            $admin['switched_from_admin'] = false;
+
+            // Store Activity
+            Helper::adminActivity($admin, 'User', 'Switch', 'Switched back from user (#' . $currentUser->id . ') account.');
+
+            return response()->json([
+                'user' => $admin,
+                'token' => $token,
+                'tokenType' => 'Bearer',
+                'message' => 'Switched back to admin account successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json([
+                'message' => 'Something went really wrong!'
             ], 500);
         }
     }

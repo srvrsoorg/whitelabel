@@ -41,25 +41,24 @@
               </DisclosureButton>
               <DisclosurePanel class="space-y-3">
                 <DisclosureButton
-                  v-if="is_admin"
+                  v-if="is_admin || switched_from_admin"
                   as="a"
                   class="group flex w-full justify-center items-center rounded-md text-tiny font-medium text-gray-600"
                 >
-                  <router-link
-                    v-tooltip.right="'Admin'"
-                    :to="{
-                      name: 'adminDashboard',
-                    }"
+                  <button
+                    @click="switchToAdmin"
+                    v-tooltip.right="adminSwitchLabel"
                     :class="[
                       textColorClass,
                       sidebarHoverLinks,
                       'hover:bg-custom-100 group w-full flex items-center justify-center px-2 py-3 text-tiny font-medium rounded-md',
                     ]"
+                    :disabled="switchingToAdmin"
                   >
                     <span class="material-symbols-outlined text-[22px]">
-                      person_4
+                      {{ adminSwitchIcon }}
                     </span>
-                  </router-link>
+                  </button>
                 </DisclosureButton>
                 <DisclosureButton
                   as="a"
@@ -115,16 +114,48 @@ export default {
         },
       ],
       menuList: [],
+      switchingToAdmin: false,
     };
   },
   created() {
     this.menuList = sideMenu;
   },
   computed: {
-    ...mapState(useAuthStore, ["user", "is_admin"]),
+    ...mapState(useAuthStore, ["user", "is_admin", "switched_from_admin"]),
+    adminSwitchLabel() {
+      return this.switched_from_admin ? "Return to Admin" : "Switch to Admin";
+    },
+    adminSwitchIcon() {
+      return this.switched_from_admin ? "switch_account" : "person_4";
+    },
   },
   methods: {
-    ...mapActions(useAuthStore, ["authLogout"]),
+    ...mapActions(useAuthStore, [
+      "authLogout",
+      "applySession",
+    ]),
+    async switchToAdmin() {
+      if (this.is_admin) {
+        this.$router.push({ name: "adminDashboard" });
+        return;
+      }
+
+      this.switchingToAdmin = true;
+
+      await this.$axios
+        .post("/user/switch-back-to-admin")
+        .then(({ data }) => {
+          this.applySession({ token: data.token, user: data.user });
+          this.$toast.success(data.message);
+          this.$router.push({ name: "adminDashboard" });
+        })
+        .catch(({ response }) => {
+          this.$toast.error(response.data.message);
+        })
+        .finally(() => {
+          this.switchingToAdmin = false;
+        });
+    },
     async logout() {
       await this.$axios
         .get("/user/logout")
