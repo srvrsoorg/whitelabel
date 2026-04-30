@@ -166,19 +166,28 @@
       </div>
 
       <div class="py-1 md:col-span-1 col-span-3">
-        <label
-          for="rate"
-          class="text-tiny font-medium after:content-['*'] after:ml-0.5 after:text-red-500"
-          >Customer Type
-        </label>
+        <div class="flex items-center gap-1">
+          <label
+            for="rate"
+            class="text-tiny font-medium after:content-['*'] after:ml-0.5 after:text-red-500"
+            >Customer Type
+          </label>
+          <span
+            v-tooltip="`All Customers: everyone can use this code.
+New Customers Only: users who signed up within the last 30 days and have not used any promo code yet.`"
+            class="material-symbols-outlined text-[16px] text-gray-500 cursor-pointer"
+          >
+            info
+          </span>
+        </div>
         <select
           v-model="promoCode.customer_type"
           id="type"
           name="type"
           class="w-full mt-2 block rounded-md border border-primary focus:border-primary py-1.5 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
         >
-          <option value="all_customer">For All Customers</option>
-          <option value="new_customer">For New Customers Only</option>
+          <option value="all_customer">All Customers</option>
+          <option value="new_customer">New Customers Only</option>
         </select>
         <small
           class="text-red-500 text-xs error_message"
