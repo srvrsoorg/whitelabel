@@ -10,6 +10,14 @@ Currently, your available credits are **${{ $availableCredits }}**. To prevent a
 Add Credits
 @endcomponent
 
+@if (strtoupper((string) $user->getCountryCodeValue()) !== 'IN')
+You can also set up auto recharge so credits are added automatically when balance drops.
+
+@component('mail::button', ['url' => url('/billing/auto-recharge'), 'color' => 'primary'])
+Setup Auto Recharge
+@endcomponent
+@endif
+
 Keeping a sufficient balance ensures smooth server management and uninterrupted service.
 
 If you have any questions or need further assistance, please raise a [support ticket]({{ url('/tickets') }}) from your dashboard.

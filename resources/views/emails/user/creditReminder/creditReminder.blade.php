@@ -1,5 +1,6 @@
 @php
     $dueDate = \Carbon\Carbon::parse($creditReminders->first()->end_at)->format('Y-m-d')
+    $showAutoRechargeButton = strtoupper((string) $user->getCountryCodeValue()) !== 'IN';
 @endphp
 @component('mail::message')
 # Dear {{ $user->name }},
@@ -21,6 +22,14 @@ To add credits and proceed with the payment, click the button below. You will be
 @component('mail::button', ['url' => url('/billing/wallet')])
 Add Credits
 @endcomponent
+
+@if ($showAutoRechargeButton)
+You can also enable automatic top-ups to avoid service interruption in the future.
+
+@component('mail::button', ['url' => url('/billing/auto-recharge')])
+Setup Auto Recharge
+@endcomponent
+@endif
 
 If you have any questions or need further assistance, please raise a [support ticket]({{ url('/tickets') }}) from your dashboard.
 
