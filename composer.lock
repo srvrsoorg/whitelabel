@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b666eedc3d432326addc203d3342b58a",
+    "content-hash": "3746972543c95969141cad6a4873d2aa",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -2605,89 +2605,6 @@
                 }
             ],
             "time": "2024-09-21T08:32:55+00:00"
-        },
-        {
-            "name": "lemonsqueezy/laravel",
-            "version": "1.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lmsqueezy/laravel.git",
-                "reference": "1e189f32e9f607ed239550d1e0aca47c7f6f31d6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lmsqueezy/laravel/zipball/1e189f32e9f607ed239550d1e0aca47c7f6f31d6",
-                "reference": "1e189f32e9f607ed239550d1e0aca47c7f6f31d6",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^7.0",
-                "laravel/framework": "^10.0|^11.0",
-                "laravel/prompts": "^0.1|^0.2|^0.3",
-                "moneyphp/money": "^4.0",
-                "nesbot/carbon": "^2.0|^3.0",
-                "php": "~8.1.0|~8.2.0|~8.3.0|~8.4.0"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.20",
-                "orchestra/testbench": "^8.0|^9.0",
-                "pestphp/pest": "^2.0|^3.0",
-                "phpstan/phpstan": "^2.1",
-                "roave/security-advisories": "dev-latest"
-            },
-            "suggest": {
-                "ext-intl": "Allows for more locales besides the default \"en\" when formatting money values."
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "LemonSqueezy\\Laravel\\LemonSqueezyServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-main": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "LemonSqueezy\\Laravel\\": "src/",
-                    "LemonSqueezy\\Laravel\\Database\\Factories\\": "database/factories/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dries Vints",
-                    "homepage": "https://driesvints.com"
-                },
-                {
-                    "name": "Steve McDougall",
-                    "email": "juststevemcd@gmail.com",
-                    "homepage": "https://juststeveking.link",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "A package to easily integrate your Laravel application with Lemon Squeezy.",
-            "keywords": [
-                "billing",
-                "laravel",
-                "lemon squeezy"
-            ],
-            "support": {
-                "issues": "https://github.com/lmsqueezy/laravel/issues",
-                "source": "https://github.com/lmsqueezy/laravel"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/juststeveking",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-02-13T11:31:48+00:00"
         },
         {
             "name": "moneyphp/money",

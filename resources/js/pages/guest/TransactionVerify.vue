@@ -56,7 +56,7 @@ export default {
                 }
             }else if(this.transaction.payment_gateway === 'LemonSqueezy'){
                 params = {
-                    order_number: this.$route.query.order_number ?? null
+                    identifier: this.$route.query.identifier ?? null
                 }
             }
 

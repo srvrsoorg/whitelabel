@@ -364,6 +364,7 @@
             <option value="Razorpay">Razorpay</option>
             <option value="Stripe">Stripe</option>
             <option value="Cashfree">Cashfree</option>
+            <option value="Lemonsqueezy">Lemonsqueezy</option>
           </select>
           <small
             class="text-red-500 error_message text-xs"
