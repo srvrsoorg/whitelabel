@@ -18,6 +18,9 @@
   <div class="my-5">
     <PaymentConf :provider="cashfree" @updateValue="fetchData()"></PaymentConf>
   </div>
+  <div class="my-5">
+    <PaymentConf :provider="lemonsqueezy" @updateValue="fetchData()"></PaymentConf>
+  </div>
 </template>
 
 <script>
@@ -73,6 +76,15 @@ export default {
         isTestMode: true,
         processing: false,
       },
+      lemonsqueezy: {
+        provider: "Lemonsqueezy",
+        enabled: false,
+        client_id: "",
+        client_secret: "",
+        mode: "",
+        variant_id: "",
+        processing: false,
+      },
     };
   },
   methods: {
@@ -97,6 +109,8 @@ export default {
                     data.mode == "sandbox" ? true : false;
                 } else if (data.provider == "Stripe") {
                   this.stripe = data;
+                } else if (data.provider == "Lemonsqueezy") {
+                  this.lemonsqueezy = data;
                 }
               }
             });

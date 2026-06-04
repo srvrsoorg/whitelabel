@@ -54,7 +54,11 @@ export default {
                 params = {
                     session_id: this.$route.query.session_id
                 }
-            } 
+            }else if(this.transaction.payment_gateway === 'LemonSqueezy'){
+                params = {
+                    order_number: this.$route.query.order_number ?? null
+                }
+            }
 
             var redirectUrl = null
             if(this.authenticated){
