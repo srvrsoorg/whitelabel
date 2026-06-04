@@ -26,6 +26,12 @@
           :alt="app_name"
           class="w-28 h-auto"
         />
+        <img
+          v-if="payment.provider == 'Lemonsqueezy'"
+          src="/logo/lemon-squeezy.png"
+          :alt="app_name"
+          class="w-auto h-10"
+        />
       </div>
     </div>
     <div class="xl:col-span-10">
@@ -83,6 +89,14 @@
             </p>
           </div>
           <div
+            class="text-tiny p-3 rounded-md my-5 text-[#308DEA] bg-[#EFF6FF]"
+            v-if="payment.provider === 'Lemonsqueezy'"
+          >
+            <p>
+              <b class="font-medium">Note:</b> The Variant ID must be for a product with a <b class="font-medium">fixed price</b> — do <b class="font-medium">NOT</b> use "Let customers choose their price" (Pay What You Want). The amount entered by the user at checkout will automatically override the variant's price. Add your webhook URL <code class="bg-blue-100 px-1 rounded">{{ appUrl }}/api/lemon-squeezy/webhook</code> in your LemonSqueezy dashboard under Settings &rarr; Webhooks, and select the <b class="font-medium">order_created</b> event.
+            </p>
+          </div>
+          <div
             class="grid sm:grid-cols-2 grid-cols-1 my-5 mb-5 xl:gap-40 sm:gap-14 gap-1 "
           >
             <div>
@@ -95,7 +109,7 @@
                   <label
                     class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
                   >
-                    {{ payment.provider === 'Stripe' ? 'Publishable Key' : 'Client ID' }}
+                    {{ payment.provider === 'Stripe' ? 'Publishable Key' : payment.provider === 'Lemonsqueezy' ? 'API Key' : 'Client ID' }}
                   </label>
                 </div>
                 <div
@@ -137,7 +151,7 @@
                   <label
                     class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500"
                   >
-                    {{ payment.provider === 'Stripe' ? 'Secret Key' : 'Client Secret' }}
+                    {{ payment.provider === 'Stripe' ? 'Secret Key' : payment.provider === 'Lemonsqueezy' ? 'Webhook Secret' : 'Client Secret' }}
                   </label>
                 </div>
                 <div
@@ -162,10 +176,73 @@
                 <div
                   class="xl:col-span-8 2xl:col-span-9 md:grid-cols-4 sm:col-span-9 col-span-12"
                 >
-                  <small
-                    class="text-red-500 error_message text-xs"
-                    :id="`${payment.provider}_client_secret_message`"
-                  ></small>
+                  <div class="flex items-center justify-between">
+                    <small
+                      class="text-red-500 error_message text-xs"
+                      :id="`${payment.provider}_client_secret_message`"
+                    ></small>
+                    <button
+                      v-if="payment.provider === 'Lemonsqueezy'"
+                      type="button"
+                      @click="generateSecret"
+                      class="text-xs text-custom-500 hover:text-custom-700 flex items-center gap-1 whitespace-nowrap"
+                    >
+                      <span class="material-symbols-outlined text-[14px]">casino</span>
+                      Generate Secret (Signing secret)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 grid-cols-1 my-5 mb-5 xl:gap-40 sm:gap-14 gap-1" v-if="payment.provider === 'Lemonsqueezy'">
+            <div>
+              <div class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center">
+                <div class="xl:col-span-3 2xl:grid-cols-4 md:pt-0 pt-2 sm:col-span-3 col-span-12">
+                  <label class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500">
+                    Store ID
+                  </label>
+                </div>
+                <div class="xl:col-span-9 2xl:grid-cols-10 sm:col-span-8 col-span-12">
+                  <input
+                    v-model="payment.mode"
+                    type="text"
+                    name="mode"
+                    :id="`${payment.provider}_mode`"
+                    class="block w-full rounded-md border border-primary focus:border-primary py-2 text-gray-800 ring-gray-300 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
+                    placeholder="Enter Store ID"
+                  />
+                </div>
+              </div>
+              <div class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center">
+                <div class="xl:col-span-3 2xl:grid-cols-4 sm:col-span-3 col-span-12 hidden xl:block"></div>
+                <div class="xl:col-span-9 2xl:grid-cols-10 sm:col-span-8 col-span-12">
+                  <small class="text-red-500 error_message text-xs" :id="`${payment.provider}_mode_message`"></small>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center">
+                <div class="xl:col-span-4 2xl:col-span-3 md:pt-0 pt-2 sm:col-span-3 col-span-12">
+                  <label class="font-medium whitespace-nowrap text-tiny after:content-['*'] after:ml-0.5 after:text-red-500">
+                    Variant ID
+                  </label>
+                </div>
+                <div class="xl:col-span-8 2xl:col-span-9 md:grid-cols-4 sm:col-span-9 col-span-12">
+                  <input
+                    v-model="payment.variant_id"
+                    type="text"
+                    name="variant_id"
+                    :id="`${payment.provider}_variant_id`"
+                    class="block w-full rounded-md border border-primary focus:border-primary py-2 text-gray-800 placeholder:text-gray-400 text-sm leading-6 focus:ring-0"
+                    placeholder="Enter Variant ID"
+                  />
+                </div>
+              </div>
+              <div class="grid 2xl:grid-cols-12 xl:grid-cols-12 md:grid-cols-4 sm:grid-cols-1 grid-cols-12 sm:gap-3 gap-1 items-center">
+                <div class="xl:col-span-4 2xl:col-span-3 sm:col-span-3 col-span-12 xl:block hidden"></div>
+                <div class="xl:col-span-8 2xl:col-span-9 md:grid-cols-4 sm:col-span-9 col-span-12">
+                  <small class="text-red-500 error_message text-xs" :id="`${payment.provider}_variant_id_message`"></small>
                 </div>
               </div>
             </div>
@@ -280,7 +357,22 @@ export default {
       deep: true,
     },
   },
+  computed: {
+    appUrl() {
+      return window.location.origin;
+    },
+  },
   methods: {
+    async generateSecret() {
+      const array = new Uint8Array(20);
+      window.crypto.getRandomValues(array);
+      const secret = Array.from(array)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      this.payment.client_secret = secret;
+      await navigator.clipboard.writeText(secret);
+      this.$toast.success('Signing secret generated and copied to clipboard!');
+    },
     async updatePayment() {
       this.openConfirmation = true;
     },
@@ -337,7 +429,9 @@ export default {
               this.$emit("updateValue");
             });
         } else {
-          if (this.payment.client_id && this.payment.client_secret) {
+          const isLSReady = this.payment.provider !== 'Lemonsqueezy' ||
+            (this.payment.mode && this.payment.variant_id);
+          if (this.payment.client_id && this.payment.client_secret && isLSReady) {
             this.saveData();
           }
         }

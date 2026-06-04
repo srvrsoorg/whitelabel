@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Configuration;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Admin\Configuration\Payment;
 use App\Http\Helper;
 use App\Enums\PaymentGateway as PaymentGatewayEnum;
@@ -20,25 +21,37 @@ class PaymentController extends Controller
         
         // Validate incoming request data
         $request->validate([
-            'provider' => 'required|in:Stripe,Paypal,Razorpay,Cashfree',
-            'client_id' => 'required|max:255',
+            'provider' => 'required|in:Stripe,Paypal,Razorpay,Cashfree,Lemonsqueezy',
+            'client_id' => 'required|max:2000',
             'client_secret' => 'required|max:255',
-            'mode' => 'nullable|required_if:provider,Paypal|required_if:provider,Cashfree|in:sandbox,live'
+            'mode' => [
+                'nullable',
+                'required_if:provider,Paypal',
+                'required_if:provider,Cashfree',
+                'required_if:provider,Lemonsqueezy',
+                Rule::when(
+                    in_array($request->provider, ['Paypal', 'Cashfree']),
+                    ['in:sandbox,live']
+                ),
+            ],
+            'variant_id' => 'nullable|required_if:provider,Lemonsqueezy|max:255',
         ],[
-            'mode.required_if' => "The mode field is required."
+            'mode.required_if' => "The mode field is required.",
+            'variant_id.required_if' => "The variant ID field is required.",
         ]);
 
         try {
             if ($request->provider == PaymentGatewayEnum::CASHFREE()) {
                 $request->mode = $request->mode == 'live' ? 'production' : $request->mode;
             }
-            
+
             // Store or update payment configuration
             Payment::updateOrCreate([
                 'provider' => $request->provider],[
                 'client_id' => $request->client_id,
                 'client_secret' => $request->client_secret,
                 'mode' => $request->mode ?? "live",
+                'variant_id' => $request->variant_id,
                 'enabled' => true
             ]);
 

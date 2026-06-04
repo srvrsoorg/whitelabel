@@ -23,6 +23,7 @@ class Payment extends Model
         'mode',
         'client_id',
         'client_secret',
+        'variant_id',
         'enabled',
     ];
 

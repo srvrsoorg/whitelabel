@@ -414,6 +414,11 @@ export default {
           width: "70px",
           height: "30px",
         },
+        Lemonsqueezy: {
+          src: "/logo/lemon-squeezy.png",
+          width: "70px",
+          height: "30px",
+        },
       };
       return (
         logos[gateway] || {

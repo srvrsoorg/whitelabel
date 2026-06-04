@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Installation\SiteSettingController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\Webhook\LemonSqueezyWebhookController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,6 +20,9 @@ use App\Http\Controllers\User\AuthController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Webhook routes (no auth, raw body needed)
+Route::post('/lemon-squeezy/webhook', [LemonSqueezyWebhookController::class, 'handle']);
 
 // Public routes
 Route::controller(PublicController::class)->group(function () {

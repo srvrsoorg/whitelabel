@@ -17,6 +17,7 @@ use Mail;
 use Exception;
 use App\Rules\AmountFormatRule;
 use App\Http\Utilities\Client;
+use Illuminate\Support\Facades\Http;
 
 // Paypal Library classes
 use PayPal\Rest\ApiContext;
@@ -325,8 +326,8 @@ class TransactionController extends Controller
         // Check if the transaction with the provided key and status 1 (completed) exists
         if(Transaction::where('key', $key)->where('status', 1)->exists()){
             return response()->json([
-                "message" => "Transaction already compeletd!",
-            ],500);
+                "message" => "The payment has been verified successfully.",
+            ],200);
         }
 
         // Check if the transaction with the provided key and status 0 (failed) exists
@@ -532,6 +533,61 @@ class TransactionController extends Controller
                     "message" => $e->getMessage() ? $e->getMessage() : "Something went really wrong! Please try again after some times!"
                 ],500);
             }
+        } elseif ($provider == PaymentGatewayEnum::LEMONSQUEEZY()) {
+            try {
+                $response = Http::withToken($paymentConfig->client_id)
+                    ->withHeaders(['Accept' => 'application/vnd.api+json', 'Content-Type' => 'application/vnd.api+json'])
+                    ->post('https://api.lemonsqueezy.com/v1/checkouts', [
+                        'data' => [
+                            'type' => 'checkouts',
+                            'attributes' => [
+                                'custom_price' => (int) round($finalAmount * 100),
+                                'product_options' => [
+                                    'redirect_url' => url(config('app.url') . "/verify-transaction/$transaction->key?state=" . request()->get('state')),
+                                ],
+                                'checkout_data' => (function () use ($transaction) {
+                                    $user    = $transaction->user;
+                                    $billing = $user->billingDetail;
+
+                                    $data = [
+                                        'email'  => ($billing->email ?? null) ?: $user->email,
+                                        'name'   => ($billing->name  ?? null) ?: $user->name,
+                                        'custom' => ['transaction_key' => $transaction->key],
+                                    ];
+
+                                    $billingAddress = array_filter([
+                                        'country' => $user->getCountryCodeValue() ?: null,
+                                        'zip'     => $billing->postal_code ?? null,
+                                    ]);
+
+                                    if (!empty($billingAddress)) {
+                                        $data['billing_address'] = $billingAddress;
+                                    }
+
+                                    return $data;
+                                })(),
+                            ],
+                            'relationships' => [
+                                'store'   => ['data' => ['type' => 'stores',   'id' => (string) $paymentConfig->mode]],
+                                'variant' => ['data' => ['type' => 'variants', 'id' => (string) $paymentConfig->variant_id]],
+                            ],
+                        ],
+                    ]);
+
+                if (!$response->successful() || !$url = $response->json('data.attributes.url')) {
+                    return response()->json([
+                        "message" => $response->json('errors.0.detail') ?? "Failed to create LemonSqueezy checkout.",
+                    ], 500);
+                }
+
+                $transaction->payment_link = $url;
+                $transaction->save();
+            } catch (\Exception $e) {
+                report($e);
+                return response()->json([
+                    "message" => $e->getMessage() ?: "Something went really wrong! Please try again.",
+                ], 500);
+            }
         } else {
             return response()->json([
                 "message" => "Payment gateway not found!"
@@ -555,7 +611,12 @@ class TransactionController extends Controller
      */
     public function verify($key){
         try {
-             // Find transaction by key 
+            // If already completed (e.g., processed by webhook before redirect) — return success
+            if (Transaction::where('key', $key)->where('status', 1)->exists()) {
+                return response()->json(['message' => 'The payment has been verified successfully.'], 200);
+            }
+
+             // Find transaction by key
             if(!$transaction = Transaction::where('key',$key)->where('status','!=',true)->first()){
                 return response()->json([
                     'message' => "No transaction found!"
@@ -720,6 +781,45 @@ class TransactionController extends Controller
                     $this->updateAccount($transaction);
                 }else{
                     $transaction->update(["status" => 0]);
+
+                    return response()->json([
+                        'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
+                    ], 500);
+                }
+            } else if ($provider == PaymentGatewayEnum::LEMONSQUEEZY()) {
+                $response = Http::withToken($paymentConfig->client_id)
+                    ->withHeaders(['Accept' => 'application/vnd.api+json'])
+                    ->get('https://api.lemonsqueezy.com/v1/orders', [
+                        'filter[store_id]' => $paymentConfig->mode,
+                        'page[size]'       => 25,
+                        'sort'             => '-createdAt',
+                    ]);
+
+                $orderNumber   = request()->get('order_number');
+                $expectedCents = (int) round((float) $transaction->final_amount * 100);
+                $cutoffTime    = \Carbon\Carbon::parse($transaction->created_at)->subMinutes(5);
+                $user          = $transaction->user;
+
+                $order = collect($response->json('data') ?? [])
+                    ->first(function ($o) use ($orderNumber, $expectedCents, $cutoffTime, $user) {
+                        if (($o['attributes']['status'] ?? '') !== 'paid') return false;
+                        if ($orderNumber) {
+                            return (int)($o['attributes']['order_number'] ?? 0) === (int)$orderNumber;
+                        }
+                        return ($o['attributes']['user_email'] ?? '') === $user->email
+                            && (int)($o['attributes']['total'] ?? 0) === $expectedCents
+                            && \Carbon\Carbon::parse($o['attributes']['created_at'])->isAfter($cutoffTime);
+                    });
+
+                if ($order) {
+                    $transaction->status         = 1;
+                    $transaction->payment_link   = null;
+                    $transaction->transaction_id = (string) $order['id'];
+                    $transaction->save();
+
+                    $this->updateAccount($transaction);
+                } else {
+                    $transaction->update(['status' => 0]);
 
                     return response()->json([
                         'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
