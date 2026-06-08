@@ -326,8 +326,8 @@ class TransactionController extends Controller
         // Check if the transaction with the provided key and status 1 (completed) exists
         if(Transaction::where('key', $key)->where('status', 1)->exists()){
             return response()->json([
-                "message" => "The payment has been verified successfully.",
-            ],200);
+                "message" => "Transaction already compeletd!",
+            ],500);
         }
 
         // Check if the transaction with the provided key and status 0 (failed) exists
@@ -611,8 +611,12 @@ class TransactionController extends Controller
      */
     public function verify($key){
         try {
-            // If already completed (e.g., processed by webhook before redirect) — return success
-            if (Transaction::where('key', $key)->where('status', 1)->exists()) {
+            // LemonSqueezy only: webhook may have already completed the transaction
+            // Must check before the status filter below (which excludes status=1)
+            if (Transaction::where('key', $key)
+                    ->where('payment_gateway', PaymentGatewayEnum::LEMONSQUEEZY())
+                    ->where('status', 1)
+                    ->exists()) {
                 return response()->json(['message' => 'The payment has been verified successfully.'], 200);
             }
 
@@ -787,44 +791,33 @@ class TransactionController extends Controller
                     ], 500);
                 }
             } else if ($provider == PaymentGatewayEnum::LEMONSQUEEZY()) {
+                if (!$transaction->transaction_id) {
+                    return response()->json(['message' => 'Payment is still processing, please wait.'], 202);
+                }
+
                 $response = Http::withToken($paymentConfig->client_id)
                     ->withHeaders(['Accept' => 'application/vnd.api+json'])
-                    ->get('https://api.lemonsqueezy.com/v1/orders', [
-                        'filter[store_id]' => $paymentConfig->mode,
-                        'page[size]'       => 25,
-                        'sort'             => '-createdAt',
-                    ]);
+                    ->get("https://api.lemonsqueezy.com/v1/orders/{$transaction->transaction_id}");
 
-                $orderNumber   = request()->get('order_number');
+                if (!$response->successful()) {
+                    return response()->json(['message' => 'Could not verify payment with LemonSqueezy.'], 500);
+                }
+
+                $attrs         = $response->json('data.attributes') ?? [];
                 $expectedCents = (int) round((float) $transaction->final_amount * 100);
-                $cutoffTime    = \Carbon\Carbon::parse($transaction->created_at)->subMinutes(5);
-                $user          = $transaction->user;
 
-                $order = collect($response->json('data') ?? [])
-                    ->first(function ($o) use ($orderNumber, $expectedCents, $cutoffTime, $user) {
-                        if (($o['attributes']['status'] ?? '') !== 'paid') return false;
-                        if ($orderNumber) {
-                            return (int)($o['attributes']['order_number'] ?? 0) === (int)$orderNumber;
-                        }
-                        return ($o['attributes']['user_email'] ?? '') === $user->email
-                            && (int)($o['attributes']['total'] ?? 0) === $expectedCents
-                            && \Carbon\Carbon::parse($o['attributes']['created_at'])->isAfter($cutoffTime);
-                    });
-
-                if ($order) {
-                    $transaction->status         = 1;
-                    $transaction->payment_link   = null;
-                    $transaction->transaction_id = (string) $order['id'];
-                    $transaction->save();
-
-                    $this->updateAccount($transaction);
-                } else {
+                if (($attrs['status'] ?? '') !== 'paid' || (int)($attrs['total'] ?? 0) !== $expectedCents) {
                     $transaction->update(['status' => 0]);
-
                     return response()->json([
-                        'message' => "Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!"
+                        'message' => 'Payment failed! If the amount is already deducted from your account, It will be refunded within 7 business days!'
                     ], 500);
                 }
+
+                $transaction->status       = 1;
+                $transaction->payment_link = null;
+                $transaction->save();
+
+                $this->updateAccount($transaction);
             }
 
             // Update promo code use in transaction

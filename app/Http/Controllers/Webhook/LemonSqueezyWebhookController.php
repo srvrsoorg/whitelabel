@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Webhook;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Billing\Transaction;
 use App\Models\Admin\Configuration\Payment as PaymentConfig;
 use App\Enums\PaymentGateway as PaymentGatewayEnum;
@@ -46,20 +47,27 @@ class LemonSqueezyWebhookController
             return response()->json(['message' => 'Order not paid or missing transaction key.'], 200);
         }
 
-        $transaction = Transaction::where('key', $transactionKey)
-            ->where('status', 2)
-            ->first();
+        $transaction = DB::transaction(function () use ($transactionKey, $data) {
+            $transaction = Transaction::where('key', $transactionKey)
+                ->where('status', 2)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$transaction) return null;
+
+            $transaction->status         = 1;
+            $transaction->payment_link   = null;
+            $transaction->transaction_id = (string) ($data['data']['id'] ?? '');
+            $transaction->save();
+
+            app(TransactionController::class)->updateAccount($transaction);
+
+            return $transaction;
+        });
 
         if (!$transaction) {
             return response()->json(['message' => 'Transaction not found or already processed.'], 200);
         }
-
-        $transaction->status         = 1;
-        $transaction->payment_link   = null;
-        $transaction->transaction_id = (string) ($data['data']['id'] ?? '');
-        $transaction->save();
-
-        app(TransactionController::class)->updateAccount($transaction);
 
         // Update promo code usage
         if ($promoCode = PromoCode::find($transaction->promo_code_id)) {
