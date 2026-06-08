@@ -185,7 +185,7 @@
                       v-if="payment.provider === 'Lemonsqueezy'"
                       type="button"
                       @click="generateSecret"
-                      class="text-xs text-custom-500 hover:text-custom-700 flex items-center gap-1 whitespace-nowrap"
+                      class="text-xs text-custom-500 hover:text-custom-700 mt-1.5 flex items-center gap-1 whitespace-nowrap"
                     >
                       <span class="material-symbols-outlined text-[14px]">casino</span>
                       Generate Secret (Signing secret)

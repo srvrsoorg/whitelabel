@@ -167,7 +167,7 @@
                   <div
                     :class="[
                       'justify-between items-center px-5 flex',
-                      gateway == 'Paypal' || gateway=='Cashfree' ? 'py-2.5' : 'py-1',
+                      gateway == 'Paypal' || gateway=='Cashfree' ? 'py-2.5' : gateway == 'Lemonsqueezy' ? 'py-2' : 'py-1',
                     ]"
                   >
                     <div class="flex items-center">
@@ -416,8 +416,8 @@ export default {
         },
         Lemonsqueezy: {
           src: "/logo/lemon-squeezy.png",
-          width: "70px",
-          height: "30px",
+          width: "120px",
+          height: "50px",
         },
       };
       return (
